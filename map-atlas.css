@@ -6,13 +6,13 @@
 body[data-theme=light]{
   --page:#f8fafc;--card:#fff;--ink:#132856;--muted:#647891;
   --line:#dbe5ee;--blue:#058fd3;--sea:#eaf5fc;--sea-alt:#cfe8f7;
-  --land:#fbfdff;--land-line:#90b3d2;--grid-line:#aacddd;
+  --land:#b9d6e9;--land-line:#739eba;--grid-line:#aacddd;
   --maplabel:#7195b0;--selected:#e9f6ff;--item-hover:#f3f8fd
 }
 body[data-theme=dark]{
   --page:#0e1727;--card:#172438;--ink:#eaf4fd;--muted:#9fb6cd;
   --line:#32465d;--blue:#77c9f5;--sea:#0f263c;--sea-alt:#16384e;
-  --land:#25465d;--land-line:#66849b;--grid-line:#37576c;
+  --land:#3c627e;--land-line:#91aec6;--grid-line:#37576c;
   --maplabel:#98bad3;--selected:#1b3750;--item-hover:#1b3048
 }
 body{background:var(--page);font-variant-numeric:tabular-nums}
@@ -114,7 +114,7 @@ body[data-theme=dark]{background:linear-gradient(180deg,#101d2f 0%,#0e1727 470px
 #mapLand path{
   fill:var(--land);stroke:var(--land-line);
   stroke-width:1.2;vector-effect:non-scaling-stroke;
-  filter:url(#landLift);stroke-linejoin:round
+  filter:none;stroke-linejoin:round
 }
 #mapGraticule line{
   stroke:var(--grid-line);stroke-width:1;
