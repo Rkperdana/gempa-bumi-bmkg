@@ -1,6 +1,6 @@
-# Dataloka — Monitor Gempa Indonesia
+# Seismic Explorer — RKPERDANA
 
-Dashboard interaktif mandiri untuk pemantauan gempa BMKG. Dashboard ini adalah **website penuh**, bukan widget atau iframe. Pengguna Dataloka dapat meng-embed URL GitHub Pages sendiri.
+Dashboard pemantauan gempa berbasis data resmi BMKG, dikembangkan sebagai proyek personal RKPERDANA. Menggunakan aksen Ubuntu oranye (`#E95420`) sebagaimana Global Trade Atlas, dengan peta interaktif GeoJSON dan tema terang/gelap.
 
 ## Sumber data
 
@@ -38,7 +38,7 @@ Gempa real-time merupakan parameter awal yang dapat direvisi BMKG. Lihat situs r
 - `styles.css`: desktop/mobile, tema terang dan gelap.
 - `app.js`: peta, filter, pencarian, dan pengecekan JSON berkala.
 - `assets/indonesia.geojson`: peta dasar.
-- `assets/dataloka-logo.png`: logo Dataloka.
+- `assets/favicon.svg`: ikon personal bernuansa oranye Ubuntu.
 - `data/gempa.json`: kejadian yang disinkronkan.
 - `scripts/update_data.py`: sinkronisasi BMKG.
 - `.github/workflows/update-bmkg.yml`: jadwal dan deploy GitHub Pages.
