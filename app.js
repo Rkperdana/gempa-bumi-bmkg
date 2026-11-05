@@ -33,7 +33,8 @@ function renderStatus(error=false){
  let message='';
  if(error)message='Tidak bisa memeriksa pembaruan. Data terakhir yang tersedia tetap ditampilkan.';
  else if(stale)message='Pembaruan data sudah lebih dari 90 menit. Periksa sinkronisasi sebelum menganggapnya informasi terbaru.';
- else if(payload.status!=='live')message='MODE PRATINJAU — Data pada dashboard merupakan cuplikan kejadian BMKG, bukan kejadian real-time. Aktifkan alur sinkronisasi setelah izin penggunaan dipastikan.';
+ else if(payload.status!=='live')message='MODE PRATINJAU — Data belum disinkronkan dengan BMKG.';
+ else if(Array.isArray(payload.errors)&&payload.errors.length)message='Data real-time utama tersedia, tetapi sebagian feed pelengkap mengalami gangguan. Periksa sumber sebelum menggunakan informasi dirasakan atau potensi tsunami.';
  $('notice').hidden=!message;
  $('noticeText').textContent=message;
 }
@@ -67,10 +68,11 @@ async function loadMap(){
 }
 function renderMapPoints(){
  const layer=$('mapPoints');layer.replaceChildren();
- $('mapCount').textContent=int(state.filtered.length)+' titik';
+ let plotted=0;
  for(const e of [...state.filtered].sort((a,b)=>a.magnitude-b.magnitude)){
   const [x,y]=project(e.lon,e.lat);
   if(x<-10||x>1110||y<-10||y>474)continue;
+  plotted+=1;
   const r=e.magnitude>=6?9.5:e.magnitude>=5?7.7:6;
   const group=svgElement('g',{class:'quake-point'+(state.selected===e.id?' selected':''),tabindex:'0',role:'button','aria-label':`Gempa magnitudo ${e.magnitude.toFixed(1)}, ${e.region}`});
   group.appendChild(svgElement('circle',{cx:x,cy:y,r:r*2.6,class:'halo',fill:magColor(e.magnitude)}));
@@ -80,6 +82,7 @@ function renderMapPoints(){
   group.addEventListener('keydown',evt=>{if(evt.key==='Enter'||evt.key===' '){evt.preventDefault();select(e.id);}});
   layer.appendChild(group);
  }
+ $('mapCount').textContent=int(plotted)+' dari '+int(state.filtered.length)+' titik di area peta';
 }
 function sourceLink(e){
  return (e.source_urls||[]).find(v=>typeof v==='string'&&/^https:\/\/data\.bmkg\.go\.id\/DataMKG\/TEWS\/(?:autogempa|gempaterkini|gempadirasakan)\.json$/.test(v)) || 'https://data.bmkg.go.id/gempabumi/';
