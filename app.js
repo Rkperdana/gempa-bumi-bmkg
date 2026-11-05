@@ -131,9 +131,6 @@ function showMapTooltip(evt,event){
  tooltip.hidden=false;
  positionMapTooltip(evt);
 }
-function sourceLink(e){
- return (e.source_urls||[]).find(v=>typeof v==='string'&&v==='https://www.bmkg.go.id/gempabumi/gempabumi-realtime') || (e.source_urls||[]).find(v=>typeof v==='string'&&/^https:\/\/data\.bmkg\.go\.id\/DataMKG\/TEWS\/(?:autogempa|gempaterkini|gempadirasakan)\.json$/.test(v)) || 'https://www.bmkg.go.id/gempabumi/gempabumi-realtime';
-}
 function renderSelected(){
  const e=state.events.find(event=>event.id===state.selected);
  const panel=$('selectedContent');
@@ -145,7 +142,7 @@ function renderSelected(){
  const details=[];
  if(e.felt && e.felt_info)details.push(`<div><b>Intensitas dirasakan:</b> ${escapeHTML(e.felt_info)}</div>`);
  if(e.potential_text)details.push(`<div><b>Informasi BMKG:</b> ${escapeHTML(e.potential_text)}</div>`);
- panel.innerHTML=`<div class="selected-main"><div class="selected-mag"><small>M</small>${e.magnitude.toFixed(1)}</div><div class="selected-info"><div class="selected-region">${escapeHTML(e.region)}</div><div class="selected-time">${date(e.datetime)} · ${time(e.datetime)}</div><div class="selected-more">${chips.join('')}</div></div><a class="detail-source" href="${sourceLink(e)}" target="_blank" rel="noopener noreferrer">Lihat sumber ↗</a></div>${details.length?`<div class="detail-extra">${details.join('')}</div>`:''}`;
+ panel.innerHTML=`<div class="selected-main"><div class="selected-mag"><small>M</small>${e.magnitude.toFixed(1)}</div><div class="selected-info"><div class="selected-region">${escapeHTML(e.region)}</div><div class="selected-time">${date(e.datetime)} · ${time(e.datetime)}</div><div class="selected-more">${chips.join('')}</div></div><span class="detail-source">Sumber: BMKG</span></div>${details.length?`<div class="detail-extra">${details.join('')}</div>`:''}`;
 }
 function renderFeed(){
  const list=$('feedBody');list.replaceChildren();
