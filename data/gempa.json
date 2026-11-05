@@ -1,0 +1,273 @@
+{
+  "schema_version": 1,
+  "status": "preview",
+  "checked_at": null,
+  "source": "Badan Meteorologi, Klimatologi, dan Geofisika (BMKG)",
+  "coverage_note": "PRATINJAU: cuplikan kejadian resmi BMKG akhir Oktober–4 November 2026, bukan semua kejadian atau data live. Jalankan sinkronisasi setelah memperoleh izin penggunaan.",
+  "sources": {
+    "latest": "https://data.bmkg.go.id/DataMKG/TEWS/autogempa.json",
+    "m5": "https://data.bmkg.go.id/DataMKG/TEWS/gempaterkini.json",
+    "felt": "https://data.bmkg.go.id/DataMKG/TEWS/gempadirasakan.json"
+  },
+  "errors": [],
+  "events": [
+    {
+      "id": "696cceee31319d",
+      "datetime": "2026-11-04T07:56:34Z",
+      "magnitude": 3.4,
+      "depth_km": 10.0,
+      "lat": -1.14,
+      "lon": 120.15,
+      "region": "Pusat gempa berada di darat 40 km timur laut Sigi",
+      "felt": true,
+      "felt_info": "III Sigi, II Palu",
+      "tsunami": false,
+      "potential_text": "",
+      "significant": false,
+      "source_types": [
+        "felt",
+        "latest"
+      ],
+      "source_urls": [
+        "https://data.bmkg.go.id/DataMKG/TEWS/autogempa.json",
+        "https://data.bmkg.go.id/DataMKG/TEWS/gempadirasakan.json"
+      ],
+      "shakemap": ""
+    },
+    {
+      "id": "cbe4dd7d99c4ee",
+      "datetime": "2026-11-04T00:50:34Z",
+      "magnitude": 4.4,
+      "depth_km": 15.0,
+      "lat": -7.94,
+      "lon": 120.89,
+      "region": "Pusat gempa berada di laut 88 km timur laut Ruteng, Manggarai",
+      "felt": true,
+      "felt_info": "III Kab. Manggarai",
+      "tsunami": false,
+      "potential_text": "",
+      "significant": false,
+      "source_types": [
+        "felt"
+      ],
+      "source_urls": [
+        "https://data.bmkg.go.id/DataMKG/TEWS/gempadirasakan.json"
+      ],
+      "shakemap": ""
+    },
+    {
+      "id": "814a4cc2704996",
+      "datetime": "2026-11-04T00:46:08Z",
+      "magnitude": 4.6,
+      "depth_km": 23.0,
+      "lat": -3.22,
+      "lon": 135.53,
+      "region": "Pusat gempa berada di laut 16 km utara Nabire",
+      "felt": true,
+      "felt_info": "II - III Nabire",
+      "tsunami": false,
+      "potential_text": "",
+      "significant": false,
+      "source_types": [
+        "felt"
+      ],
+      "source_urls": [
+        "https://data.bmkg.go.id/DataMKG/TEWS/gempadirasakan.json"
+      ],
+      "shakemap": ""
+    },
+    {
+      "id": "78372b14329ee9",
+      "datetime": "2026-11-03T20:28:35Z",
+      "magnitude": 4.1,
+      "depth_km": 6.0,
+      "lat": -2.08,
+      "lon": 121.02,
+      "region": "Pusat gempa berada di darat 61 km utara Luwu Timur",
+      "felt": true,
+      "felt_info": "II - III Morowali Utara",
+      "tsunami": false,
+      "potential_text": "",
+      "significant": false,
+      "source_types": [
+        "felt"
+      ],
+      "source_urls": [
+        "https://data.bmkg.go.id/DataMKG/TEWS/gempadirasakan.json"
+      ],
+      "shakemap": ""
+    },
+    {
+      "id": "733f72aa484866",
+      "datetime": "2026-11-03T15:37:50Z",
+      "magnitude": 4.8,
+      "depth_km": 87.0,
+      "lat": -0.2,
+      "lon": 123.32,
+      "region": "Pusat gempa berada di laut 86 km Selatan Kota Gorontalo",
+      "felt": true,
+      "felt_info": "III Kab. Gorontalo, II - III Kab. Bone Bolango",
+      "tsunami": false,
+      "potential_text": "",
+      "significant": false,
+      "source_types": [
+        "felt"
+      ],
+      "source_urls": [
+        "https://data.bmkg.go.id/DataMKG/TEWS/gempadirasakan.json"
+      ],
+      "shakemap": ""
+    },
+    {
+      "id": "7362d6104b50bb",
+      "datetime": "2026-11-02T08:13:10Z",
+      "magnitude": 5.3,
+      "depth_km": 148.0,
+      "lat": 1.31,
+      "lon": 124.83,
+      "region": "Pusat gempa berada di darat 1 km Barat Daya Tomohon",
+      "felt": true,
+      "felt_info": "II - III Ternate, II Minahasa",
+      "tsunami": false,
+      "potential_text": "Tidak berpotensi tsunami",
+      "significant": false,
+      "source_types": [
+        "felt",
+        "m5"
+      ],
+      "source_urls": [
+        "https://data.bmkg.go.id/DataMKG/TEWS/gempadirasakan.json",
+        "https://data.bmkg.go.id/DataMKG/TEWS/gempaterkini.json"
+      ],
+      "shakemap": ""
+    },
+    {
+      "id": "0cf827896ba07a",
+      "datetime": "2026-11-02T00:53:11Z",
+      "magnitude": 5.5,
+      "depth_km": 130.0,
+      "lat": -7.08,
+      "lon": 130.07,
+      "region": "Pusat gempa berada di laut 169 km BaratLaut Tanimbar",
+      "felt": true,
+      "felt_info": "II Saumlaki",
+      "tsunami": false,
+      "potential_text": "Tidak berpotensi tsunami",
+      "significant": false,
+      "source_types": [
+        "felt",
+        "m5"
+      ],
+      "source_urls": [
+        "https://data.bmkg.go.id/DataMKG/TEWS/gempadirasakan.json",
+        "https://data.bmkg.go.id/DataMKG/TEWS/gempaterkini.json"
+      ],
+      "shakemap": ""
+    },
+    {
+      "id": "6b2163b739ff0f",
+      "datetime": "2026-10-29T20:32:13Z",
+      "magnitude": 5.3,
+      "depth_km": 10.0,
+      "lat": -4.4,
+      "lon": 132.49,
+      "region": "139 km BaratLaut TUAL-MALUKU",
+      "felt": false,
+      "felt_info": "",
+      "tsunami": false,
+      "potential_text": "Tidak berpotensi tsunami",
+      "significant": false,
+      "source_types": [
+        "m5"
+      ],
+      "source_urls": [
+        "https://data.bmkg.go.id/DataMKG/TEWS/gempaterkini.json"
+      ],
+      "shakemap": ""
+    },
+    {
+      "id": "8f85050c200a49",
+      "datetime": "2026-10-29T03:26:49Z",
+      "magnitude": 6.0,
+      "depth_km": 120.0,
+      "lat": -5.45,
+      "lon": 141.9,
+      "region": "153 km Tenggara OKSIBIL-PAPUAPGNGN",
+      "felt": false,
+      "felt_info": "",
+      "tsunami": false,
+      "potential_text": "Tidak berpotensi tsunami",
+      "significant": true,
+      "source_types": [
+        "m5"
+      ],
+      "source_urls": [
+        "https://data.bmkg.go.id/DataMKG/TEWS/gempaterkini.json"
+      ],
+      "shakemap": ""
+    },
+    {
+      "id": "ce1c7660897c57",
+      "datetime": "2026-10-28T22:06:47Z",
+      "magnitude": 6.4,
+      "depth_km": 160.0,
+      "lat": -6.34,
+      "lon": 130.52,
+      "region": "201 km BaratLaut TANIMBAR",
+      "felt": false,
+      "felt_info": "",
+      "tsunami": false,
+      "potential_text": "Tidak berpotensi tsunami",
+      "significant": true,
+      "source_types": [
+        "m5"
+      ],
+      "source_urls": [
+        "https://data.bmkg.go.id/DataMKG/TEWS/gempaterkini.json"
+      ],
+      "shakemap": ""
+    },
+    {
+      "id": "da4cd090c6a0f4",
+      "datetime": "2026-10-28T09:32:49Z",
+      "magnitude": 5.0,
+      "depth_km": 10.0,
+      "lat": 5.3,
+      "lon": 125.42,
+      "region": "187 km BaratLaut TAHUNA-KEP.SANGIHE-SULUT",
+      "felt": false,
+      "felt_info": "",
+      "tsunami": false,
+      "potential_text": "Tidak berpotensi tsunami",
+      "significant": false,
+      "source_types": [
+        "m5"
+      ],
+      "source_urls": [
+        "https://data.bmkg.go.id/DataMKG/TEWS/gempaterkini.json"
+      ],
+      "shakemap": ""
+    },
+    {
+      "id": "00b4cd745c5ee0",
+      "datetime": "2026-10-28T01:11:54Z",
+      "magnitude": 5.4,
+      "depth_km": 10.0,
+      "lat": 5.59,
+      "lon": 125.27,
+      "region": "221 km BaratLaut PULAUKARATUNG-SULUT",
+      "felt": false,
+      "felt_info": "",
+      "tsunami": false,
+      "potential_text": "Tidak berpotensi tsunami",
+      "significant": false,
+      "source_types": [
+        "m5"
+      ],
+      "source_urls": [
+        "https://data.bmkg.go.id/DataMKG/TEWS/gempaterkini.json"
+      ],
+      "shakemap": ""
+    }
+  ]
+}
