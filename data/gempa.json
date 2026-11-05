@@ -2,7 +2,7 @@
   "schema_version": 2,
   "status": "live",
   "data_origin": "realtime_table",
-  "checked_at": "2026-11-05T04:04:41.946877Z",
+  "checked_at": "2026-11-05T05:21:24.961116Z",
   "source": "Badan Meteorologi, Klimatologi, dan Geofisika (BMKG)",
   "coverage_note": "200 gempa terbaru pada tabel real-time BMKG (jumlah aktual dapat kurang dari 200), termasuk episentrum di luar Indonesia; gempa dirasakan dilengkapi dari feed terpisah. Bukan total seluruh gempa dalam periode tersebut.",
   "sources": {
@@ -13,6 +13,29 @@
   },
   "errors": [],
   "events": [
+    {
+      "id": "d8f8d250f1c426",
+      "datetime": "2026-11-05T04:41:56Z",
+      "magnitude": 2.5,
+      "depth_km": 10.0,
+      "lat": -8.11,
+      "lon": 119.69,
+      "region": "Flores Region, Indonesia",
+      "felt": false,
+      "felt_info": "",
+      "tsunami": false,
+      "potential_text": "",
+      "significant": false,
+      "source_types": [
+        "realtime"
+      ],
+      "source_urls": [
+        "https://www.bmkg.go.id/gempabumi/gempabumi-realtime"
+      ],
+      "shakemap": "",
+      "first_seen_at": "2026-11-05T05:21:24.961116Z",
+      "last_updated_at": "2026-11-05T05:21:24.961116Z"
+    },
     {
       "id": "4b26725c009e91",
       "datetime": "2026-11-05T03:56:58Z",
@@ -4563,29 +4586,6 @@
       "lat": 8.38,
       "lon": 127.45,
       "region": "Philippine Islands Region",
-      "felt": false,
-      "felt_info": "",
-      "tsunami": false,
-      "potential_text": "",
-      "significant": false,
-      "source_types": [
-        "realtime"
-      ],
-      "source_urls": [
-        "https://www.bmkg.go.id/gempabumi/gempabumi-realtime"
-      ],
-      "shakemap": "",
-      "first_seen_at": "2026-11-05T03:30:54.481864Z",
-      "last_updated_at": "2026-11-05T03:30:54.481864Z"
-    },
-    {
-      "id": "5bc3dbe5d2c9a1",
-      "datetime": "2026-10-29T05:59:11Z",
-      "magnitude": 2.6,
-      "depth_km": 72.0,
-      "lat": 4.16,
-      "lon": 96.33,
-      "region": "Northern Sumatra, Indonesia",
       "felt": false,
       "felt_info": "",
       "tsunami": false,
