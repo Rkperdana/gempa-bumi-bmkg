@@ -1,16 +1,12 @@
-name: Cadangan penjadwal sinkronisasi BMKG
+name: Pemicu manual cadangan BMKG
 
 on:
   workflow_dispatch:
-  # Permit a one-time end-to-end validation whenever this watchdog changes.
+  # Validate the reusable sync workflow whenever this fallback is edited.
   push:
     branches: [main]
     paths:
       - '.github/workflows/schedule-bmkg.yml'
-  schedule:
-    # Independent entry point, staggered 5 min from primary schedule.
-    # GitHub Actions schedules may be delayed or dropped by GitHub.
-    - cron: '9,19,29,39,49,59 * * * *'
 
 permissions:
   contents: write
