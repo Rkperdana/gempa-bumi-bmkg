@@ -60,6 +60,8 @@ node --check app.js
 
 ## Publikasi
 
+Alamat GitHub Pages setelah perubahan nama repository: https://rkperdana.github.io/gempa-bumi-bmkg/
+
 Aktifkan **Settings → Pages → GitHub Actions**. Workflow mendukung pemicu manual, pembaruan terjadwal, dan pemicu ketika ada perubahan kode. Sumber dan atribusi BMKG harus dipertahankan.
 
 **Proyek ini tidak membagikan API key atau token.** Pemilik situs telah mengonfirmasi izin penggunaan untuk integrasi dashboard. Pastikan cakupan, cara pengambilan HTML, dan persyaratan atribusi tetap sesuai dengan izin yang berlaku.
