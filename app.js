@@ -192,8 +192,8 @@ function officialEvent(raw, kind){
  const potential_text=String(raw.Potensi||'').trim();
  const tsunami=/berpotensi tsunami/i.test(potential_text)&&!/tidak berpotensi tsunami|tak berpotensi tsunami/i.test(potential_text);
  const felt=kind==='felt'||Boolean(felt_info&&felt_info!=='-');
- if(magnitude<5&&!felt)return null;
- const file=kind==='felt'?'gempadirasakan.json':'gempaterkini.json';
+ if(magnitude<5&&!felt&&kind!=='latest')return null;
+ const file=kind==='latest'?'autogempa.json':kind==='felt'?'gempadirasakan.json':'gempaterkini.json';
  return {
    id:'bmkg-'+String(instant)+'-'+lat.toFixed(2)+'-'+lon.toFixed(2),
    datetime:new Date(instant).toISOString(),magnitude,depth_km,lat,lon,region,
@@ -209,7 +209,7 @@ function matchingOfficial(a,b){
 }
 async function refreshOfficial(){
  if(state.data?.status!=='live')return;
- const resources=[['m5','gempaterkini.json'],['felt','gempadirasakan.json']];
+ const resources=[['latest','autogempa.json'],['m5','gempaterkini.json'],['felt','gempadirasakan.json']];
  const results=await Promise.allSettled(resources.map(async ([kind,file])=>{
    const response=await fetch(OFFICIAL_BASE+file+'?t='+Date.now(),{cache:'no-store'});
    if(!response.ok)throw new Error('BMKG '+file+' HTTP '+response.status);
