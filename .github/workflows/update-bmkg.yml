@@ -3,6 +3,8 @@ name: Sinkronisasi dan publikasi BMKG
 on:
   push:
     branches: [main]
+    paths-ignore:
+      - 'data/**'
   workflow_dispatch:
   schedule:
     # Every 15 minutes (UTC); GitHub may delay scheduled executions.
@@ -45,17 +47,28 @@ jobs:
       - name: Update earthquake data from BMKG
         run: python scripts/update_data.py
 
-      - name: Save updated JSON to the repository
+      - name: Commit only when earthquake records change
         run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add data/gempa.json
-          if ! git diff --cached --quiet; then
-            git commit -m "data: sinkronisasi gempa BMKG"
-            git push origin HEAD:main
-          else
-            echo "Data unchanged: no commit needed."
-          fi
+          python - <<'PY'
+          import json
+          import pathlib
+          import subprocess
+          import sys
+
+          current = json.loads(pathlib.Path("data/gempa.json").read_text(encoding="utf-8"))
+          previous = json.loads(subprocess.check_output(["git", "show", "HEAD:data/gempa.json"], text=True))
+          # checked_at is a page heartbeat; do not create a commit for every poll.
+          strip_check = lambda obj: {key: value for key, value in obj.items() if key != "checked_at"}
+          if strip_check(previous) == strip_check(current):
+              print("No event changes. Deploy current checked_at without a redundant commit.")
+              sys.exit(0)
+
+          subprocess.run(["git", "config", "user.name", "github-actions[bot]"], check=True)
+          subprocess.run(["git", "config", "user.email", "41898282+github-actions[bot]@users.noreply.github.com"], check=True)
+          subprocess.run(["git", "add", "data/gempa.json"], check=True)
+          subprocess.run(["git", "commit", "-m", "data: sinkronisasi gempa BMKG"], check=True)
+          subprocess.run(["git", "push", "origin", "HEAD:main"], check=True)
+          PY
 
       - name: Configure GitHub Pages
         uses: actions/configure-pages@v5
