@@ -1,0 +1,21 @@
+name: Cadangan penjadwal sinkronisasi BMKG
+
+on:
+  workflow_dispatch:
+  schedule:
+    # Independent entry point, staggered 5 min from primary schedule.
+    # GitHub Actions schedules may be delayed or dropped by GitHub.
+    - cron: '9,19,29,39,49,59 * * * *'
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+jobs:
+  sync:
+    uses: ./.github/workflows/update-bmkg.yml
+    permissions:
+      contents: write
+      pages: write
+      id-token: write
