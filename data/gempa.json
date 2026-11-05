@@ -2,7 +2,7 @@
   "schema_version": 2,
   "status": "live",
   "data_origin": "realtime_table",
-  "checked_at": "2026-11-05T03:30:54.481864Z",
+  "checked_at": "2026-11-05T04:04:41.946877Z",
   "source": "Badan Meteorologi, Klimatologi, dan Geofisika (BMKG)",
   "coverage_note": "200 gempa terbaru pada tabel real-time BMKG (jumlah aktual dapat kurang dari 200), termasuk episentrum di luar Indonesia; gempa dirasakan dilengkapi dari feed terpisah. Bukan total seluruh gempa dalam periode tersebut.",
   "sources": {
@@ -13,6 +13,29 @@
   },
   "errors": [],
   "events": [
+    {
+      "id": "4b26725c009e91",
+      "datetime": "2026-11-05T03:56:58Z",
+      "magnitude": 3.1,
+      "depth_km": 13.0,
+      "lat": -8.23,
+      "lon": 108.11,
+      "region": "Java, Indonesia",
+      "felt": false,
+      "felt_info": "",
+      "tsunami": false,
+      "potential_text": "",
+      "significant": false,
+      "source_types": [
+        "realtime"
+      ],
+      "source_urls": [
+        "https://www.bmkg.go.id/gempabumi/gempabumi-realtime"
+      ],
+      "shakemap": "",
+      "first_seen_at": "2026-11-05T04:04:41.946877Z",
+      "last_updated_at": "2026-11-05T04:04:41.946877Z"
+    },
     {
       "id": "dc0fa10bb32e9f",
       "datetime": "2026-11-05T02:52:30Z",
@@ -4562,29 +4585,6 @@
       "depth_km": 72.0,
       "lat": 4.16,
       "lon": 96.33,
-      "region": "Northern Sumatra, Indonesia",
-      "felt": false,
-      "felt_info": "",
-      "tsunami": false,
-      "potential_text": "",
-      "significant": false,
-      "source_types": [
-        "realtime"
-      ],
-      "source_urls": [
-        "https://www.bmkg.go.id/gempabumi/gempabumi-realtime"
-      ],
-      "shakemap": "",
-      "first_seen_at": "2026-11-05T03:30:54.481864Z",
-      "last_updated_at": "2026-11-05T03:30:54.481864Z"
-    },
-    {
-      "id": "33a1b4e106b1be",
-      "datetime": "2026-10-29T05:39:03Z",
-      "magnitude": 3.0,
-      "depth_km": 10.0,
-      "lat": 2.86,
-      "lon": 98.52,
       "region": "Northern Sumatra, Indonesia",
       "felt": false,
       "felt_info": "",
