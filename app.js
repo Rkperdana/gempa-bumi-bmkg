@@ -53,7 +53,19 @@ function coordinatesPath(rings){
  return (rings||[]).map(ring=>ring.map(([lon,lat],index)=>{const [x,y]=project(lon,lat);return `${index?'L':'M'}${x.toFixed(2)},${y.toFixed(2)}`;}).join(' ')+' Z').join(' ');
 }
 function drawLand(){
- const land=$('mapLand'),labels=$('mapLabels');land.replaceChildren();labels.replaceChildren();
+ const land=$('mapLand'),labels=$('mapLabels'),grid=$('mapGraticule');
+ land.replaceChildren();labels.replaceChildren();grid.replaceChildren();
+ // Geographic reference grid, projected with the same coordinates as epicenters.
+ for(const lon of [100,110,120,130,140]){
+   const [x]=project(lon,0);
+   grid.appendChild(svgElement('line',{x1:x,y1:0,x2:x,y2:464}));
+   const label=svgElement('text',{x:x+5,y:448});label.textContent=lon+'°E';grid.appendChild(label);
+ }
+ for(const lat of [-10,-5,0,5]){
+   const [,y]=project(110,lat);
+   grid.appendChild(svgElement('line',{x1:0,y1:y,x2:1100,y2:y}));
+   const label=svgElement('text',{x:8,y:y-7});label.textContent=lat===0?'EQ':Math.abs(lat)+'°'+(lat<0?'S':'N');grid.appendChild(label);
+ }
  for(const feature of state.geo?.features||[]){
   const geom=feature.geometry;
   if(!geom)continue;
@@ -76,14 +88,38 @@ function renderMapPoints(){
   plotted+=1;
   const r=e.magnitude>=6?9.5:e.magnitude>=5?7.7:6;
   const group=svgElement('g',{class:'quake-point'+(state.selected===e.id?' selected':''),tabindex:'0',role:'button','aria-label':`Gempa magnitudo ${e.magnitude.toFixed(1)}, ${e.region}`});
-  group.appendChild(svgElement('circle',{cx:x,cy:y,r:r*2.6,class:'halo',fill:magColor(e.magnitude)}));
+  group.appendChild(svgElement('circle',{cx:x,cy:y,r:r*2.7,class:'halo',fill:magColor(e.magnitude)}));
+  if(state.selected===e.id)group.appendChild(svgElement('circle',{cx:x,cy:y,r:r*1.7,class:'focus-ring'}));
   group.appendChild(svgElement('circle',{cx:x,cy:y,r,class:'core',fill:magColor(e.magnitude)}));
   const label=svgElement('title');label.textContent=`M ${e.magnitude.toFixed(1)} — ${e.region} (${date(e.datetime)} ${time(e.datetime)})`;group.appendChild(label);
-  group.addEventListener('click',evt=>{evt.stopPropagation();select(e.id);});
-  group.addEventListener('keydown',evt=>{if(evt.key==='Enter'||evt.key===' '){evt.preventDefault();select(e.id);}});
+  group.addEventListener('click',evt=>{evt.stopPropagation();hideMapTooltip();select(e.id);});
+  group.addEventListener('pointerenter',evt=>showMapTooltip(evt,e));
+  group.addEventListener('pointermove',evt=>positionMapTooltip(evt));
+  group.addEventListener('pointerleave',hideMapTooltip);
+  group.addEventListener('keydown',evt=>{if(evt.key==='Enter'||evt.key===' '){evt.preventDefault();hideMapTooltip();select(e.id);}});
   layer.appendChild(group);
  }
  $('mapCount').textContent=int(plotted)+' dari '+int(state.filtered.length)+' titik di area peta';
+}
+function hideMapTooltip(){
+ const tooltip=$('mapTooltip');if(tooltip)tooltip.hidden=true;
+}
+function positionMapTooltip(evt){
+ const tooltip=$('mapTooltip');
+ if(!tooltip||tooltip.hidden||evt.pointerType==='touch')return;
+ const rect=$('mapSvg').getBoundingClientRect();
+ const frame=$('mapSvg').parentElement.getBoundingClientRect();
+ const x=evt.clientX-frame.left+16,y=evt.clientY-frame.top+14;
+ const width=tooltip.offsetWidth||190,height=tooltip.offsetHeight||80;
+ tooltip.style.left=Math.max(8,Math.min(x,frame.width-width-10))+'px';
+ tooltip.style.top=Math.max(8,Math.min(y,frame.height-height-10))+'px';
+}
+function showMapTooltip(evt,event){
+ if(evt.pointerType==='touch')return;
+ const tooltip=$('mapTooltip');if(!tooltip)return;
+ tooltip.innerHTML='<strong>M '+event.magnitude.toFixed(1)+' · '+escapeHTML(event.region)+'</strong><small>'+date(event.datetime)+' · '+time(event.datetime)+' · '+int(event.depth_km)+' km</small>';
+ tooltip.hidden=false;
+ positionMapTooltip(evt);
 }
 function sourceLink(e){
  return (e.source_urls||[]).find(v=>typeof v==='string'&&v==='https://www.bmkg.go.id/gempabumi/gempabumi-realtime') || (e.source_urls||[]).find(v=>typeof v==='string'&&/^https:\/\/data\.bmkg\.go\.id\/DataMKG\/TEWS\/(?:autogempa|gempaterkini|gempadirasakan)\.json$/.test(v)) || 'https://www.bmkg.go.id/gempabumi/gempabumi-realtime';
