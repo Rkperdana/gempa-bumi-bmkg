@@ -4,7 +4,7 @@
 const $ = id => document.getElementById(id);
 const NS = 'http://www.w3.org/2000/svg';
 const palette = { low: '#21a8d4', medium: '#f2a04f', high: '#ed6479' };
-const state = { data: null, events: [], filtered: [], selected: null, filter: 'all', query: '', limit: 8, geo: null, zoom: 1, panX: 0, panY: 0, signature: '' };
+const state = { data: null, events: [], filtered: [], selected: null, filter: 'all', query: '', limit: 8, geo: null, zoom: 1, panX: 0, panY: 0, signature: '', detailOpen: true };
 const int = n => new Intl.NumberFormat('id-ID').format(n);
 const escapeHTML = value => String(value ?? '').replace(/[&<>"']/g, character => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[character]));
 const date = value => new Intl.DateTimeFormat('id-ID', { timeZone:'Asia/Jakarta', day:'numeric', month:'short', year:'numeric' }).format(new Date(value));
@@ -133,6 +133,7 @@ function showMapTooltip(evt,event){
 }
 function renderSelected(){
  const e=state.events.find(event=>event.id===state.selected);
+ $('detailCard').hidden=!e||!state.detailOpen;
  const panel=$('selectedContent');
  if(!e){panel.innerHTML='<p class="loading">Tidak ada data gempa yang sesuai.</p>';return;}
  const chips=[`<span class="info-chip">Kedalaman <strong>${int(e.depth_km)} km</strong></span>`,
@@ -160,7 +161,7 @@ function renderFeed(){
 }
 function select(id){
  if(!state.events.some(e=>e.id===id))return;
- state.selected=id;renderMapPoints();renderSelected();renderFeed();
+ state.selected=id;state.detailOpen=true;renderMapPoints();renderSelected();renderFeed();
 }
 function renderAll(){
  renderStatus();renderMetrics();state.filtered=filteredEvents();
@@ -187,6 +188,7 @@ function updateZoom(){
  $('mapTransform').setAttribute('transform',`translate(${(1-z)*550+state.panX} ${(1-z)*232+state.panY}) scale(${z})`);
 }
 function setup(){
+ $('detailClose').addEventListener('click',event=>{event.stopPropagation();state.detailOpen=false;$('detailCard').hidden=true;});
  $('themeToggle').addEventListener('click',()=>{
   const next=document.body.dataset.theme==='dark'?'light':'dark';document.body.dataset.theme=next;
   try{localStorage.setItem('dataloka-monitor-theme',next);}catch(_error){}
@@ -204,7 +206,7 @@ function setup(){
   const first=state.events[0];if(!first)return;
   state.query='';$('searchField').value='';state.filter='all';
   document.querySelectorAll('#mapFilters button').forEach(button=>{const active=button.dataset.type==='all';button.classList.toggle('active',active);button.setAttribute('aria-pressed',String(active));});
-  state.selected=first.id;renderAll();document.querySelector('.map-card').scrollIntoView({behavior:'smooth',block:'start'});
+  state.selected=first.id;state.detailOpen=true;renderAll();document.querySelector('.map-card').scrollIntoView({behavior:'smooth',block:'start'});
  });
  $('zoomIn').addEventListener('click',()=>{state.zoom=Math.min(4,state.zoom*1.4);updateZoom();});
  $('zoomOut').addEventListener('click',()=>{state.zoom=Math.max(1,state.zoom/1.4);updateZoom();});
