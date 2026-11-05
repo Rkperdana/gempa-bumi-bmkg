@@ -42,6 +42,7 @@ function renderMetrics(){
  $('totalEvents').textContent=int(state.events.length);
  $('countM5').textContent=int(state.events.filter(e=>e.magnitude>=5).length);
  $('countFelt').textContent=int(state.events.filter(e=>e.felt).length);
+ $('maxMagnitude').textContent=state.events.length ? 'M '+Math.max(...state.events.map(e=>e.magnitude)).toFixed(1) : '—';
  const first=state.events[0];
  $('latestMagnitude').textContent=first?first.magnitude.toFixed(1):'—';
  $('latestLocation').textContent=first?first.region:'Data belum tersedia';
