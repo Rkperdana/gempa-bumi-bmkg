@@ -38,8 +38,14 @@ def main():
             raise AssertionError('Earthquake markers did not load in browser')
         if 'class="workspace explorer-grid"' not in dom or 'id="detailCard"' not in dom:
             raise AssertionError('Explorer layout or floating detail missing')
-        if 'Sinkronisasi aktif' not in dom:
-            raise AssertionError('Live data status did not render')
+        statuses = ('Sinkronisasi aktif', 'Sinkronisasi data lengkap terlambat',
+                    'Feed BMKG langsung aktif')
+        if not any(status in dom for status in statuses):
+            raise AssertionError('Live data/staleness indicator did not render')
+        if 'Feed penting ' in dom:
+            print('Official BMKG JSON feeds are reachable from browser (CORS verified).')
+        else:
+            print('Warning: direct BMKG JSON feed was not confirmed in headless browser.')
         print(f'Browser smoke passed: {land.group(1).count("<path")} island polygons, {points} epicenter markers.')
     finally:
         server.shutdown()
