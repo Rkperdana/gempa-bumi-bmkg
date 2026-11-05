@@ -32,7 +32,7 @@ class DashboardMarkupTests(unittest.TestCase):
 
     def test_style_files_are_loaded(self):
         for path in ('styles.css','editorial.css','map-atlas.css'):
-            self.assertIn('href="' + path + '"', self.html)
+            self.assertRegex(self.html, r'href="' + re.escape(path) + r'(?:\?[^\"]+)?"')
             self.assertTrue((ROOT / path).exists())
 
 if __name__ == '__main__':
