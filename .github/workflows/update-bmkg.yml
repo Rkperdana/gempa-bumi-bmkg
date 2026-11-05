@@ -44,6 +44,10 @@ jobs:
           python -m unittest discover -s tests -v
           node --check app.js
 
+      - name: Smoke-test interactive map in headless Chrome
+        if: ${{ github.event_name != 'schedule' }}
+        run: python scripts/smoke_frontend.py
+
       - name: Update earthquake data from BMKG
         run: python scripts/update_data.py
 
