@@ -8,9 +8,8 @@
   <title>Monitor Gempa Indonesia | Dataloka</title>
   <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
   <link rel="stylesheet" href="styles.css?v=20261105a">
-  <link rel="stylesheet" href="editorial.css?v=20261105a">
-  <link rel="stylesheet" href="map-atlas.css?v=20261105b">
-  <script defer src="app.js?v=20261105b"></script>
+  <link rel="stylesheet" href="explorer.css?v=20261105-explorer1">
+  <script defer src="app.js?v=20261105-explorer1"></script>
 </head>
 <body data-theme="light">
   <main class="dashboard">
@@ -29,9 +28,9 @@
 
     <section class="hero" aria-labelledby="pageTitle">
       <div class="hero-main">
-        <div class="eyebrow"><span class="eyebrow-line"></span>PUSAT DATA KEBENCANAAN</div>
+        <div class="eyebrow"><span class="eyebrow-line"></span>SEISMIC EXPLORER <span class="explorer-eyebrow-divider">/</span> BMKG</div>
         <h1 id="pageTitle">Monitor Gempa <span>Indonesia</span></h1>
-        <p class="hero-copy">Pantau gempa terkini dari tabel real-time BMKG, lengkap dengan magnitudo, kedalaman, lokasi episentrum, dan informasi gempa dirasakan.</p>
+        <p class="hero-copy">Jelajahi episentrum gempa terkini, magnitudo, kedalaman, dan kejadian yang dirasakan dalam satu peta interaktif.</p>
         <div class="status-row" role="status" aria-live="polite">
           <span class="status-pill" id="statusPill"><span class="status-indicator" id="statusDot"></span><span id="statusLabel">Memuat data...</span></span>
           <span class="status-checked" id="syncTime">—</span>
@@ -56,11 +55,11 @@
       <article class="metric"><div><span class="metric-title">Magnitudo terbesar</span><div class="metric-value" id="maxMagnitude">—</div><span class="metric-note">Gempa terkuat dalam daftar terbaru</span></div></article>
     </section>
 
-    <section class="workspace">
+    <section class="workspace explorer-grid">
       <article class="map-card" aria-labelledby="mapTitle">
         <div class="panel-heading">
-          <div><div class="panel-kicker">PETA INTERAKTIF</div><h2 id="mapTitle">Peta sebaran gempa</h2><p>Titik episentrum gempa dari sumber real-time BMKG. Klik untuk membaca detail.</p></div>
-          <div class="map-controls" role="group" aria-label="Kontrol peta"><button type="button" id="zoomOut" aria-label="Perkecil peta">−</button><button type="button" id="zoomReset" aria-label="Kembalikan peta">⌖</button><button type="button" id="zoomIn" aria-label="Perbesar peta">+</button></div>
+          <div><div class="panel-kicker">PETA EPISENTRUM</div><h2 id="mapTitle">Eksplorasi gempa</h2><p>Pilih titik untuk melihat waktu, kedalaman, dan lokasi gempa.</p></div>
+          
         </div>
               <section class="filter-strip map-filterbar" aria-label="Filter kejadian gempa">
         <div class="filter-field"><span>JENIS KEJADIAN</span><div class="filter-control" id="mapFilters" role="group" aria-label="Kategori gempa"><button type="button" data-type="all" class="active" aria-pressed="true">Semua gempa</button><button type="button" data-type="m5" aria-pressed="false">M 5,0+</button><button type="button" data-type="felt" aria-pressed="false">Dirasakan</button></div></div>
@@ -80,21 +79,21 @@
             <rect width="1100" height="464" fill="url(#oceanShade)"/>
             <g id="mapTransform"><g id="mapGraticule"></g><g id="mapLand"><path d="M1014.43,242.78 L1015.11,381.61 L997.13,364.13 L976.62,359.85 L971.65,365.91 L946.06,366.57 L954.64,349.23 L967.35,343.32 L962.08,320.16 L952.39,302.28 L913.24,284.24 L896.59,282.46 L866.27,262.78 L860.31,273.13 L852.56,275.01 L847.98,267.20 L847.91,257.94 L832.49,247.48 L854.23,239.81 L868.64,240.22 L866.94,234.57 L837.38,234.53 L829.39,221.85 L811.35,217.91 L802.80,207.37 L830.02,202.21 L840.37,195.27 L872.79,204.02 L875.97,211.93 L881.61,246.38 L902.51,259.13 L919.38,236.54 L942.55,223.68 L960.50,223.67 L977.77,231.09 L992.75,238.71 L1014.43,242.78 Z" fill-rule="evenodd"/><path d="M690.71,376.82 L692.76,381.02 L693.13,387.47 L679.96,403.38 L662.67,408.07 L660.25,405.51 L662.07,398.27 L670.75,385.28 L690.71,376.82 Z" fill-rule="evenodd"/><path d="M877.32,334.27 L875.35,318.23 L883.17,303.38 L887.76,309.61 L887.71,319.77 L877.32,334.27 Z" fill-rule="evenodd"/><path d="M547.62,99.27 L536.13,118.51 L550.98,138.67 L547.49,148.47 L570.13,168.18 L546.20,170.70 L539.47,185.22 L540.34,204.52 L520.92,219.09 L520.39,240.30 L512.61,272.87 L509.63,265.29 L486.69,274.88 L478.69,261.86 L464.30,260.65 L454.23,253.83 L430.22,261.49 L422.85,251.18 L409.63,252.35 L392.98,249.89 L389.89,221.33 L379.82,215.41 L370.12,197.19 L367.31,178.55 L369.67,158.82 L381.66,144.66 L385.03,158.90 L398.84,170.93 L411.87,166.60 L424.76,168.14 L436.52,157.36 L446.21,155.50 L465.31,161.47 L481.78,156.93 L492.13,127.30 L499.90,119.90 L506.90,95.67 L530.11,95.68 L547.62,99.27 Z" fill-rule="evenodd"/><path d="M779.61,247.09 L801.83,253.30 L809.16,269.59 L792.12,260.81 L775.25,259.02 L763.85,260.43 L749.88,259.68 L754.67,247.97 L779.61,247.09 Z" fill-rule="evenodd"/><path d="M729.21,268.15 L715.25,264.24 L711.32,255.08 L731.74,254.05 L736.76,261.08 L729.21,268.15 Z" fill-rule="evenodd"/><path d="M750.56,141.08 L752.01,152.71 L763.93,154.58 L765.82,163.28 L764.76,181.89 L754.35,179.81 L751.28,192.77 L759.60,204.01 L753.94,206.57 L745.79,193.08 L739.80,165.85 L743.86,148.83 L750.56,141.08 Z" fill-rule="evenodd"/><path d="M649.50,168.76 L672.72,167.87 L692.68,152.40 L696.20,157.16 L679.98,178.29 L664.80,182.38 L645.37,178.22 L611.72,179.28 L594.08,182.35 L591.21,198.47 L609.28,217.41 L620.18,207.76 L657.84,200.51 L656.18,210.32 L647.38,207.23 L638.61,219.71 L620.84,227.97 L639.95,255.26 L636.26,262.58 L654.41,287.16 L654.24,301.15 L643.46,307.42 L635.54,299.93 L645.30,282.49 L625.48,290.73 L620.46,284.84 L623.08,276.61 L608.52,264.12 L610.02,243.37 L596.55,249.84 L598.26,274.68 L599.08,305.15 L586.28,308.24 L577.60,301.99 L583.39,282.39 L580.26,261.83 L571.77,261.67 L565.50,247.08 L573.85,233.13 L576.72,216.22 L586.87,184.11 L591.11,175.33 L608.27,159.51 L624.04,165.80 L649.50,168.76 Z" fill-rule="evenodd"/><path d="M596.34,405.91 L569.54,390.98 L588.37,386.80 L598.98,393.28 L606.04,399.75 L604.83,405.50 L596.34,405.91 Z" fill-rule="evenodd"/><path d="M617.48,369.23 L630.92,367.61 L649.01,359.81 L646.05,371.64 L615.72,377.69 L588.86,375.06 L588.79,367.28 L604.82,362.85 L617.48,369.23 Z" fill-rule="evenodd"/><path d="M555.26,365.52 L567.74,363.78 L572.75,372.83 L535.42,379.97 L524.56,379.80 L531.50,367.54 L542.57,367.37 L547.98,359.84 L555.26,365.52 Z" fill-rule="evenodd"/><path d="M357.91,324.19 L360.67,331.76 L399.35,333.89 L403.80,325.11 L441.26,335.35 L448.61,349.16 L478.90,353.04 L503.67,365.70 L480.63,373.81 L458.42,365.23 L440.15,365.81 L419.20,364.24 L400.30,360.41 L376.90,352.28 L362.08,350.17 L353.69,352.83 L316.86,344.06 L313.36,334.90 L294.88,333.34 L308.74,312.98 L333.24,314.24 L349.53,322.56 L357.91,324.19 Z" fill-rule="evenodd"/><path d="M274.78,210.51 L278.20,225.36 L285.24,237.25 L300.06,239.13 L309.89,252.62 L304.81,279.11 L304.01,312.06 L281.65,312.50 L264.65,294.69 L238.72,277.29 L230.08,264.38 L214.79,247.04 L204.76,231.07 L189.41,201.25 L171.67,183.50 L165.74,165.19 L158.30,148.56 L140.09,135.15 L129.53,116.92 L114.33,104.99 L93.27,81.52 L91.49,70.68 L104.49,71.54 L135.75,75.65 L153.61,96.48 L169.22,110.93 L180.36,119.79 L199.49,142.68 L220.02,143.02 L236.98,157.61 L248.67,175.44 L264.04,185.17 L255.95,202.56 L267.53,209.96 L274.78,210.51 Z" fill-rule="evenodd"/></g><g id="mapLabels"></g><g id="mapPoints"></g></g>
           </svg>
+          <div class="map-controls explorer-zoom" role="group" aria-label="Kontrol peta"><button type="button" id="zoomOut" aria-label="Perkecil peta">−</button><button type="button" id="zoomReset" aria-label="Kembalikan peta">⌖</button><button type="button" id="zoomIn" aria-label="Perbesar peta">+</button></div>
           <div class="map-geo-tag"><span class="map-corner-square"></span> PETA INDONESIA <span class="geo-divider">/</span> BMKG</div>
           <div id="mapTooltip" class="map-tooltip" role="status" hidden></div>
           <div class="map-corner">WGS84 <span class="geo-divider">·</span> EPISENTRUM GEMPA</div>
+        <article class="detail-card explorer-detail" id="detailCard" aria-label="Detail kejadian gempa">
+          <div class="detail-divider"></div>
+          <div class="detail-heading"><span>DETAIL PERISTIWA</span><button type="button" id="detailClose" class="detail-close" aria-label="Tutup detail peristiwa" title="Tutup">×</button></div>
+          <div id="selectedContent" class="selected-content" aria-live="polite"><p>Pilih kejadian pada peta atau daftar.</p></div>
+        </article>
         </div>
         <div class="map-legend"><div class="legend-items"><span><i class="legend-dot minor"></i>M &lt; 5,0</span><span><i class="legend-dot major"></i>M 5,0–5,9</span><span><i class="legend-dot extreme"></i>M ≥ 6,0</span></div><span class="legend-tip">Ketuk titik untuk melihat rinciannya</span></div>
       </article>
 
-      <article class="detail-card" aria-label="Detail kejadian gempa">
-        <div class="detail-divider"></div>
-        <div class="detail-heading"><span>DETAIL PERISTIWA</span><span class="detail-tag">DATA BMKG</span></div>
-        <div id="selectedContent" class="selected-content" aria-live="polite"><p>Pilih kejadian pada peta atau daftar.</p></div>
-      </article>
-
       <aside class="feed-card" aria-labelledby="feedTitle">
-        <div class="feed-heading"><div><div class="panel-kicker">CATATAN KEJADIAN</div><h2 id="feedTitle">Daftar gempa</h2></div><span class="feed-count" id="resultCount">—</span></div>
+        <div class="feed-heading"><div><div class="panel-kicker">AKTIVITAS TERKINI</div><h2 id="feedTitle">Gempa terbaru</h2></div><span class="feed-count" id="resultCount">—</span></div>
         <label class="search" for="searchField"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="10.6" cy="10.6" r="6.7"/><path d="m16 16 5 5" stroke-linecap="round"/></svg><input id="searchField" type="search" placeholder="Cari lokasi gempa..." autocomplete="off"><kbd>⌕</kbd></label>
         <div class="feed-list" role="list" id="feedBody"><p class="loading">Memuat gempa...</p></div>
         <div class="feed-bottom"><span id="showingInfo">—</span><button type="button" class="show-more" id="showMoreBtn" hidden>Tampilkan lagi ↓</button></div>
