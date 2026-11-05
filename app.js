@@ -85,7 +85,7 @@ function renderMapPoints(){
  $('mapCount').textContent=int(plotted)+' dari '+int(state.filtered.length)+' titik di area peta';
 }
 function sourceLink(e){
- return (e.source_urls||[]).find(v=>typeof v==='string'&&/^https:\/\/data\.bmkg\.go\.id\/DataMKG\/TEWS\/(?:autogempa|gempaterkini|gempadirasakan)\.json$/.test(v)) || 'https://data.bmkg.go.id/gempabumi/';
+ return (e.source_urls||[]).find(v=>typeof v==='string'&&v==='https://www.bmkg.go.id/gempabumi/gempabumi-realtime') || (e.source_urls||[]).find(v=>typeof v==='string'&&/^https:\/\/data\.bmkg\.go\.id\/DataMKG\/TEWS\/(?:autogempa|gempaterkini|gempadirasakan)\.json$/.test(v)) || 'https://www.bmkg.go.id/gempabumi/gempabumi-realtime';
 }
 function renderSelected(){
  const e=state.events.find(event=>event.id===state.selected);
