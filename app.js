@@ -4,7 +4,7 @@
 const $ = id => document.getElementById(id);
 const NS = 'http://www.w3.org/2000/svg';
 const palette = { low: '#269d94', medium: '#E95420', high: '#d85766' };
-const state = { data: null, events: [], filtered: [], selected: null, filter: 'all', query: '', limit: 8, geo: null, zoom: 1, panX: 0, panY: 0, signature: '', detailOpen: true };
+const state = { data: null, events: [], filtered: [], selected: null, filter: 'all', query: '', limit: 8, geo: null, zoom: 1, panX: 0, panY: 0, signature: '', detailOpen: true, directCheckedAt: null };
 const int = n => new Intl.NumberFormat('id-ID').format(n);
 const escapeHTML = value => String(value ?? '').replace(/[&<>"']/g, character => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[character]));
 const date = value => new Intl.DateTimeFormat('id-ID', { timeZone:'Asia/Jakarta', day:'numeric', month:'short', year:'numeric' }).format(new Date(value));
@@ -24,17 +24,21 @@ function renderStatus(error=false){
  const payload=state.data||{};
  const check=payload.checked_at?Date.parse(payload.checked_at):NaN;
  const stale=payload.status==='live'&&(!Number.isFinite(check)||Date.now()-check>90*60*1000);
+ const directRecent=state.directCheckedAt && Date.now()-Date.parse(state.directCheckedAt)<5*60*1000;
  const dot=$('statusDot');dot.className='status-indicator';
- if(error){dot.classList.add('error');$('statusLabel').textContent='Pembaruan gagal';}
- else if(stale){dot.classList.add('error');$('statusLabel').textContent='Sinkronisasi terlambat';}
+ if(error && !directRecent){dot.classList.add('error');$('statusLabel').textContent='Pembaruan gagal';}
+ else if(stale && directRecent){dot.classList.add('live');$('statusLabel').textContent='Feed BMKG langsung aktif';}
+ else if(stale){dot.classList.add('error');$('statusLabel').textContent='Sinkronisasi data lengkap terlambat';}
  else if(payload.status==='live'){dot.classList.add('live');$('statusLabel').textContent='Sinkronisasi aktif';}
  else{$('statusLabel').textContent='Mode pratinjau';}
- $('syncTime').textContent=payload.status==='live'&&payload.checked_at ? `Pemeriksaan terakhir ${date(payload.checked_at)}, ${time(payload.checked_at)}` : 'Data contoh — bukan pantauan real-time';
+ const fullCheck=payload.status==='live'&&payload.checked_at ? 'Data lengkap diperiksa '+date(payload.checked_at)+', '+time(payload.checked_at) : 'Data contoh — bukan pantauan real-time';
+ $('syncTime').textContent=directRecent ? fullCheck+' · Feed penting '+time(state.directCheckedAt) : fullCheck;
  let message='';
- if(error)message='Tidak bisa memeriksa pembaruan. Data terakhir yang tersedia tetap ditampilkan.';
- else if(stale)message='Pembaruan data sudah lebih dari 90 menit. Periksa sinkronisasi sebelum menganggapnya informasi terbaru.';
+ if(stale && directRecent)message='Sinkronisasi 200 gempa terbaru belum diperbarui. Gempa M 5,0+ dan gempa dirasakan tetap diperiksa langsung dari feed JSON resmi BMKG setiap menit. Daftar keseluruhan mungkin tidak lengkap.';
+ else if(error)message='Tidak bisa memeriksa pembaruan data lengkap. Data terakhir tetap ditampilkan.';
+ else if(stale)message='Data 200 gempa terakhir lebih dari 90 menit belum disinkronkan. Jangan anggap daftar keseluruhan sebagai pemantauan terbaru.';
  else if(payload.status!=='live')message='MODE PRATINJAU — Data belum disinkronkan dengan BMKG.';
- else if(Array.isArray(payload.errors)&&payload.errors.length)message='Data real-time utama tersedia, tetapi sebagian feed pelengkap mengalami gangguan. Periksa sumber sebelum menggunakan informasi dirasakan atau potensi tsunami.';
+ else if(Array.isArray(payload.errors)&&payload.errors.length)message='Data real-time utama tersedia, tetapi sebagian feed pelengkap mengalami gangguan.';
  $('notice').hidden=!message;
  $('noticeText').textContent=message;
 }
@@ -168,6 +172,80 @@ function renderAll(){
  if(!state.filtered.some(e=>e.id===state.selected))state.selected=state.filtered[0]?.id||null;
  renderMapPoints();renderFeed();renderSelected();
 }
+// A browser-side fallback for significant/felt earthquakes when the complete
+// BMKG realtime-table snapshot from GitHub Actions is delayed. These official
+// feeds cover only M>=5 and felt events, NOT all 200 realtime-table earthquakes.
+const OFFICIAL_BASE='https://data.bmkg.go.id/DataMKG/TEWS/';
+function officialEvent(raw, kind){
+ if(!raw||typeof raw!=='object')return null;
+ const datetime=String(raw.DateTime||'');
+ const instant=Date.parse(datetime);
+ const coords=String(raw.Coordinates||'').split(',');
+ if(!Number.isFinite(instant)||coords.length!==2)return null;
+ const lat=Number(coords[0]),lon=Number(coords[1]);
+ const magnitude=Number(String(raw.Magnitude||'').replace(',','.'));
+ const depthMatch=String(raw.Kedalaman||'').match(/[0-9]+(?:[.,][0-9]+)?/);
+ const depth_km=depthMatch?Number(depthMatch[0].replace(',','.')):NaN;
+ const region=String(raw.Wilayah||'').trim();
+ if(!region||![lat,lon,magnitude,depth_km].every(Number.isFinite)||Math.abs(lat)>90||Math.abs(lon)>180||magnitude<=0||magnitude>10||depth_km<0||depth_km>900)return null;
+ const felt_info=String(raw.Dirasakan||'').trim();
+ const potential_text=String(raw.Potensi||'').trim();
+ const tsunami=/berpotensi tsunami/i.test(potential_text)&&!/tidak berpotensi tsunami|tak berpotensi tsunami/i.test(potential_text);
+ const felt=kind==='felt'||Boolean(felt_info&&felt_info!=='-');
+ if(magnitude<5&&!felt)return null;
+ const file=kind==='felt'?'gempadirasakan.json':'gempaterkini.json';
+ return {
+   id:'bmkg-'+String(instant)+'-'+lat.toFixed(2)+'-'+lon.toFixed(2),
+   datetime:new Date(instant).toISOString(),magnitude,depth_km,lat,lon,region,
+   felt,felt_info:felt_info==='-'?'':felt_info,tsunami,potential_text,
+   significant:magnitude>=6||tsunami,source_types:[kind],source_urls:[OFFICIAL_BASE+file],
+   shakemap:String(raw.Shakemap||'')
+ };
+}
+function matchingOfficial(a,b){
+ return Math.abs(Date.parse(a.datetime)-Date.parse(b.datetime))<=45*1000
+     && Math.abs(a.lat-b.lat)<0.15 && Math.abs(a.lon-b.lon)<0.15
+     && Math.abs(a.magnitude-b.magnitude)<=0.4;
+}
+async function refreshOfficial(){
+ if(state.data?.status!=='live')return;
+ const resources=[['m5','gempaterkini.json'],['felt','gempadirasakan.json']];
+ const results=await Promise.allSettled(resources.map(async ([kind,file])=>{
+   const response=await fetch(OFFICIAL_BASE+file+'?t='+Date.now(),{cache:'no-store'});
+   if(!response.ok)throw new Error('BMKG '+file+' HTTP '+response.status);
+   const document=await response.json();
+   const raw=document?.Infogempa?.gempa;
+   if(!raw)throw new Error('Unexpected BMKG feed');
+   return {kind,items:(Array.isArray(raw)?raw:[raw]).map(item=>officialEvent(item,kind)).filter(Boolean)};
+ }));
+ let success=0,changed=false;
+ for(const result of results){
+  if(result.status!=='fulfilled')continue;
+  success++;
+  for(const item of result.value.items){
+   const existing=state.events.find(e=>matchingOfficial(e,item));
+   if(existing){
+    const nextFelt=existing.felt||item.felt;
+    if(!existing.felt&&nextFelt){existing.felt=true;changed=true;}
+    if(item.felt_info && existing.felt_info!==item.felt_info){existing.felt_info=item.felt_info;changed=true;}
+    if(item.potential_text && existing.potential_text!==item.potential_text){existing.potential_text=item.potential_text;existing.tsunami=item.tsunami;changed=true;}
+    continue;
+   }
+   state.events.push(item);changed=true;
+  }
+ }
+ if(success){
+  state.directCheckedAt=new Date().toISOString();
+  if(changed){
+   state.events.sort((a,b)=>Date.parse(b.datetime)-Date.parse(a.datetime));
+   state.events=state.events.slice(0,200);
+   renderAll();
+  }else renderStatus();
+ }else{
+  if(state.directCheckedAt && Date.now()-Date.parse(state.directCheckedAt)>5*60*1000)state.directCheckedAt=null;
+  renderStatus();
+ }
+}
 async function updateData(initial=false){
  try{
   const response=await fetch('data/gempa.json?cache='+Date.now(),{cache:'no-store'});
@@ -201,7 +279,7 @@ function setup(){
  }));
  $('searchField').addEventListener('input',event=>{state.query=event.target.value.trim().toLocaleLowerCase('id');state.limit=8;renderAll();});
  $('showMoreBtn').addEventListener('click',()=>{state.limit+=8;renderFeed();});
- $('refreshButton').addEventListener('click',()=>updateData());
+ $('refreshButton').addEventListener('click',()=>syncAll());
  $('latestOpen').addEventListener('click',()=>{
   const first=state.events[0];if(!first)return;
   state.query='';$('searchField').value='';state.filter='all';
@@ -221,5 +299,6 @@ function setup(){
  });
  const end=()=>{dragging=null;svg.classList.remove('dragging');};svg.addEventListener('pointerup',end);svg.addEventListener('pointercancel',end);
 }
-setup();loadMap();updateData(true);setInterval(()=>updateData(),60000);
+async function syncAll(initial=false){await updateData(initial);await refreshOfficial();}
+setup();loadMap();syncAll(true);setInterval(()=>syncAll(),60000);
 })();
