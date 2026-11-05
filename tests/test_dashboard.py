@@ -31,9 +31,25 @@ class DashboardMarkupTests(unittest.TestCase):
         self.assertNotIn('Data utama berasal dari tabel', footer)
 
     def test_style_files_are_loaded(self):
-        for path in ('styles.css','editorial.css','map-atlas.css'):
+        for path in ('styles.css','explorer.css'):
             self.assertRegex(self.html, r'href="' + re.escape(path) + r'(?:\?[^\"]+)?"')
             self.assertTrue((ROOT / path).exists())
+
+
+    def test_explorer_geography_and_layout(self):
+        import json
+        geo = json.loads((ROOT / 'assets' / 'indonesia.geojson').read_text(encoding='utf-8'))
+        self.assertEqual(len(geo['features']), 38)
+        self.assertTrue(all(f['geometry']['type'] in ('Polygon', 'MultiPolygon') for f in geo['features']))
+        self.assertIn('class="workspace explorer-grid"', self.html)
+        self.assertIn('id="detailCard"', self.html)
+        self.assertIn('id="detailClose"', self.html)
+        self.assertLess(self.html.index('id="mapSvg"'), self.html.index('id="detailCard"'))
+        self.assertLess(self.html.index('id="detailCard"'), self.html.index('class="feed-card"'))
+
+    def test_explorer_detail_close_control_wired(self):
+        self.assertIn("$('detailClose').addEventListener", self.script)
+        self.assertIn("$('detailCard').hidden", self.script)
 
 if __name__ == '__main__':
     unittest.main()
