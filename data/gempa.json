@@ -2,7 +2,7 @@
   "schema_version": 2,
   "status": "live",
   "data_origin": "realtime_table",
-  "checked_at": "2026-11-05T10:38:35.571393Z",
+  "checked_at": "2026-11-05T11:34:52.037724Z",
   "source": "Badan Meteorologi, Klimatologi, dan Geofisika (BMKG)",
   "coverage_note": "200 gempa terbaru pada tabel real-time BMKG (jumlah aktual dapat kurang dari 200), termasuk episentrum di luar Indonesia; gempa dirasakan dilengkapi dari feed terpisah. Bukan total seluruh gempa dalam periode tersebut.",
   "sources": {
@@ -13,6 +13,29 @@
   },
   "errors": [],
   "events": [
+    {
+      "id": "8b3dd7c9989c67",
+      "datetime": "2026-11-05T10:48:36Z",
+      "magnitude": 3.6,
+      "depth_km": 56.0,
+      "lat": -3.14,
+      "lon": 140.39,
+      "region": "West Papua, Indonesia",
+      "felt": false,
+      "felt_info": "",
+      "tsunami": false,
+      "potential_text": "",
+      "significant": false,
+      "source_types": [
+        "realtime"
+      ],
+      "source_urls": [
+        "https://www.bmkg.go.id/gempabumi/gempabumi-realtime"
+      ],
+      "shakemap": "",
+      "first_seen_at": "2026-11-05T11:34:52.037724Z",
+      "last_updated_at": "2026-11-05T11:34:52.037724Z"
+    },
     {
       "id": "1259787d45f1cb",
       "datetime": "2026-11-05T10:09:27Z",
@@ -4563,29 +4586,6 @@
       "lat": -1.98,
       "lon": 121.58,
       "region": "Sulawesi, Indonesia",
-      "felt": false,
-      "felt_info": "",
-      "tsunami": false,
-      "potential_text": "",
-      "significant": false,
-      "source_types": [
-        "realtime"
-      ],
-      "source_urls": [
-        "https://www.bmkg.go.id/gempabumi/gempabumi-realtime"
-      ],
-      "shakemap": "",
-      "first_seen_at": "2026-11-05T03:30:54.481864Z",
-      "last_updated_at": "2026-11-05T03:30:54.481864Z"
-    },
-    {
-      "id": "0f109f222689a4",
-      "datetime": "2026-10-29T14:19:47Z",
-      "magnitude": 2.9,
-      "depth_km": 66.0,
-      "lat": 1.85,
-      "lon": 127.32,
-      "region": "Halmahera, Indonesia",
       "felt": false,
       "felt_info": "",
       "tsunami": false,
