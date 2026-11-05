@@ -1,0 +1,80 @@
+name: Sinkronisasi dan publikasi BMKG
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+  schedule:
+    # Every 15 minutes (UTC); GitHub may delay scheduled executions.
+    - cron: '7,22,37,52 * * * *'
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: dataloka-gempa-pages
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    # Until BMKG permission is confirmed, scheduled requests do not run.
+    # Push/manual runs still publish the existing preview dashboard.
+    if: ${{ github.event_name != 'schedule' || vars.BMKG_INTEGRATION_AUTHORIZED == 'true' }}
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+
+      - name: Setup Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+
+      - name: Validate dashboard code
+        run: |
+          python -m unittest discover -s tests -v
+          node --check app.js
+
+      - name: Update earthquake data from BMKG (authorized only)
+        if: ${{ vars.BMKG_INTEGRATION_AUTHORIZED == 'true' }}
+        run: python scripts/update_data.py
+
+      - name: Save updated JSON to the repository
+        if: ${{ vars.BMKG_INTEGRATION_AUTHORIZED == 'true' }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/gempa.json
+          if ! git diff --cached --quiet; then
+            git commit -m "data: sinkronisasi gempa BMKG"
+            git push origin HEAD:main
+          else
+            echo "Data unchanged: no commit needed."
+          fi
+
+      - name: Configure GitHub Pages
+        uses: actions/configure-pages@v5
+
+      - name: Prepare static website
+        run: |
+          mkdir -p _site
+          cp index.html styles.css app.js _site/
+          cp -R assets data _site/
+          touch _site/.nojekyll
+
+      - name: Upload GitHub Pages artifact
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: _site
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
