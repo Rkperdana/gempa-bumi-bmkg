@@ -19,9 +19,8 @@ concurrency:
 
 jobs:
   publish:
-    # Until BMKG permission is confirmed, scheduled requests do not run.
-    # Push/manual runs still publish the existing preview dashboard.
-    if: ${{ github.event_name != 'schedule' || vars.BMKG_INTEGRATION_AUTHORIZED == 'true' }}
+    # BMKG integration permission confirmed by the site owner.
+    # Run for scheduled checks, manual dispatch and code pushes.
     runs-on: ubuntu-latest
     environment:
       name: github-pages
@@ -43,12 +42,10 @@ jobs:
           python -m unittest discover -s tests -v
           node --check app.js
 
-      - name: Update earthquake data from BMKG (authorized only)
-        if: ${{ vars.BMKG_INTEGRATION_AUTHORIZED == 'true' }}
+      - name: Update earthquake data from BMKG
         run: python scripts/update_data.py
 
       - name: Save updated JSON to the repository
-        if: ${{ vars.BMKG_INTEGRATION_AUTHORIZED == 'true' }}
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
