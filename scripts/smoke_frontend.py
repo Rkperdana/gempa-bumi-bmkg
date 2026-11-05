@@ -31,11 +31,13 @@ def main():
             raise RuntimeError('Chrome failed: ' + result.stderr[-1200:])
         dom = result.stdout
         land = re.search(r'<g id="mapLand">([\s\S]*?)</g>', dom)
-        if land is None or land.group(1).count('<path') < 10:
-            raise AssertionError('Indonesia map polygons are not visible in the DOM')
+        if land is None or land.group(1).count('<path') < 150:
+            raise AssertionError('Detailed 38-province GeoJSON map did not render in browser')
         points = len(re.findall(r'class="quake-point(?: selected)?"', dom))
         if points < 1:
             raise AssertionError('Earthquake markers did not load in browser')
+        if 'class="workspace explorer-grid"' not in dom or 'id="detailCard"' not in dom:
+            raise AssertionError('Explorer layout or floating detail missing')
         if 'Sinkronisasi aktif' not in dom:
             raise AssertionError('Live data status did not render')
         print(f'Browser smoke passed: {land.group(1).count("<path")} island polygons, {points} epicenter markers.')
