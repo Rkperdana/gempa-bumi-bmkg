@@ -45,12 +45,15 @@ jobs:
           python -m unittest discover -s tests -v
           node --check app.js
 
-      - name: Smoke-test interactive map in headless Chrome
-        if: ${{ github.event_name != 'schedule' }}
-        run: python scripts/smoke_frontend.py
-
       - name: Update earthquake data from BMKG
         run: python scripts/update_data.py
+
+      # Visual smoke tests should never prevent publishing freshly fetched
+      # earthquake data. A failure remains visible in the Actions logs.
+      - name: Smoke-test interactive map in headless Chrome
+        if: ${{ github.event_name != 'schedule' }}
+        continue-on-error: true
+        run: python scripts/smoke_frontend.py
 
       - name: Commit only when earthquake records change
         run: |
