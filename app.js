@@ -54,30 +54,40 @@ function coordinatesPath(rings){
 }
 function drawLand(){
  const land=$('mapLand'),labels=$('mapLabels'),grid=$('mapGraticule');
- land.replaceChildren();labels.replaceChildren();grid.replaceChildren();
- // Geographic reference grid, projected with the same coordinates as epicenters.
- for(const lon of [100,110,120,130,140]){
-   const [x]=project(lon,0);
-   grid.appendChild(svgElement('line',{x1:x,y1:0,x2:x,y2:464}));
-   const label=svgElement('text',{x:x+5,y:448});label.textContent=lon+'°E';grid.appendChild(label);
- }
- for(const lat of [-10,-5,0,5]){
-   const [,y]=project(110,lat);
-   grid.appendChild(svgElement('line',{x1:0,y1:y,x2:1100,y2:y}));
-   const label=svgElement('text',{x:8,y:y-7});label.textContent=lat===0?'EQ':Math.abs(lat)+'°'+(lat<0?'S':'N');grid.appendChild(label);
- }
- for(const feature of state.geo?.features||[]){
+ if(!land || !labels || !state.geo?.features?.length)return;
+ // Prepare a complete replacement before touching the static map fallback.
+ const fragment=document.createDocumentFragment();
+ for(const feature of state.geo.features){
   const geom=feature.geometry;
   if(!geom)continue;
   const coordinates=geom.type==='Polygon'?[geom.coordinates]:geom.type==='MultiPolygon'?geom.coordinates:[];
-  for(const polygon of coordinates){land.appendChild(svgElement('path',{d:coordinatesPath(polygon),'fill-rule':'evenodd'}));}
+  for(const polygon of coordinates){
+   const path=svgElement('path',{d:coordinatesPath(polygon),'fill-rule':'evenodd'});
+   fragment.appendChild(path);
+  }
+ }
+ if(!fragment.childNodes.length)return;
+ land.replaceChildren(fragment);
+ labels.replaceChildren();
+ if(grid){
+  grid.replaceChildren();
+  for(const lon of [100,110,120,130,140]){
+   const [x]=project(lon,0);
+   grid.appendChild(svgElement('line',{x1:x,y1:0,x2:x,y2:464}));
+   const label=svgElement('text',{x:x+5,y:448});label.textContent=lon+'°E';grid.appendChild(label);
+  }
+  for(const lat of [-10,-5,0,5]){
+   const [,y]=project(110,lat);
+   grid.appendChild(svgElement('line',{x1:0,y1:y,x2:1100,y2:y}));
+   const label=svgElement('text',{x:8,y:y-7});label.textContent=lat===0?'EQ':Math.abs(lat)+'°'+(lat<0?'S':'N');grid.appendChild(label);
+  }
  }
  const names=[['SUMATERA',101.4,-.5],['KALIMANTAN',113.2,-.5],['JAWA',110.5,-6.8],['SULAWESI',121.7,-1.7],['PAPUA',137,-4.6]];
  for(const [name,lon,lat] of names){const [x,y]=project(lon,lat);const label=svgElement('text',{x,y,'text-anchor':'middle'});label.textContent=name;labels.appendChild(label);}
 }
 async function loadMap(){
  try{const response=await fetch('assets/indonesia.geojson');if(!response.ok)throw Error('HTTP '+response.status);state.geo=await response.json();drawLand();}
- catch(error){console.warn('Peta GeoJSON belum dapat dibuka:',error);$('mapCount').textContent='Peta belum dimuat';}
+ catch(error){console.warn('GeoJSON belum dapat dimuat; peta cadangan tetap ditampilkan:',error);}
 }
 function renderMapPoints(){
  const layer=$('mapPoints');layer.replaceChildren();
