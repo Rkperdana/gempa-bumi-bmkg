@@ -1,8 +1,5 @@
-/* Seismic Explorer | Dataloka.id
-   Map-first interaction. Layout and colors are deliberately separate from legacy styles.css.
-   Light: #132856 / #b3dcfd  •  Dark: midnight/navy.
-*/
-@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap');
+/* Seismic Explorer | RKPERDANA | map-first, accessible dark/light */
+@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap');
 
 :root{
   --font-ui:'DM Sans','Segoe UI',system-ui,sans-serif;
@@ -464,4 +461,61 @@ body[data-theme="dark"] .map-frame{border-color:var(--line)}
   .hero h1{font-size:29px}
   .map-frame{height:340px;min-height:340px}
   .explorer-detail{max-height:158px}
+}
+
+
+/* RKPERDANA personal edition — Ubuntu accent borrowed from Global Trade Atlas.
+   These tokens deliberately override earlier Explorer styles without changing layout. */
+:root{
+  --font-ui:'Manrope','Segoe UI',system-ui,sans-serif;
+  --font-display:'Manrope','Segoe UI',system-ui,sans-serif;
+  --font-mono:'IBM Plex Mono',Consolas,monospace;
+  accent-color:#E95420;
+}
+body[data-theme="light"]{
+  --page:#f7f6f3;--card:#ffffff;--ink:#262630;--muted:#73727b;--lightmuted:#97949e;
+  --line:#e8e5e2;--blue:#E95420;--faintblue:#fff0e7;
+  --sea:#f1f3f1;--sea-alt:#e6ebe9;--land:#fcfcfa;--land-line:#aebfb9;
+  --grid-line:#b9cfc7;--item-hover:#fff7f2;--search:#faf9f7;--selected:#fff0e7;
+  --badge-bg:#fff0e7;--maplabel:#6d8984;--map-ink:#423a3a;
+  --panel-shadow:0 22px 55px rgba(34,34,39,.12);
+}
+body[data-theme="dark"]{
+  --page:#191a22;--card:#24252f;--ink:#f6f3f2;--muted:#a6a7b3;--lightmuted:#8c8d9a;
+  --line:#393a45;--blue:#ff9361;--faintblue:#42302e;
+  --sea:#243033;--sea-alt:#182529;--land:#3b4a4b;--land-line:#728783;
+  --grid-line:#4a6764;--item-hover:#312e35;--search:#2b2b35;--selected:#49352e;
+  --badge-bg:#40302e;--maplabel:#acc5c0;--map-ink:#fcf6ee;
+  --panel-shadow:0 26px 68px rgba(0,0,0,.36);
+}
+button:focus-visible,a:focus-visible,input:focus-visible,.quake-point:focus-visible{outline-color:#E95420}
+.brand{display:flex;align-items:center;gap:11px;color:var(--ink);text-decoration:none}
+.brand-mark{display:grid;place-items:center;width:40px;height:40px;border-radius:10px;
+  background:#E95420;color:#fff;letter-spacing:-2px;
+  font:800 17px/1 var(--font-display);box-shadow:0 5px 14px rgba(233,84,32,.16)}
+.brand-mark span{color:#ffdbbf}
+.brand-copy{display:flex;flex-direction:column;gap:1px;min-width:0}
+.brand-copy strong{font:800 15px/1.15 var(--font-display);letter-spacing:.6px}
+.brand-copy small{font:500 9px/1.2 var(--font-mono);letter-spacing:1.2px;color:var(--muted)}
+.eyebrow-line{background:#E95420}
+.source-dot{background:#1a9b88}
+.hero h1 span{color:var(--blue)}
+.feature-pulse{background:#1a9b88}
+.map-filterbar .filter-control button.active{background:#E95420;color:#fff;box-shadow:0 3px 10px rgba(233,84,32,.18)}
+body[data-theme="dark"] .map-filterbar .filter-control button.active{background:#E95420;color:#fff}
+.map-frame{border-color:var(--line);box-shadow:0 12px 36px rgba(24,24,33,.04)}
+.map-geo-tag .map-corner-square{background:#E95420}
+.map-tooltip{background:#29272e;color:#fff;box-shadow:0 12px 30px rgba(24,22,28,.25)}
+.map-tooltip small{color:#e4d9d5}
+#mapPoints .quake-point.selected .core{stroke:#E95420}
+.explorer-detail{border-color:var(--line)}
+.event-row.selected{border-left:3px solid #E95420;padding-left:7px}
+.legend-dot.minor{background:#269d94}
+.legend-dot.major{background:#E95420}
+.legend-dot.extreme{background:#d85766}
+.footer-asterisk{color:#E95420}
+@media(max-width:580px){
+  .brand-mark{width:34px;height:34px;font-size:15px;border-radius:8px}
+  .brand-copy strong{font-size:13px}
+  .brand-copy small{font-size:8px;letter-spacing:.7px}
 }
