@@ -1,9 +1,9 @@
-/* Dataloka.id — Monitor Gempa Indonesia. Website mandiri, tanpa kode embed. */
+/* RKPERDANA — Seismic Explorer. Personal project; BMKG is the data source. */
 (() => {
 'use strict';
 const $ = id => document.getElementById(id);
 const NS = 'http://www.w3.org/2000/svg';
-const palette = { low: '#21a8d4', medium: '#f2a04f', high: '#ed6479' };
+const palette = { low: '#269d94', medium: '#E95420', high: '#d85766' };
 const state = { data: null, events: [], filtered: [], selected: null, filter: 'all', query: '', limit: 8, geo: null, zoom: 1, panX: 0, panY: 0, signature: '', detailOpen: true };
 const int = n => new Intl.NumberFormat('id-ID').format(n);
 const escapeHTML = value => String(value ?? '').replace(/[&<>"']/g, character => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[character]));
@@ -153,7 +153,7 @@ function renderFeed(){
  if(!state.filtered.length){const empty=document.createElement('p');empty.className='loading';empty.textContent='Tidak ada gempa yang cocok dengan pencarian ini.';list.appendChild(empty);return;}
  for(const e of state.filtered.slice(0,state.limit)){
   const row=document.createElement('button');row.type='button';row.className='event-row'+(e.id===state.selected?' selected':'');row.setAttribute('role','listitem');
-  row.style.setProperty('--mag-color',magColor(e.magnitude));row.style.setProperty('--mag-bg',e.magnitude>=6?'rgba(237,100,121,.12)':e.magnitude>=5?'rgba(242,160,79,.13)':'rgba(33,168,212,.12)');
+  row.style.setProperty('--mag-color',magColor(e.magnitude));row.style.setProperty('--mag-bg',e.magnitude>=6?'rgba(216,87,102,.12)':e.magnitude>=5?'rgba(233,84,32,.13)':'rgba(38,157,148,.12)');
   const pills=e.felt?'<span class="tiny-pill">DIRASAKAN</span>':'';
   row.innerHTML=`<span class="event-mag">${e.magnitude.toFixed(1)}</span><span class="event-body"><span class="event-place">${escapeHTML(e.region)}</span><span class="event-meta">${date(e.datetime)} · ${time(e.datetime)} · ${int(e.depth_km)} km</span>${pills?`<span class="event-labels">${pills}</span>`:''}</span><span class="event-chevron" aria-hidden="true">›</span>`;
   row.addEventListener('click',()=>select(e.id));list.appendChild(row);
@@ -191,9 +191,9 @@ function setup(){
  $('detailClose').addEventListener('click',event=>{event.stopPropagation();state.detailOpen=false;$('detailCard').hidden=true;});
  $('themeToggle').addEventListener('click',()=>{
   const next=document.body.dataset.theme==='dark'?'light':'dark';document.body.dataset.theme=next;
-  try{localStorage.setItem('dataloka-monitor-theme',next);}catch(_error){}
+  try{localStorage.setItem('rkperdana-seismic-theme',next);}catch(_error){}
  });
- try{const saved=localStorage.getItem('dataloka-monitor-theme');if(saved==='light'||saved==='dark')document.body.dataset.theme=saved;}catch(_error){}
+ try{const saved=localStorage.getItem('rkperdana-seismic-theme');if(saved==='light'||saved==='dark')document.body.dataset.theme=saved;}catch(_error){}
  document.querySelectorAll('#mapFilters button').forEach(button=>button.addEventListener('click',()=>{
   state.filter=button.dataset.type;state.limit=8;
   document.querySelectorAll('#mapFilters button').forEach(other=>{other.classList.toggle('active',other===button);other.setAttribute('aria-pressed',other===button?'true':'false');});
