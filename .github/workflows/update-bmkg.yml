@@ -6,6 +6,8 @@ on:
     paths-ignore:
       - 'data/**'
   workflow_dispatch:
+  # Also callable by the independent scheduled watchdog workflow.
+  workflow_call:
   schedule:
     # Every 10 minutes (UTC), offset from :00 to avoid peak scheduler load.
     # GitHub schedule runs are best-effort and may be delayed or dropped.
