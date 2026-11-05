@@ -409,13 +409,8 @@ def main():
         'errors': errors[:20],
         'events': events,
     }
-    # Every scheduled run checks the API, but unchanged data is published hourly
-    # to avoid 96 redundant git commits per day. New events publish at once.
-    if old.get('status') == 'live' and old.get('events') == events and old.get('errors') == payload['errors']:
-        previous_check = dt.datetime.fromisoformat(old['checked_at'].replace('Z','+00:00')) if old.get('checked_at') else None
-        if previous_check and dt.datetime.now(dt.timezone.utc) - previous_check < dt.timedelta(minutes=60):
-            print('No event changes; keeping last published JSON (hourly heartbeat).')
-            return
+    # Refresh the public heartbeat on every successful run, even if no earthquakes changed.
+    # GitHub Actions decides whether to commit the event snapshot or deploy it only.
     # Atomic replacement prevents a failed pull from corrupting current data.
     dest.parent.mkdir(parents=True,exist_ok=True)
     temp = dest.with_suffix('.tmp')
