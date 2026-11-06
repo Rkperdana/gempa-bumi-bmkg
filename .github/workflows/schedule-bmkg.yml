@@ -1,7 +1,11 @@
-name: Pemicu manual cadangan BMKG
+name: Cadangan otomatis sinkronisasi BMKG
 
 on:
   workflow_dispatch:
+  # Extra scheduled trigger, independent of the primary update-bmkg schedule.
+  # Two checks per hour limit traffic and Pages deploy volume.
+  schedule:
+    - cron: '13,43 * * * *'
   # Validate the reusable sync workflow whenever this fallback is edited.
   push:
     branches: [main]
