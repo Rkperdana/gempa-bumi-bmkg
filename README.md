@@ -17,7 +17,7 @@ Beberapa kejadian di tabel BMKG berada **di luar Indonesia**. Daftar kejadian te
 
 ## Cara kerjanya
 
-- GitHub Actions `.github/workflows/update-bmkg.yml` memeriksa sumber setiap 15 menit (penjadwalan dapat terlambat karena antrean GitHub).
+- GitHub Actions `.github/workflows/update-bmkg.yml` dijadwalkan setiap 10 menit, dengan cadangan `.github/workflows/schedule-bmkg.yml` dua kali per jam. **Jadwal GitHub bersifat best-effort**: eksekusi dapat tertunda atau tidak muncul sama sekali. Untuk keandalan yang lebih tinggi, gunakan pemicu HTTP eksternal di bawah ini.
 - `scripts/update_data.py` mengambil HTML tabel real-time, memvalidasi isi, mengubah WIB ke UTC, dan menormalisasi koordinat.
 - Parser gagal secara aman ketika halaman BMKG berubah drastis atau jumlah data tiba-tiba kurang dari 100; JSON yang sudah berhasil diambil sebelumnya tidak ditimpa.
 - JSON feed pelengkap dicocokkan berdasarkan waktu dan jarak. Kejadian duplikat dipersatukan, dan detail dari feed pelengkap tidak menimpa parameter utama real-time.
@@ -57,6 +57,28 @@ Buka http://localhost:8000. Untuk pengujian:
 python -m unittest discover -s tests -v
 node --check app.js
 ```
+
+## Pemicu otomatis cadangan di luar GitHub
+
+**Mengapa diperlukan:** Pada 6 November 2026, dua workflow yang memakai `schedule` tidak membuat run dengan interval yang dikonfigurasi, meskipun run `push` berhasil mengambil data BMKG dan menerbitkan GitHub Pages. Jadi masalah ini berada di pemicu jadwal, bukan kegagalan parser.
+
+GitHub menyediakan `workflow_dispatch`, yang sudah diaktifkan pada workflow utama. Pemicu ini dapat dipanggil menggunakan layanan scheduler HTTPS seperti [cron-job.org](https://cron-job.org/), sehingga jadwal tidak bergantung pada sistem `on.schedule` GitHub.
+
+### Setup aman dengan cron-job.org
+
+1. Di GitHub, buka **Settings akun → Developer settings → Personal access tokens → Fine-grained tokens**. Buat token untuk **hanya** repository `Rkperdana/gempa-bumi-bmkg`, dengan **Actions: Read and write**. Simpan token secara privat, jangan memasukkannya ke kode website atau file repository.
+2. Di cron-job.org, buat job **setiap 10 atau 15 menit** dengan HTTP **POST** ke:
+   `https://api.github.com/repos/Rkperdana/gempa-bumi-bmkg/actions/workflows/update-bmkg.yml/dispatches`
+3. Isi header:
+   - `Authorization: Bearer <FINE_GRAINED_TOKEN>`
+   - `Accept: application/vnd.github+json`
+   - `Content-Type: application/json`
+   - `X-GitHub-Api-Version: 2022-11-28`
+4. Body JSON: `{"ref":"main"}`. Respons **HTTP 204** menandakan GitHub menerima permintaan pemicu (belum menjamin job selesai).
+5. Buka [Actions](https://github.com/Rkperdana/gempa-bumi-bmkg/actions) dan pastikan run `workflow_dispatch` berikutnya berhasil, termasuk langkah **Update earthquake data from BMKG** dan **Deploy to GitHub Pages**.
+6. Periksa `checked_at` pada `data/gempa.json` yang diterbitkan melalui GitHub Pages (bukan hanya file di branch `main`). Berkas di branch `main` hanya di-commit jika ada perubahan kejadian; pemeriksaan dengan data identik tetap dapat menghasilkan deployment dengan `checked_at` terbaru.
+
+**Catatan keamanan:** Jangan memberikan token GitHub kepada pengguna publik maupun menyimpannya di URL query string, source code JavaScript, commit, atau log publik. Hapus token yang bocor dan buat ulang. `on.schedule` GitHub boleh tetap aktif sebagai jalur cadangan, tetapi tidak dapat dijadikan jaminan interval yang presisi.
 
 ## Publikasi
 
