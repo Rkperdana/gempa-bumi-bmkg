@@ -9,8 +9,9 @@ on:
   # Also callable by the independent scheduled watchdog workflow.
   workflow_call:
   schedule:
-    # Every 15 minutes (UTC). GitHub schedule runs are best-effort and may be delayed.
-    - cron: '*/15 * * * *'
+    # Every 10 minutes, away from minute 00 to reduce GitHub scheduler congestion.
+    # GitHub schedules are best-effort; the independent backup workflow adds resilience.
+    - cron: '7,17,27,37,47,57 * * * *'
 
 permissions:
   contents: write
