@@ -5,7 +5,7 @@ on:
   # Extra scheduled trigger, independent of the primary update-bmkg schedule.
   # Two checks per hour limit traffic and Pages deploy volume.
   schedule:
-    - cron: '13,43 * * * *'
+    - cron: '9,39 * * * *'
   # Validate the reusable sync workflow whenever this fallback is edited.
   push:
     branches: [main]
