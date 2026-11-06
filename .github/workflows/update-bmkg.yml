@@ -11,7 +11,7 @@ on:
   schedule:
     # Every 10 minutes, away from minute 00 to reduce GitHub scheduler congestion.
     # GitHub schedules are best-effort; the independent backup workflow adds resilience.
-    - cron: '7,17,27,37,47,57 * * * *'
+    - cron: '4,14,24,34,44,54 * * * *'
 
 permissions:
   contents: write
