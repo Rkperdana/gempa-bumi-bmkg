@@ -64,20 +64,45 @@ jobs:
           import pathlib
           import subprocess
           import sys
+          import time
 
-          current = json.loads(pathlib.Path("data/gempa.json").read_text(encoding="utf-8"))
-          previous = json.loads(subprocess.check_output(["git", "show", "HEAD:data/gempa.json"], text=True))
-          # checked_at is a page heartbeat; do not create a commit for every poll.
-          strip_check = lambda obj: {key: value for key, value in obj.items() if key != "checked_at"}
-          if strip_check(previous) == strip_check(current):
-              print("No event changes. Deploy current checked_at without a redundant commit.")
-              sys.exit(0)
+          path = pathlib.Path("data/gempa.json")
+          incoming = json.loads(path.read_text(encoding="utf-8"))
+          # Preserve the fetched snapshot across resets/retries.
+          incoming_text = path.read_text(encoding="utf-8")
+          comparable = lambda obj: {k: v for k, v in obj.items() if k != "checked_at"}
 
           subprocess.run(["git", "config", "user.name", "github-actions[bot]"], check=True)
-          subprocess.run(["git", "config", "user.email", "41898282+github-actions[bot]@users.noreply.github.com"], check=True)
-          subprocess.run(["git", "add", "data/gempa.json"], check=True)
-          subprocess.run(["git", "commit", "-m", "data: sinkronisasi gempa BMKG"], check=True)
-          subprocess.run(["git", "push", "origin", "HEAD:main"], check=True)
+          subprocess.run(["git", "config", "user.email",
+                          "41898282+github-actions[bot]@users.noreply.github.com"], check=True)
+
+          for attempt in range(1, 4):
+              # Start each attempt from the latest remote head: simultaneous
+              # workflow and editorial commits must not break synchronization.
+              subprocess.run(["git", "fetch", "origin", "main"], check=True)
+              remote = json.loads(subprocess.check_output(
+                  ["git", "show", "origin/main:data/gempa.json"], text=True))
+              if str(remote.get("checked_at", "")) >= str(incoming.get("checked_at", "")):
+                  print("Remote snapshot is at least as fresh. Do not overwrite it.")
+                  path.write_text(json.dumps(remote, ensure_ascii=False, indent=2), encoding="utf-8")
+                  sys.exit(0)
+
+              if comparable(remote) == comparable(incoming):
+                  print("No event changes; publish new check timestamp without a redundant commit.")
+                  sys.exit(0)
+
+              subprocess.run(["git", "reset", "--hard", "origin/main"], check=True)
+              path.write_text(incoming_text, encoding="utf-8")
+              subprocess.run(["git", "add", "data/gempa.json"], check=True)
+              subprocess.run(["git", "commit", "-m", "data: sinkronisasi gempa BMKG"], check=True)
+              result = subprocess.run(["git", "push", "origin", "HEAD:main"], check=False)
+              if result.returncode == 0:
+                  print("Updated data published to main.")
+                  sys.exit(0)
+              if attempt == 3:
+                  raise RuntimeError("Could not publish after 3 concurrent-push retries")
+              print("main changed during push; retrying on latest remote revision.")
+              time.sleep(attempt)
           PY
 
       - name: Configure GitHub Pages
