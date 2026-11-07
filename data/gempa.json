@@ -2,7 +2,7 @@
   "schema_version": 2,
   "status": "live",
   "data_origin": "realtime_table",
-  "checked_at": "2026-11-07T06:29:56.881486Z",
+  "checked_at": "2026-11-07T07:01:33.605058Z",
   "source": "Badan Meteorologi, Klimatologi, dan Geofisika (BMKG)",
   "coverage_note": "200 gempa terbaru pada tabel real-time BMKG (jumlah aktual dapat kurang dari 200), termasuk episentrum di luar Indonesia; gempa dirasakan dilengkapi dari feed terpisah. Bukan total seluruh gempa dalam periode tersebut.",
   "sources": {
@@ -13,6 +13,29 @@
   },
   "errors": [],
   "events": [
+    {
+      "id": "800208a590c18b",
+      "datetime": "2026-11-07T06:54:09Z",
+      "magnitude": 4.1,
+      "depth_km": 59.0,
+      "lat": 5.87,
+      "lon": 94.73,
+      "region": "Northern Sumatra, Indonesia",
+      "felt": false,
+      "felt_info": "",
+      "tsunami": false,
+      "potential_text": "",
+      "significant": false,
+      "source_types": [
+        "realtime"
+      ],
+      "source_urls": [
+        "https://www.bmkg.go.id/gempabumi/gempabumi-realtime"
+      ],
+      "shakemap": "",
+      "first_seen_at": "2026-11-07T07:01:33.605058Z",
+      "last_updated_at": "2026-11-07T07:01:33.605058Z"
+    },
     {
       "id": "a26afe97afd7e8",
       "datetime": "2026-11-07T06:14:17Z",
