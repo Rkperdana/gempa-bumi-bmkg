@@ -2,10 +2,10 @@ name: Cadangan otomatis sinkronisasi BMKG
 
 on:
   workflow_dispatch:
-  # Extra scheduled trigger, independent of the primary update-bmkg schedule.
-  # Two checks per hour limit traffic and Pages deploy volume.
+  # Offset backup trigger between the primary ten-minute checks.
+  # Four checks per hour reduce the longest gap when a primary schedule is skipped.
   schedule:
-    - cron: '9,39 * * * *'
+    - cron: '7,22,37,52 * * * *'
   # Validate the reusable sync workflow whenever this fallback is edited.
   push:
     branches: [main]
