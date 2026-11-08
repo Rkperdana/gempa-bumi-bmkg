@@ -2,7 +2,7 @@
   "schema_version": 2,
   "status": "live",
   "data_origin": "realtime_table",
-  "checked_at": "2026-11-08T02:20:27.303330Z",
+  "checked_at": "2026-11-08T06:17:25.115087Z",
   "source": "Badan Meteorologi, Klimatologi, dan Geofisika (BMKG)",
   "coverage_note": "200 gempa terbaru pada tabel real-time BMKG (jumlah aktual dapat kurang dari 200), termasuk episentrum di luar Indonesia; gempa dirasakan dilengkapi dari feed terpisah. Bukan total seluruh gempa dalam periode tersebut.",
   "sources": {
@@ -13,6 +13,144 @@
   },
   "errors": [],
   "events": [
+    {
+      "id": "6cf251c70fcb1a",
+      "datetime": "2026-11-08T06:12:27Z",
+      "magnitude": 2.8,
+      "depth_km": 24.0,
+      "lat": -8.16,
+      "lon": 107.38,
+      "region": "Java, Indonesia",
+      "felt": false,
+      "felt_info": "",
+      "tsunami": false,
+      "potential_text": "",
+      "significant": false,
+      "source_types": [
+        "realtime"
+      ],
+      "source_urls": [
+        "https://www.bmkg.go.id/gempabumi/gempabumi-realtime"
+      ],
+      "shakemap": "",
+      "first_seen_at": "2026-11-08T06:17:25.115087Z",
+      "last_updated_at": "2026-11-08T06:17:25.115087Z"
+    },
+    {
+      "id": "0894122793260c",
+      "datetime": "2026-11-08T05:52:51Z",
+      "magnitude": 3.4,
+      "depth_km": 10.0,
+      "lat": 5.12,
+      "lon": 94.21,
+      "region": "Northern Sumatra, Indonesia",
+      "felt": false,
+      "felt_info": "",
+      "tsunami": false,
+      "potential_text": "",
+      "significant": false,
+      "source_types": [
+        "realtime"
+      ],
+      "source_urls": [
+        "https://www.bmkg.go.id/gempabumi/gempabumi-realtime"
+      ],
+      "shakemap": "",
+      "first_seen_at": "2026-11-08T06:17:25.115087Z",
+      "last_updated_at": "2026-11-08T06:17:25.115087Z"
+    },
+    {
+      "id": "e90cccd31516c8",
+      "datetime": "2026-11-08T05:37:38Z",
+      "magnitude": 2.8,
+      "depth_km": 11.0,
+      "lat": -8.37,
+      "lon": 121.18,
+      "region": "Flores Region, Indonesia",
+      "felt": false,
+      "felt_info": "",
+      "tsunami": false,
+      "potential_text": "",
+      "significant": false,
+      "source_types": [
+        "realtime"
+      ],
+      "source_urls": [
+        "https://www.bmkg.go.id/gempabumi/gempabumi-realtime"
+      ],
+      "shakemap": "",
+      "first_seen_at": "2026-11-08T06:17:25.115087Z",
+      "last_updated_at": "2026-11-08T06:17:25.115087Z"
+    },
+    {
+      "id": "b38410e39e32db",
+      "datetime": "2026-11-08T05:05:05Z",
+      "magnitude": 2.8,
+      "depth_km": 10.0,
+      "lat": -2.07,
+      "lon": 120.61,
+      "region": "Sulawesi, Indonesia",
+      "felt": false,
+      "felt_info": "",
+      "tsunami": false,
+      "potential_text": "",
+      "significant": false,
+      "source_types": [
+        "realtime"
+      ],
+      "source_urls": [
+        "https://www.bmkg.go.id/gempabumi/gempabumi-realtime"
+      ],
+      "shakemap": "",
+      "first_seen_at": "2026-11-08T06:17:25.115087Z",
+      "last_updated_at": "2026-11-08T06:17:25.115087Z"
+    },
+    {
+      "id": "5d92e212ce9c74",
+      "datetime": "2026-11-08T02:47:11Z",
+      "magnitude": 3.1,
+      "depth_km": 108.0,
+      "lat": 3.88,
+      "lon": 97.13,
+      "region": "Northern Sumatra, Indonesia",
+      "felt": false,
+      "felt_info": "",
+      "tsunami": false,
+      "potential_text": "",
+      "significant": false,
+      "source_types": [
+        "realtime"
+      ],
+      "source_urls": [
+        "https://www.bmkg.go.id/gempabumi/gempabumi-realtime"
+      ],
+      "shakemap": "",
+      "first_seen_at": "2026-11-08T06:17:25.115087Z",
+      "last_updated_at": "2026-11-08T06:17:25.115087Z"
+    },
+    {
+      "id": "b59a33a0d23b15",
+      "datetime": "2026-11-08T02:15:52Z",
+      "magnitude": 2.9,
+      "depth_km": 22.0,
+      "lat": -2.59,
+      "lon": 128.98,
+      "region": "Ceram Sea",
+      "felt": false,
+      "felt_info": "",
+      "tsunami": false,
+      "potential_text": "",
+      "significant": false,
+      "source_types": [
+        "realtime"
+      ],
+      "source_urls": [
+        "https://www.bmkg.go.id/gempabumi/gempabumi-realtime"
+      ],
+      "shakemap": "",
+      "first_seen_at": "2026-11-08T06:17:25.115087Z",
+      "last_updated_at": "2026-11-08T06:17:25.115087Z"
+    },
     {
       "id": "afcf0e50467e77",
       "datetime": "2026-11-08T01:41:51Z",
@@ -33,8 +171,8 @@
         "https://www.bmkg.go.id/gempabumi/gempabumi-realtime"
       ],
       "shakemap": "",
-      "first_seen_at": "2026-11-08T02:20:27.303330Z",
-      "last_updated_at": "2026-11-08T02:20:27.303330Z"
+      "first_seen_at": "2026-11-08T06:17:25.115087Z",
+      "last_updated_at": "2026-11-08T06:17:25.115087Z"
     },
     {
       "id": "d2be12986be0b0",
@@ -56,8 +194,8 @@
         "https://www.bmkg.go.id/gempabumi/gempabumi-realtime"
       ],
       "shakemap": "",
-      "first_seen_at": "2026-11-08T02:20:27.303330Z",
-      "last_updated_at": "2026-11-08T02:20:27.303330Z"
+      "first_seen_at": "2026-11-08T06:17:25.115087Z",
+      "last_updated_at": "2026-11-08T06:17:25.115087Z"
     },
     {
       "id": "5b71d95e958290",
@@ -79,16 +217,16 @@
         "https://www.bmkg.go.id/gempabumi/gempabumi-realtime"
       ],
       "shakemap": "",
-      "first_seen_at": "2026-11-08T02:20:27.303330Z",
-      "last_updated_at": "2026-11-08T02:20:27.303330Z"
+      "first_seen_at": "2026-11-08T06:17:25.115087Z",
+      "last_updated_at": "2026-11-08T06:17:25.115087Z"
     },
     {
-      "id": "7c278f164990c2",
+      "id": "7c6adb6071af91",
       "datetime": "2026-11-08T00:43:51Z",
-      "magnitude": 4.6,
+      "magnitude": 4.7,
       "depth_km": 10.0,
       "lat": -1.95,
-      "lon": 139.06,
+      "lon": 139.08,
       "region": "Near North Coast of West Papua",
       "felt": false,
       "felt_info": "",
@@ -102,8 +240,8 @@
         "https://www.bmkg.go.id/gempabumi/gempabumi-realtime"
       ],
       "shakemap": "",
-      "first_seen_at": "2026-11-08T01:22:15.062640Z",
-      "last_updated_at": "2026-11-08T01:22:15.062640Z"
+      "first_seen_at": "2026-11-08T06:17:25.115087Z",
+      "last_updated_at": "2026-11-08T06:17:25.115087Z"
     },
     {
       "id": "5a6aa75f1f556b",
@@ -125,8 +263,8 @@
         "https://www.bmkg.go.id/gempabumi/gempabumi-realtime"
       ],
       "shakemap": "",
-      "first_seen_at": "2026-11-08T01:22:15.062640Z",
-      "last_updated_at": "2026-11-08T01:22:15.062640Z"
+      "first_seen_at": "2026-11-08T06:17:25.115087Z",
+      "last_updated_at": "2026-11-08T06:17:25.115087Z"
     },
     {
       "id": "be1df72c335803",
@@ -148,15 +286,15 @@
         "https://www.bmkg.go.id/gempabumi/gempabumi-realtime"
       ],
       "shakemap": "",
-      "first_seen_at": "2026-11-08T01:22:15.062640Z",
-      "last_updated_at": "2026-11-08T01:22:15.062640Z"
+      "first_seen_at": "2026-11-08T06:17:25.115087Z",
+      "last_updated_at": "2026-11-08T06:17:25.115087Z"
     },
     {
-      "id": "66709e2119799b",
-      "datetime": "2026-11-07T23:25:37Z",
-      "magnitude": 4.6,
-      "depth_km": 576.0,
-      "lat": 6.67,
+      "id": "9cb0710d5cc036",
+      "datetime": "2026-11-07T23:25:35Z",
+      "magnitude": 4.5,
+      "depth_km": 591.0,
+      "lat": 6.81,
       "lon": 123.55,
       "region": "Mindanao, Philippines",
       "felt": false,
@@ -171,8 +309,8 @@
         "https://www.bmkg.go.id/gempabumi/gempabumi-realtime"
       ],
       "shakemap": "",
-      "first_seen_at": "2026-11-08T01:22:15.062640Z",
-      "last_updated_at": "2026-11-08T01:22:15.062640Z"
+      "first_seen_at": "2026-11-08T06:17:25.115087Z",
+      "last_updated_at": "2026-11-08T06:17:25.115087Z"
     },
     {
       "id": "70daaf3489e040",
@@ -194,16 +332,16 @@
         "https://www.bmkg.go.id/gempabumi/gempabumi-realtime"
       ],
       "shakemap": "",
-      "first_seen_at": "2026-11-07T22:03:50.832473Z",
-      "last_updated_at": "2026-11-07T22:03:50.832473Z"
+      "first_seen_at": "2026-11-08T06:17:25.115087Z",
+      "last_updated_at": "2026-11-08T06:17:25.115087Z"
     },
     {
-      "id": "db1a99a854ac8a",
+      "id": "9b9e9e00ccb8de",
       "datetime": "2026-11-07T20:55:38Z",
-      "magnitude": 4.8,
-      "depth_km": 123.0,
-      "lat": -3.73,
-      "lon": 128.5,
+      "magnitude": 4.5,
+      "depth_km": 134.0,
+      "lat": -3.72,
+      "lon": 128.56,
       "region": "Seram, Indonesia",
       "felt": false,
       "felt_info": "",
@@ -217,8 +355,8 @@
         "https://www.bmkg.go.id/gempabumi/gempabumi-realtime"
       ],
       "shakemap": "",
-      "first_seen_at": "2026-11-07T22:03:50.832473Z",
-      "last_updated_at": "2026-11-07T22:03:50.832473Z"
+      "first_seen_at": "2026-11-08T06:17:25.115087Z",
+      "last_updated_at": "2026-11-08T06:17:25.115087Z"
     },
     {
       "id": "d92b90f5a6de27",
@@ -240,8 +378,8 @@
         "https://www.bmkg.go.id/gempabumi/gempabumi-realtime"
       ],
       "shakemap": "",
-      "first_seen_at": "2026-11-07T22:03:50.832473Z",
-      "last_updated_at": "2026-11-07T22:03:50.832473Z"
+      "first_seen_at": "2026-11-08T06:17:25.115087Z",
+      "last_updated_at": "2026-11-08T06:17:25.115087Z"
     },
     {
       "id": "24e22b69dcfd16",
@@ -263,8 +401,8 @@
         "https://www.bmkg.go.id/gempabumi/gempabumi-realtime"
       ],
       "shakemap": "",
-      "first_seen_at": "2026-11-07T22:03:50.832473Z",
-      "last_updated_at": "2026-11-07T22:03:50.832473Z"
+      "first_seen_at": "2026-11-08T06:17:25.115087Z",
+      "last_updated_at": "2026-11-08T06:17:25.115087Z"
     },
     {
       "id": "2f9b2b1dcc75b2",
@@ -286,8 +424,8 @@
         "https://www.bmkg.go.id/gempabumi/gempabumi-realtime"
       ],
       "shakemap": "",
-      "first_seen_at": "2026-11-07T22:03:50.832473Z",
-      "last_updated_at": "2026-11-07T22:03:50.832473Z"
+      "first_seen_at": "2026-11-08T06:17:25.115087Z",
+      "last_updated_at": "2026-11-08T06:17:25.115087Z"
     },
     {
       "id": "886e97f8c372c6",
@@ -311,8 +449,8 @@
         "https://www.bmkg.go.id/gempabumi/gempabumi-realtime"
       ],
       "shakemap": "",
-      "first_seen_at": "2026-11-07T22:03:50.832473Z",
-      "last_updated_at": "2026-11-07T22:03:50.832473Z"
+      "first_seen_at": "2026-11-08T06:17:25.115087Z",
+      "last_updated_at": "2026-11-08T06:17:25.115087Z"
     },
     {
       "id": "bf8effb9cd5745",
@@ -334,8 +472,8 @@
         "https://www.bmkg.go.id/gempabumi/gempabumi-realtime"
       ],
       "shakemap": "",
-      "first_seen_at": "2026-11-07T18:14:38.659104Z",
-      "last_updated_at": "2026-11-07T18:14:38.659104Z"
+      "first_seen_at": "2026-11-08T06:17:25.115087Z",
+      "last_updated_at": "2026-11-08T06:17:25.115087Z"
     },
     {
       "id": "d82df6af160ab5",
@@ -357,8 +495,8 @@
         "https://www.bmkg.go.id/gempabumi/gempabumi-realtime"
       ],
       "shakemap": "",
-      "first_seen_at": "2026-11-07T18:14:38.659104Z",
-      "last_updated_at": "2026-11-07T18:14:38.659104Z"
+      "first_seen_at": "2026-11-08T06:17:25.115087Z",
+      "last_updated_at": "2026-11-08T06:17:25.115087Z"
     },
     {
       "id": "4f6fddd2ffd3a1",
@@ -380,8 +518,8 @@
         "https://www.bmkg.go.id/gempabumi/gempabumi-realtime"
       ],
       "shakemap": "",
-      "first_seen_at": "2026-11-08T01:22:15.062640Z",
-      "last_updated_at": "2026-11-08T01:22:15.062640Z"
+      "first_seen_at": "2026-11-08T06:17:25.115087Z",
+      "last_updated_at": "2026-11-08T06:17:25.115087Z"
     },
     {
       "id": "9b9bdb04445be3",
@@ -403,8 +541,8 @@
         "https://www.bmkg.go.id/gempabumi/gempabumi-realtime"
       ],
       "shakemap": "",
-      "first_seen_at": "2026-11-07T18:14:38.659104Z",
-      "last_updated_at": "2026-11-07T18:14:38.659104Z"
+      "first_seen_at": "2026-11-08T06:17:25.115087Z",
+      "last_updated_at": "2026-11-08T06:17:25.115087Z"
     },
     {
       "id": "4cf3c716cf012a",
@@ -426,8 +564,8 @@
         "https://www.bmkg.go.id/gempabumi/gempabumi-realtime"
       ],
       "shakemap": "",
-      "first_seen_at": "2026-11-07T18:14:38.659104Z",
-      "last_updated_at": "2026-11-07T18:14:38.659104Z"
+      "first_seen_at": "2026-11-08T06:17:25.115087Z",
+      "last_updated_at": "2026-11-08T06:17:25.115087Z"
     },
     {
       "id": "cd41680dd4a394",
@@ -449,8 +587,8 @@
         "https://www.bmkg.go.id/gempabumi/gempabumi-realtime"
       ],
       "shakemap": "",
-      "first_seen_at": "2026-11-07T18:14:38.659104Z",
-      "last_updated_at": "2026-11-07T18:14:38.659104Z"
+      "first_seen_at": "2026-11-08T06:17:25.115087Z",
+      "last_updated_at": "2026-11-08T06:17:25.115087Z"
     },
     {
       "id": "94895c5474c8ce",
@@ -472,8 +610,8 @@
         "https://www.bmkg.go.id/gempabumi/gempabumi-realtime"
       ],
       "shakemap": "",
-      "first_seen_at": "2026-11-07T18:14:38.659104Z",
-      "last_updated_at": "2026-11-07T18:14:38.659104Z"
+      "first_seen_at": "2026-11-08T06:17:25.115087Z",
+      "last_updated_at": "2026-11-08T06:17:25.115087Z"
     },
     {
       "id": "1f7d2e2a8435d8",
@@ -495,8 +633,8 @@
         "https://www.bmkg.go.id/gempabumi/gempabumi-realtime"
       ],
       "shakemap": "",
-      "first_seen_at": "2026-11-07T18:14:38.659104Z",
-      "last_updated_at": "2026-11-07T18:14:38.659104Z"
+      "first_seen_at": "2026-11-08T06:17:25.115087Z",
+      "last_updated_at": "2026-11-08T06:17:25.115087Z"
     },
     {
       "id": "0ea1c28363f404",
@@ -518,8 +656,8 @@
         "https://www.bmkg.go.id/gempabumi/gempabumi-realtime"
       ],
       "shakemap": "",
-      "first_seen_at": "2026-11-07T18:14:38.659104Z",
-      "last_updated_at": "2026-11-07T18:14:38.659104Z"
+      "first_seen_at": "2026-11-08T06:17:25.115087Z",
+      "last_updated_at": "2026-11-08T06:17:25.115087Z"
     },
     {
       "id": "6f4f1b413cf46a",
@@ -541,8 +679,8 @@
         "https://www.bmkg.go.id/gempabumi/gempabumi-realtime"
       ],
       "shakemap": "",
-      "first_seen_at": "2026-11-07T18:14:38.659104Z",
-      "last_updated_at": "2026-11-07T18:14:38.659104Z"
+      "first_seen_at": "2026-11-08T06:17:25.115087Z",
+      "last_updated_at": "2026-11-08T06:17:25.115087Z"
     },
     {
       "id": "f608a610c20753",
@@ -564,8 +702,8 @@
         "https://www.bmkg.go.id/gempabumi/gempabumi-realtime"
       ],
       "shakemap": "",
-      "first_seen_at": "2026-11-07T13:28:29.316524Z",
-      "last_updated_at": "2026-11-07T13:28:29.316524Z"
+      "first_seen_at": "2026-11-08T06:17:25.115087Z",
+      "last_updated_at": "2026-11-08T06:17:25.115087Z"
     },
     {
       "id": "ca29b7e8095fd6",
@@ -587,8 +725,8 @@
         "https://www.bmkg.go.id/gempabumi/gempabumi-realtime"
       ],
       "shakemap": "",
-      "first_seen_at": "2026-11-07T18:14:38.659104Z",
-      "last_updated_at": "2026-11-07T18:14:38.659104Z"
+      "first_seen_at": "2026-11-08T06:17:25.115087Z",
+      "last_updated_at": "2026-11-08T06:17:25.115087Z"
     },
     {
       "id": "76d76fc654d80c",
@@ -610,8 +748,8 @@
         "https://www.bmkg.go.id/gempabumi/gempabumi-realtime"
       ],
       "shakemap": "",
-      "first_seen_at": "2026-11-07T18:14:38.659104Z",
-      "last_updated_at": "2026-11-07T18:14:38.659104Z"
+      "first_seen_at": "2026-11-08T06:17:25.115087Z",
+      "last_updated_at": "2026-11-08T06:17:25.115087Z"
     },
     {
       "id": "9930490d0a9290",
@@ -635,8 +773,8 @@
         "https://www.bmkg.go.id/gempabumi/gempabumi-realtime"
       ],
       "shakemap": "",
-      "first_seen_at": "2026-11-07T18:14:38.659104Z",
-      "last_updated_at": "2026-11-07T22:03:50.832473Z"
+      "first_seen_at": "2026-11-08T06:17:25.115087Z",
+      "last_updated_at": "2026-11-08T06:17:25.115087Z"
     },
     {
       "id": "6be1c0dcf36ce5",
@@ -658,8 +796,8 @@
         "https://www.bmkg.go.id/gempabumi/gempabumi-realtime"
       ],
       "shakemap": "",
-      "first_seen_at": "2026-11-07T18:14:38.659104Z",
-      "last_updated_at": "2026-11-07T18:14:38.659104Z"
+      "first_seen_at": "2026-11-08T06:17:25.115087Z",
+      "last_updated_at": "2026-11-08T06:17:25.115087Z"
     },
     {
       "id": "374f025c4eb629",
@@ -681,8 +819,8 @@
         "https://www.bmkg.go.id/gempabumi/gempabumi-realtime"
       ],
       "shakemap": "",
-      "first_seen_at": "2026-11-07T18:14:38.659104Z",
-      "last_updated_at": "2026-11-07T18:14:38.659104Z"
+      "first_seen_at": "2026-11-08T06:17:25.115087Z",
+      "last_updated_at": "2026-11-08T06:17:25.115087Z"
     },
     {
       "id": "9fbc14bf14b066",
@@ -704,8 +842,8 @@
         "https://www.bmkg.go.id/gempabumi/gempabumi-realtime"
       ],
       "shakemap": "",
-      "first_seen_at": "2026-11-07T18:14:38.659104Z",
-      "last_updated_at": "2026-11-07T18:14:38.659104Z"
+      "first_seen_at": "2026-11-08T06:17:25.115087Z",
+      "last_updated_at": "2026-11-08T06:17:25.115087Z"
     },
     {
       "id": "800208a590c18b",
@@ -727,8 +865,8 @@
         "https://www.bmkg.go.id/gempabumi/gempabumi-realtime"
       ],
       "shakemap": "",
-      "first_seen_at": "2026-11-07T07:01:33.605058Z",
-      "last_updated_at": "2026-11-07T07:01:33.605058Z"
+      "first_seen_at": "2026-11-08T06:17:25.115087Z",
+      "last_updated_at": "2026-11-08T06:17:25.115087Z"
     },
     {
       "id": "a26afe97afd7e8",
@@ -750,8 +888,8 @@
         "https://www.bmkg.go.id/gempabumi/gempabumi-realtime"
       ],
       "shakemap": "",
-      "first_seen_at": "2026-11-07T06:29:56.881486Z",
-      "last_updated_at": "2026-11-07T06:29:56.881486Z"
+      "first_seen_at": "2026-11-08T06:17:25.115087Z",
+      "last_updated_at": "2026-11-08T06:17:25.115087Z"
     },
     {
       "id": "150dddbd4e655b",
@@ -773,8 +911,8 @@
         "https://www.bmkg.go.id/gempabumi/gempabumi-realtime"
       ],
       "shakemap": "",
-      "first_seen_at": "2026-11-07T06:29:56.881486Z",
-      "last_updated_at": "2026-11-07T06:29:56.881486Z"
+      "first_seen_at": "2026-11-08T06:17:25.115087Z",
+      "last_updated_at": "2026-11-08T06:17:25.115087Z"
     },
     {
       "id": "b38fffc01ffcb9",
@@ -796,8 +934,8 @@
         "https://www.bmkg.go.id/gempabumi/gempabumi-realtime"
       ],
       "shakemap": "",
-      "first_seen_at": "2026-11-07T06:29:56.881486Z",
-      "last_updated_at": "2026-11-07T06:29:56.881486Z"
+      "first_seen_at": "2026-11-08T06:17:25.115087Z",
+      "last_updated_at": "2026-11-08T06:17:25.115087Z"
     },
     {
       "id": "7c89c9cd89cec9",
@@ -819,8 +957,8 @@
         "https://www.bmkg.go.id/gempabumi/gempabumi-realtime"
       ],
       "shakemap": "",
-      "first_seen_at": "2026-11-07T06:29:56.881486Z",
-      "last_updated_at": "2026-11-07T06:29:56.881486Z"
+      "first_seen_at": "2026-11-08T06:17:25.115087Z",
+      "last_updated_at": "2026-11-08T06:17:25.115087Z"
     },
     {
       "id": "5d6c7b141a54c8",
@@ -842,8 +980,8 @@
         "https://www.bmkg.go.id/gempabumi/gempabumi-realtime"
       ],
       "shakemap": "",
-      "first_seen_at": "2026-11-07T06:29:56.881486Z",
-      "last_updated_at": "2026-11-07T06:29:56.881486Z"
+      "first_seen_at": "2026-11-08T06:17:25.115087Z",
+      "last_updated_at": "2026-11-08T06:17:25.115087Z"
     },
     {
       "id": "a9393f2ba89417",
@@ -865,8 +1003,8 @@
         "https://www.bmkg.go.id/gempabumi/gempabumi-realtime"
       ],
       "shakemap": "",
-      "first_seen_at": "2026-11-07T06:29:56.881486Z",
-      "last_updated_at": "2026-11-07T06:29:56.881486Z"
+      "first_seen_at": "2026-11-08T06:17:25.115087Z",
+      "last_updated_at": "2026-11-08T06:17:25.115087Z"
     },
     {
       "id": "575fca378f12b6",
@@ -888,8 +1026,8 @@
         "https://www.bmkg.go.id/gempabumi/gempabumi-realtime"
       ],
       "shakemap": "",
-      "first_seen_at": "2026-11-07T06:29:56.881486Z",
-      "last_updated_at": "2026-11-07T06:29:56.881486Z"
+      "first_seen_at": "2026-11-08T06:17:25.115087Z",
+      "last_updated_at": "2026-11-08T06:17:25.115087Z"
     },
     {
       "id": "a55279ca2fe96c",
@@ -911,8 +1049,8 @@
         "https://www.bmkg.go.id/gempabumi/gempabumi-realtime"
       ],
       "shakemap": "",
-      "first_seen_at": "2026-11-07T06:29:56.881486Z",
-      "last_updated_at": "2026-11-07T06:29:56.881486Z"
+      "first_seen_at": "2026-11-08T06:17:25.115087Z",
+      "last_updated_at": "2026-11-08T06:17:25.115087Z"
     },
     {
       "id": "b97dc58aab9661",
@@ -934,8 +1072,8 @@
         "https://www.bmkg.go.id/gempabumi/gempabumi-realtime"
       ],
       "shakemap": "",
-      "first_seen_at": "2026-11-07T06:29:56.881486Z",
-      "last_updated_at": "2026-11-07T06:29:56.881486Z"
+      "first_seen_at": "2026-11-08T06:17:25.115087Z",
+      "last_updated_at": "2026-11-08T06:17:25.115087Z"
     },
     {
       "id": "dfb078e2e4d9fb",
@@ -1190,7 +1328,7 @@
       ],
       "shakemap": "",
       "first_seen_at": "2026-11-06T20:48:51.909791Z",
-      "last_updated_at": "2026-11-07T13:28:29.316524Z"
+      "last_updated_at": "2026-11-08T06:17:25.115087Z"
     },
     {
       "id": "7aa761d071d597",
@@ -4448,144 +4586,6 @@
       "lat": -0.61,
       "lon": 127.69,
       "region": "Halmahera, Indonesia",
-      "felt": false,
-      "felt_info": "",
-      "tsunami": false,
-      "potential_text": "",
-      "significant": false,
-      "source_types": [
-        "realtime"
-      ],
-      "source_urls": [
-        "https://www.bmkg.go.id/gempabumi/gempabumi-realtime"
-      ],
-      "shakemap": "",
-      "first_seen_at": "2026-11-05T03:30:54.481864Z",
-      "last_updated_at": "2026-11-05T03:30:54.481864Z"
-    },
-    {
-      "id": "2fc9b18b3da83b",
-      "datetime": "2026-11-01T21:30:56Z",
-      "magnitude": 3.2,
-      "depth_km": 15.0,
-      "lat": -7.81,
-      "lon": 120.51,
-      "region": "Flores Sea",
-      "felt": false,
-      "felt_info": "",
-      "tsunami": false,
-      "potential_text": "",
-      "significant": false,
-      "source_types": [
-        "realtime"
-      ],
-      "source_urls": [
-        "https://www.bmkg.go.id/gempabumi/gempabumi-realtime"
-      ],
-      "shakemap": "",
-      "first_seen_at": "2026-11-05T03:30:54.481864Z",
-      "last_updated_at": "2026-11-05T03:30:54.481864Z"
-    },
-    {
-      "id": "d9ea7273510b7d",
-      "datetime": "2026-11-01T20:23:11Z",
-      "magnitude": 2.0,
-      "depth_km": 45.0,
-      "lat": 2.81,
-      "lon": 97.76,
-      "region": "Northern Sumatra, Indonesia",
-      "felt": false,
-      "felt_info": "",
-      "tsunami": false,
-      "potential_text": "",
-      "significant": false,
-      "source_types": [
-        "realtime"
-      ],
-      "source_urls": [
-        "https://www.bmkg.go.id/gempabumi/gempabumi-realtime"
-      ],
-      "shakemap": "",
-      "first_seen_at": "2026-11-05T03:30:54.481864Z",
-      "last_updated_at": "2026-11-05T03:30:54.481864Z"
-    },
-    {
-      "id": "ef58363f8b6379",
-      "datetime": "2026-11-01T18:43:03Z",
-      "magnitude": 4.5,
-      "depth_km": 80.0,
-      "lat": 19.82,
-      "lon": 121.26,
-      "region": "Philippine Islands Region",
-      "felt": false,
-      "felt_info": "",
-      "tsunami": false,
-      "potential_text": "",
-      "significant": false,
-      "source_types": [
-        "realtime"
-      ],
-      "source_urls": [
-        "https://www.bmkg.go.id/gempabumi/gempabumi-realtime"
-      ],
-      "shakemap": "",
-      "first_seen_at": "2026-11-05T03:30:54.481864Z",
-      "last_updated_at": "2026-11-05T03:30:54.481864Z"
-    },
-    {
-      "id": "0fb7773c2bf420",
-      "datetime": "2026-11-01T18:34:50Z",
-      "magnitude": 5.1,
-      "depth_km": 96.0,
-      "lat": -23.96,
-      "lon": 69.29,
-      "region": "Mid-Indian Ridge",
-      "felt": false,
-      "felt_info": "",
-      "tsunami": false,
-      "potential_text": "",
-      "significant": false,
-      "source_types": [
-        "realtime"
-      ],
-      "source_urls": [
-        "https://www.bmkg.go.id/gempabumi/gempabumi-realtime"
-      ],
-      "shakemap": "",
-      "first_seen_at": "2026-11-05T03:30:54.481864Z",
-      "last_updated_at": "2026-11-05T03:30:54.481864Z"
-    },
-    {
-      "id": "c4c945b6c2346b",
-      "datetime": "2026-11-01T17:01:19Z",
-      "magnitude": 4.4,
-      "depth_km": 10.0,
-      "lat": 23.83,
-      "lon": 123.15,
-      "region": "Southwestern Ryukyu Islands, Japan",
-      "felt": false,
-      "felt_info": "",
-      "tsunami": false,
-      "potential_text": "",
-      "significant": false,
-      "source_types": [
-        "realtime"
-      ],
-      "source_urls": [
-        "https://www.bmkg.go.id/gempabumi/gempabumi-realtime"
-      ],
-      "shakemap": "",
-      "first_seen_at": "2026-11-05T03:30:54.481864Z",
-      "last_updated_at": "2026-11-05T03:30:54.481864Z"
-    },
-    {
-      "id": "96d3b5ba131845",
-      "datetime": "2026-11-01T15:31:58Z",
-      "magnitude": 4.9,
-      "depth_km": 42.0,
-      "lat": 14.31,
-      "lon": 146.33,
-      "region": "Mariana Islands",
       "felt": false,
       "felt_info": "",
       "tsunami": false,
