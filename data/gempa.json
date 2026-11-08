@@ -2,7 +2,7 @@
   "schema_version": 2,
   "status": "live",
   "data_origin": "realtime_table",
-  "checked_at": "2026-11-07T22:03:50.832473Z",
+  "checked_at": "2026-11-08T01:22:15.062640Z",
   "source": "Badan Meteorologi, Klimatologi, dan Geofisika (BMKG)",
   "coverage_note": "200 gempa terbaru pada tabel real-time BMKG (jumlah aktual dapat kurang dari 200), termasuk episentrum di luar Indonesia; gempa dirasakan dilengkapi dari feed terpisah. Bukan total seluruh gempa dalam periode tersebut.",
   "sources": {
@@ -13,6 +13,98 @@
   },
   "errors": [],
   "events": [
+    {
+      "id": "7c278f164990c2",
+      "datetime": "2026-11-08T00:43:51Z",
+      "magnitude": 4.6,
+      "depth_km": 10.0,
+      "lat": -1.95,
+      "lon": 139.06,
+      "region": "Near North Coast of West Papua",
+      "felt": false,
+      "felt_info": "",
+      "tsunami": false,
+      "potential_text": "",
+      "significant": false,
+      "source_types": [
+        "realtime"
+      ],
+      "source_urls": [
+        "https://www.bmkg.go.id/gempabumi/gempabumi-realtime"
+      ],
+      "shakemap": "",
+      "first_seen_at": "2026-11-08T01:22:15.062640Z",
+      "last_updated_at": "2026-11-08T01:22:15.062640Z"
+    },
+    {
+      "id": "5a6aa75f1f556b",
+      "datetime": "2026-11-08T00:33:50Z",
+      "magnitude": 3.8,
+      "depth_km": 10.0,
+      "lat": -1.89,
+      "lon": 139.06,
+      "region": "Near North Coast of West Papua",
+      "felt": false,
+      "felt_info": "",
+      "tsunami": false,
+      "potential_text": "",
+      "significant": false,
+      "source_types": [
+        "realtime"
+      ],
+      "source_urls": [
+        "https://www.bmkg.go.id/gempabumi/gempabumi-realtime"
+      ],
+      "shakemap": "",
+      "first_seen_at": "2026-11-08T01:22:15.062640Z",
+      "last_updated_at": "2026-11-08T01:22:15.062640Z"
+    },
+    {
+      "id": "be1df72c335803",
+      "datetime": "2026-11-07T23:49:21Z",
+      "magnitude": 2.3,
+      "depth_km": 10.0,
+      "lat": -8.35,
+      "lon": 121.21,
+      "region": "Flores Region, Indonesia",
+      "felt": false,
+      "felt_info": "",
+      "tsunami": false,
+      "potential_text": "",
+      "significant": false,
+      "source_types": [
+        "realtime"
+      ],
+      "source_urls": [
+        "https://www.bmkg.go.id/gempabumi/gempabumi-realtime"
+      ],
+      "shakemap": "",
+      "first_seen_at": "2026-11-08T01:22:15.062640Z",
+      "last_updated_at": "2026-11-08T01:22:15.062640Z"
+    },
+    {
+      "id": "66709e2119799b",
+      "datetime": "2026-11-07T23:25:37Z",
+      "magnitude": 4.6,
+      "depth_km": 576.0,
+      "lat": 6.67,
+      "lon": 123.55,
+      "region": "Mindanao, Philippines",
+      "felt": false,
+      "felt_info": "",
+      "tsunami": false,
+      "potential_text": "",
+      "significant": false,
+      "source_types": [
+        "realtime"
+      ],
+      "source_urls": [
+        "https://www.bmkg.go.id/gempabumi/gempabumi-realtime"
+      ],
+      "shakemap": "",
+      "first_seen_at": "2026-11-08T01:22:15.062640Z",
+      "last_updated_at": "2026-11-08T01:22:15.062640Z"
+    },
     {
       "id": "70daaf3489e040",
       "datetime": "2026-11-07T21:24:03Z",
@@ -200,12 +292,12 @@
       "last_updated_at": "2026-11-07T18:14:38.659104Z"
     },
     {
-      "id": "db04f9e6545b48",
-      "datetime": "2026-11-07T16:04:41Z",
-      "magnitude": 5.5,
-      "depth_km": 93.0,
-      "lat": 34.83,
-      "lon": 137.69,
+      "id": "4f6fddd2ffd3a1",
+      "datetime": "2026-11-07T16:04:39Z",
+      "magnitude": 5.4,
+      "depth_km": 71.0,
+      "lat": 34.8,
+      "lon": 137.68,
       "region": "Near South Coast of Honshu, Japan",
       "felt": false,
       "felt_info": "",
@@ -219,8 +311,8 @@
         "https://www.bmkg.go.id/gempabumi/gempabumi-realtime"
       ],
       "shakemap": "",
-      "first_seen_at": "2026-11-07T18:14:38.659104Z",
-      "last_updated_at": "2026-11-07T18:14:38.659104Z"
+      "first_seen_at": "2026-11-08T01:22:15.062640Z",
+      "last_updated_at": "2026-11-08T01:22:15.062640Z"
     },
     {
       "id": "9b9bdb04445be3",
@@ -4508,98 +4600,6 @@
       "shakemap": "",
       "first_seen_at": "2026-11-05T03:30:54.481864Z",
       "last_updated_at": "2026-11-05T03:30:54.481864Z"
-    },
-    {
-      "id": "985d0afd41c9ed",
-      "datetime": "2026-11-01T10:31:56Z",
-      "magnitude": 4.7,
-      "depth_km": 374.0,
-      "lat": -5.99,
-      "lon": 127.86,
-      "region": "Banda Sea",
-      "felt": false,
-      "felt_info": "",
-      "tsunami": false,
-      "potential_text": "",
-      "significant": false,
-      "source_types": [
-        "realtime"
-      ],
-      "source_urls": [
-        "https://www.bmkg.go.id/gempabumi/gempabumi-realtime"
-      ],
-      "shakemap": "",
-      "first_seen_at": "2026-11-05T03:30:54.481864Z",
-      "last_updated_at": "2026-11-05T03:30:54.481864Z"
-    },
-    {
-      "id": "3ff1e2e1792a67",
-      "datetime": "2026-11-01T08:20:07Z",
-      "magnitude": 5.3,
-      "depth_km": 115.0,
-      "lat": 24.89,
-      "lon": 122.1,
-      "region": "Taiwan Region",
-      "felt": false,
-      "felt_info": "",
-      "tsunami": false,
-      "potential_text": "",
-      "significant": false,
-      "source_types": [
-        "realtime"
-      ],
-      "source_urls": [
-        "https://www.bmkg.go.id/gempabumi/gempabumi-realtime"
-      ],
-      "shakemap": "",
-      "first_seen_at": "2026-11-05T03:30:54.481864Z",
-      "last_updated_at": "2026-11-05T03:30:54.481864Z"
-    },
-    {
-      "id": "518c656e548007",
-      "datetime": "2026-11-01T06:26:45Z",
-      "magnitude": 5.4,
-      "depth_km": 27.0,
-      "lat": -13.94,
-      "lon": 165.66,
-      "region": "Vanuatu Islands",
-      "felt": false,
-      "felt_info": "",
-      "tsunami": false,
-      "potential_text": "",
-      "significant": false,
-      "source_types": [
-        "realtime"
-      ],
-      "source_urls": [
-        "https://www.bmkg.go.id/gempabumi/gempabumi-realtime"
-      ],
-      "shakemap": "",
-      "first_seen_at": "2026-11-05T03:30:54.481864Z",
-      "last_updated_at": "2026-11-05T03:30:54.481864Z"
-    },
-    {
-      "id": "0dc1cb8002c2d1",
-      "datetime": "2026-11-01T05:38:58Z",
-      "magnitude": 4.2,
-      "depth_km": 11.0,
-      "lat": 4.87,
-      "lon": 96.13,
-      "region": "Northern Sumatra, Indonesia",
-      "felt": false,
-      "felt_info": "",
-      "tsunami": false,
-      "potential_text": "",
-      "significant": false,
-      "source_types": [
-        "realtime"
-      ],
-      "source_urls": [
-        "https://www.bmkg.go.id/gempabumi/gempabumi-realtime"
-      ],
-      "shakemap": "",
-      "first_seen_at": "2026-11-05T03:30:54.481864Z",
-      "last_updated_at": "2026-11-07T22:03:50.832473Z"
     }
   ]
 }
