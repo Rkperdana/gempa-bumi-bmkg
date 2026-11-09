@@ -3,9 +3,9 @@ name: Cadangan otomatis sinkronisasi BMKG
 on:
   workflow_dispatch:
   # Offset backup trigger between the primary ten-minute checks.
-  # Four checks per hour reduce the longest gap when a primary schedule is skipped.
+  # Six staggered checks per hour fill the five-minute gaps between primary checks.
   schedule:
-    - cron: '7,22,37,52 * * * *'
+    - cron: '9,19,29,39,49,59 * * * *'
   # Validate the reusable sync workflow whenever this fallback is edited.
   push:
     branches: [main]
