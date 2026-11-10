@@ -2,7 +2,7 @@
   "schema_version": 2,
   "status": "live",
   "data_origin": "realtime_table",
-  "checked_at": "2026-11-10T01:49:43.692829Z",
+  "checked_at": "2026-11-10T02:55:34.471630Z",
   "source": "Badan Meteorologi, Klimatologi, dan Geofisika (BMKG)",
   "coverage_note": "200 gempa terbaru pada tabel real-time BMKG (jumlah aktual dapat kurang dari 200), termasuk episentrum di luar Indonesia; gempa dirasakan dilengkapi dari feed terpisah. Bukan total seluruh gempa dalam periode tersebut.",
   "sources": {
@@ -13,6 +13,58 @@
   },
   "errors": [],
   "events": [
+    {
+      "id": "22e4600b2cc2ef",
+      "datetime": "2026-11-10T02:19:11Z",
+      "magnitude": 2.7,
+      "depth_km": 91.0,
+      "lat": -8.72,
+      "lon": 124.27,
+      "region": "Timor Region",
+      "felt": false,
+      "felt_info": "",
+      "tsunami": false,
+      "potential_text": "",
+      "significant": false,
+      "source_types": [
+        "realtime"
+      ],
+      "source_urls": [
+        "https://www.bmkg.go.id/gempabumi/gempabumi-realtime"
+      ],
+      "shakemap": "",
+      "first_seen_at": "2026-11-10T02:55:34.471630Z",
+      "last_updated_at": "2026-11-10T02:55:34.471630Z"
+    },
+    {
+      "id": "002d9a86f42eb4",
+      "datetime": "2026-11-10T01:53:29Z",
+      "magnitude": 5.2,
+      "depth_km": 49.0,
+      "lat": -8.05,
+      "lon": 130.39,
+      "region": "Tanimbar Islands Region, Indonesia",
+      "felt": true,
+      "felt_info": "III Saumlaki",
+      "tsunami": false,
+      "potential_text": "Tidak berpotensi tsunami",
+      "significant": false,
+      "source_types": [
+        "felt",
+        "latest",
+        "m5",
+        "realtime"
+      ],
+      "source_urls": [
+        "https://data.bmkg.go.id/DataMKG/TEWS/autogempa.json",
+        "https://data.bmkg.go.id/DataMKG/TEWS/gempadirasakan.json",
+        "https://data.bmkg.go.id/DataMKG/TEWS/gempaterkini.json",
+        "https://www.bmkg.go.id/gempabumi/gempabumi-realtime"
+      ],
+      "shakemap": "20261110085328.mmi.jpg",
+      "first_seen_at": "2026-11-10T02:55:34.471630Z",
+      "last_updated_at": "2026-11-10T02:55:34.471630Z"
+    },
     {
       "id": "56bd820c329989",
       "datetime": "2026-11-10T00:49:12Z",
@@ -760,21 +812,19 @@
       "felt": true,
       "felt_info": "II - III Kab. Nagekeo",
       "tsunami": false,
-      "potential_text": "Gempa ini dirasakan untuk diteruskan pada masyarakat",
+      "potential_text": "",
       "significant": false,
       "source_types": [
         "felt",
-        "latest",
         "realtime"
       ],
       "source_urls": [
-        "https://data.bmkg.go.id/DataMKG/TEWS/autogempa.json",
         "https://data.bmkg.go.id/DataMKG/TEWS/gempadirasakan.json",
         "https://www.bmkg.go.id/gempabumi/gempabumi-realtime"
       ],
-      "shakemap": "20261109173854.mmi.jpg",
+      "shakemap": "",
       "first_seen_at": "2026-11-09T18:54:44.466653Z",
-      "last_updated_at": "2026-11-09T18:54:44.466653Z"
+      "last_updated_at": "2026-11-10T02:55:34.471630Z"
     },
     {
       "id": "0c4072be9f5530",
@@ -4549,52 +4599,6 @@
       "lat": -7.93,
       "lon": 122.71,
       "region": "Flores Sea",
-      "felt": false,
-      "felt_info": "",
-      "tsunami": false,
-      "potential_text": "",
-      "significant": false,
-      "source_types": [
-        "realtime"
-      ],
-      "source_urls": [
-        "https://www.bmkg.go.id/gempabumi/gempabumi-realtime"
-      ],
-      "shakemap": "",
-      "first_seen_at": "2026-11-05T03:30:54.481864Z",
-      "last_updated_at": "2026-11-05T03:30:54.481864Z"
-    },
-    {
-      "id": "160e609cb1cade",
-      "datetime": "2026-11-04T16:14:49Z",
-      "magnitude": 4.5,
-      "depth_km": 109.0,
-      "lat": 10.85,
-      "lon": 124.94,
-      "region": "Leyte, Philippines",
-      "felt": false,
-      "felt_info": "",
-      "tsunami": false,
-      "potential_text": "",
-      "significant": false,
-      "source_types": [
-        "realtime"
-      ],
-      "source_urls": [
-        "https://www.bmkg.go.id/gempabumi/gempabumi-realtime"
-      ],
-      "shakemap": "",
-      "first_seen_at": "2026-11-05T03:30:54.481864Z",
-      "last_updated_at": "2026-11-05T03:30:54.481864Z"
-    },
-    {
-      "id": "5a6459da502872",
-      "datetime": "2026-11-04T15:58:21Z",
-      "magnitude": 3.2,
-      "depth_km": 35.0,
-      "lat": -9.37,
-      "lon": 119.49,
-      "region": "Sumba Region, Indonesia",
       "felt": false,
       "felt_info": "",
       "tsunami": false,
