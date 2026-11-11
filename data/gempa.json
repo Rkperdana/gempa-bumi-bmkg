@@ -2,7 +2,7 @@
   "schema_version": 2,
   "status": "live",
   "data_origin": "realtime_table",
-  "checked_at": "2026-11-11T01:52:06.585642Z",
+  "checked_at": "2026-11-11T03:06:49.783367Z",
   "source": "Badan Meteorologi, Klimatologi, dan Geofisika (BMKG)",
   "coverage_note": "200 gempa terbaru pada tabel real-time BMKG (jumlah aktual dapat kurang dari 200), termasuk episentrum di luar Indonesia; gempa dirasakan dilengkapi dari feed terpisah. Bukan total seluruh gempa dalam periode tersebut.",
   "sources": {
@@ -13,6 +13,29 @@
   },
   "errors": [],
   "events": [
+    {
+      "id": "74e6cecedd98d1",
+      "datetime": "2026-11-11T02:06:18Z",
+      "magnitude": 3.2,
+      "depth_km": 10.0,
+      "lat": -8.83,
+      "lon": 109.92,
+      "region": "Java, Indonesia",
+      "felt": false,
+      "felt_info": "",
+      "tsunami": false,
+      "potential_text": "",
+      "significant": false,
+      "source_types": [
+        "realtime"
+      ],
+      "source_urls": [
+        "https://www.bmkg.go.id/gempabumi/gempabumi-realtime"
+      ],
+      "shakemap": "",
+      "first_seen_at": "2026-11-11T03:06:49.783367Z",
+      "last_updated_at": "2026-11-11T03:06:49.783367Z"
+    },
     {
       "id": "d37a0ca6996ed0",
       "datetime": "2026-11-11T01:26:56Z",
@@ -179,12 +202,12 @@
       "last_updated_at": "2026-11-10T23:43:45.480577Z"
     },
     {
-      "id": "65588a80b5f23d",
+      "id": "848fcf505d561b",
       "datetime": "2026-11-10T22:09:10Z",
-      "magnitude": 4.8,
+      "magnitude": 4.4,
       "depth_km": 10.0,
       "lat": 4.21,
-      "lon": 97.56,
+      "lon": 97.53,
       "region": "Northern Sumatra, Indonesia",
       "felt": true,
       "felt_info": "III-IV Gayo Lues, III-IV Aceh Timur, III Aceh Tengah, III Bener Meriah, III Lhokseumawe",
@@ -200,8 +223,8 @@
         "https://www.bmkg.go.id/gempabumi/gempabumi-realtime"
       ],
       "shakemap": "",
-      "first_seen_at": "2026-11-10T23:43:45.480577Z",
-      "last_updated_at": "2026-11-10T23:43:45.480577Z"
+      "first_seen_at": "2026-11-11T03:06:49.783367Z",
+      "last_updated_at": "2026-11-11T03:06:49.783367Z"
     },
     {
       "id": "3ef7a55d896240",
@@ -250,12 +273,12 @@
       "last_updated_at": "2026-11-10T22:03:13.301163Z"
     },
     {
-      "id": "937a3f65a7be14",
+      "id": "bc51962868b764",
       "datetime": "2026-11-10T19:54:18Z",
       "magnitude": 5.3,
-      "depth_km": 13.0,
-      "lat": -13.93,
-      "lon": 165.61,
+      "depth_km": 11.0,
+      "lat": -13.94,
+      "lon": 165.59,
       "region": "Vanuatu Islands",
       "felt": false,
       "felt_info": "",
@@ -269,8 +292,8 @@
         "https://www.bmkg.go.id/gempabumi/gempabumi-realtime"
       ],
       "shakemap": "",
-      "first_seen_at": "2026-11-10T22:03:13.301163Z",
-      "last_updated_at": "2026-11-10T22:03:13.301163Z"
+      "first_seen_at": "2026-11-11T03:06:49.783367Z",
+      "last_updated_at": "2026-11-11T03:06:49.783367Z"
     },
     {
       "id": "e10557ec489647",
@@ -4586,29 +4609,6 @@
       "lat": -7.46,
       "lon": 127.33,
       "region": "Banda Sea",
-      "felt": false,
-      "felt_info": "",
-      "tsunami": false,
-      "potential_text": "",
-      "significant": false,
-      "source_types": [
-        "realtime"
-      ],
-      "source_urls": [
-        "https://www.bmkg.go.id/gempabumi/gempabumi-realtime"
-      ],
-      "shakemap": "",
-      "first_seen_at": "2026-11-06T04:17:23.055106Z",
-      "last_updated_at": "2026-11-06T04:17:23.055106Z"
-    },
-    {
-      "id": "0322c54afb8227",
-      "datetime": "2026-11-06T02:25:30Z",
-      "magnitude": 2.7,
-      "depth_km": 10.0,
-      "lat": -8.22,
-      "lon": 121.19,
-      "region": "Flores Region, Indonesia",
       "felt": false,
       "felt_info": "",
       "tsunami": false,
