@@ -2,7 +2,7 @@
   "schema_version": 2,
   "status": "live",
   "data_origin": "realtime_table",
-  "checked_at": "2026-11-11T22:59:53.163155Z",
+  "checked_at": "2026-11-12T00:59:51.315443Z",
   "source": "Badan Meteorologi, Klimatologi, dan Geofisika (BMKG)",
   "coverage_note": "200 gempa terbaru pada tabel real-time BMKG (jumlah aktual dapat kurang dari 200), termasuk episentrum di luar Indonesia; gempa dirasakan dilengkapi dari feed terpisah. Bukan total seluruh gempa dalam periode tersebut.",
   "sources": {
@@ -13,6 +13,52 @@
   },
   "errors": [],
   "events": [
+    {
+      "id": "64ba3ee9889503",
+      "datetime": "2026-11-11T23:35:30Z",
+      "magnitude": 2.8,
+      "depth_km": 21.0,
+      "lat": -3.86,
+      "lon": 129.63,
+      "region": "Seram, Indonesia",
+      "felt": false,
+      "felt_info": "",
+      "tsunami": false,
+      "potential_text": "",
+      "significant": false,
+      "source_types": [
+        "realtime"
+      ],
+      "source_urls": [
+        "https://www.bmkg.go.id/gempabumi/gempabumi-realtime"
+      ],
+      "shakemap": "",
+      "first_seen_at": "2026-11-12T00:59:51.315443Z",
+      "last_updated_at": "2026-11-12T00:59:51.315443Z"
+    },
+    {
+      "id": "c720b4e144da30",
+      "datetime": "2026-11-11T23:25:18Z",
+      "magnitude": 4.0,
+      "depth_km": 140.0,
+      "lat": 3.75,
+      "lon": 127.96,
+      "region": "Talaud Islands, Indonesia",
+      "felt": false,
+      "felt_info": "",
+      "tsunami": false,
+      "potential_text": "",
+      "significant": false,
+      "source_types": [
+        "realtime"
+      ],
+      "source_urls": [
+        "https://www.bmkg.go.id/gempabumi/gempabumi-realtime"
+      ],
+      "shakemap": "",
+      "first_seen_at": "2026-11-12T00:59:51.315443Z",
+      "last_updated_at": "2026-11-12T00:59:51.315443Z"
+    },
     {
       "id": "11369a2a98305b",
       "datetime": "2026-11-11T22:13:28Z",
@@ -221,12 +267,12 @@
       "last_updated_at": "2026-11-11T18:35:09.908094Z"
     },
     {
-      "id": "9e03f1efc330ea",
+      "id": "e68e3a097690b7",
       "datetime": "2026-11-11T17:38:25Z",
-      "magnitude": 5.2,
-      "depth_km": 81.0,
-      "lat": -6.38,
-      "lon": 154.75,
+      "magnitude": 5.0,
+      "depth_km": 80.0,
+      "lat": -6.36,
+      "lon": 154.73,
       "region": "Solomon Islands",
       "felt": false,
       "felt_info": "",
@@ -240,8 +286,8 @@
         "https://www.bmkg.go.id/gempabumi/gempabumi-realtime"
       ],
       "shakemap": "",
-      "first_seen_at": "2026-11-11T18:35:09.908094Z",
-      "last_updated_at": "2026-11-11T18:35:09.908094Z"
+      "first_seen_at": "2026-11-12T00:59:51.315443Z",
+      "last_updated_at": "2026-11-12T00:59:51.315443Z"
     },
     {
       "id": "eca5d061d11022",
@@ -336,12 +382,12 @@
       "last_updated_at": "2026-11-11T16:35:45.094317Z"
     },
     {
-      "id": "9de6a079e1e875",
+      "id": "4225e6f7a2546d",
       "datetime": "2026-11-11T13:08:07Z",
-      "magnitude": 4.6,
-      "depth_km": 155.0,
-      "lat": -7.73,
-      "lon": 127.88,
+      "magnitude": 4.7,
+      "depth_km": 150.0,
+      "lat": -7.72,
+      "lon": 127.87,
       "region": "Banda Sea",
       "felt": false,
       "felt_info": "",
@@ -355,8 +401,8 @@
         "https://www.bmkg.go.id/gempabumi/gempabumi-realtime"
       ],
       "shakemap": "",
-      "first_seen_at": "2026-11-11T16:35:45.094317Z",
-      "last_updated_at": "2026-11-11T16:35:45.094317Z"
+      "first_seen_at": "2026-11-12T00:59:51.315443Z",
+      "last_updated_at": "2026-11-12T00:59:51.315443Z"
     },
     {
       "id": "ca8b78447a1af5",
@@ -4580,52 +4626,6 @@
       "lat": -8.02,
       "lon": 107.88,
       "region": "Java, Indonesia",
-      "felt": false,
-      "felt_info": "",
-      "tsunami": false,
-      "potential_text": "",
-      "significant": false,
-      "source_types": [
-        "realtime"
-      ],
-      "source_urls": [
-        "https://www.bmkg.go.id/gempabumi/gempabumi-realtime"
-      ],
-      "shakemap": "",
-      "first_seen_at": "2026-11-08T06:17:25.115087Z",
-      "last_updated_at": "2026-11-08T06:17:25.115087Z"
-    },
-    {
-      "id": "a9393f2ba89417",
-      "datetime": "2026-11-07T04:10:22Z",
-      "magnitude": 2.9,
-      "depth_km": 10.0,
-      "lat": 1.73,
-      "lon": 128.49,
-      "region": "Halmahera, Indonesia",
-      "felt": false,
-      "felt_info": "",
-      "tsunami": false,
-      "potential_text": "",
-      "significant": false,
-      "source_types": [
-        "realtime"
-      ],
-      "source_urls": [
-        "https://www.bmkg.go.id/gempabumi/gempabumi-realtime"
-      ],
-      "shakemap": "",
-      "first_seen_at": "2026-11-08T06:17:25.115087Z",
-      "last_updated_at": "2026-11-08T06:17:25.115087Z"
-    },
-    {
-      "id": "575fca378f12b6",
-      "datetime": "2026-11-07T03:51:16Z",
-      "magnitude": 2.5,
-      "depth_km": 10.0,
-      "lat": -8.24,
-      "lon": 120.5,
-      "region": "Flores Region, Indonesia",
       "felt": false,
       "felt_info": "",
       "tsunami": false,
