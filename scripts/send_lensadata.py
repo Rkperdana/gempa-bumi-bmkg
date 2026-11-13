@@ -13,7 +13,7 @@ import urllib.error
 import urllib.request
 
 ENDPOINT = 'https://lensadata-ridha.perdanark.chatgpt.site/api/integrations/bmkg/earthquakes'
-# Start at activation of the M5+ publication policy; do not publish the archive.
+# Ingestion start: publication thresholds and Indonesia scope are enforced by the CMS.
 START_AT = '2026-11-12T11:11:48Z'
 MAX_BATCH = 50
 MAX_BYTES = 256 * 1024
@@ -56,7 +56,7 @@ def select_events(snapshot, start_at=START_AT, now=None, include_context=False):
         sources = event.get('source_urls') or []
         source = next((url for url in sources if url.startswith('https://www.bmkg.go.id/') or url.startswith('https://data.bmkg.go.id/')), 'https://www.bmkg.go.id/gempabumi/gempabumi-realtime')
         selected[event_id] = {
-            'eventId': event_id,
+            'eventId': event_id, 'eventIdKind': 'derived',
             'occurredAt': occurred.isoformat().replace('+00:00', 'Z'),
             'magnitude': magnitude, 'depthKm': depth,
             'latitude': latitude, 'longitude': longitude, 'location': location,
@@ -80,9 +80,9 @@ def send_events(events, config, dry_run=False, opener=None, sleeper=time.sleep, 
         raise ValueError('Configure LENSADATA_BMKG_TOKEN and LENSADATA_SITES_TOKEN in GitHub Actions secrets')
     opener = opener or urllib.request.build_opener(NoRedirect())
     receipts = []
-    # An empty event set still checks the credentials above, so missing secrets
-    # cannot accidentally look like a successful integration.
-    for batch_index, offset in enumerate(range(0, len(events), MAX_BATCH)):
+    # A context-only batch also updates known events revised below M5; the CMS
+    # does not create new articles from context-only records.
+    for batch_index, offset in enumerate(range(0, max(1, len(events)), MAX_BATCH)):
         chunk = events[offset:offset + MAX_BATCH]
         body = json.dumps({'events': chunk, 'history': (history or [])[-200:]}, ensure_ascii=False).encode('utf-8')
         if len(body) > MAX_BYTES:

@@ -88,6 +88,14 @@ class SenderTests(unittest.TestCase):
         self.assertEqual(len(opener.requests),1)
         with self.assertRaises(ValueError): sender.send_events([],{},opener=opener)
 
+    def test_context_only_batch_can_update_known_downgraded_events(self):
+        opener = Opener()
+        sender.send_events([], CONFIG, opener=opener, history=[{'eventId': 'known-revision'}])
+        self.assertEqual(len(opener.requests), 1)
+        payload = json.loads(opener.requests[0].data)
+        self.assertEqual(payload['events'], [])
+        self.assertEqual(payload['history'][0]['eventId'], 'known-revision')
+
     def test_redirects_do_not_receive_credentials(self):
         self.assertIsNone(sender.NoRedirect().redirect_request(None,None,302,'',{},'https://other.example'))
 

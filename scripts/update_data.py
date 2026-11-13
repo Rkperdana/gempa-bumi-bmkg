@@ -325,8 +325,22 @@ def fetch_realtime_html():
 def enrich_realtime(events, feeds, previous, now):
     """Use supplemental JSON only for M5/felt/tsunami labels; never replace real-time parameters."""
     warnings = []
+    current_ids = {event['id'] for event in events}
+    claimed_previous = set()
     for event in events:
         previous_event = next((p for p in previous if p.get('id') == event['id']), None)
+        if previous_event is None:
+            # Derived IDs include coordinates. Preserve the old internal ID when
+            # BMKG revises parameters, but never merge two coexisting source rows.
+            candidates = [p for p in previous if p.get('id') not in current_ids
+                          and p.get('id') not in claimed_previous
+                          and str(p.get('region', '')).casefold() == str(event.get('region', '')).casefold()
+                          and same_event(p, event)]
+            if len(candidates) == 1:
+                previous_event = candidates[0]
+                event['id'] = previous_event['id']
+        if previous_event:
+            claimed_previous.add(previous_event['id'])
         event['first_seen_at'] = previous_event.get('first_seen_at', now) if previous_event else now
         event['last_updated_at'] = now
     for feed, document in feeds.items():
