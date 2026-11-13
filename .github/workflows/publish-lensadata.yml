@@ -1,0 +1,53 @@
+name: Kirim gempa ke CMS Lensadata
+
+on:
+  workflow_run:
+    workflows: ['Sinkronisasi dan publikasi BMKG', 'Cadangan otomatis sinkronisasi BMKG']
+    types: [completed]
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: Validasi tanpa menyimpan gempa atau artikel
+        type: boolean
+        default: false
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/send_lensadata.py'
+      - 'tests/test_send_lensadata.py'
+      - '.github/workflows/publish-lensadata.yml'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: lensadata-bmkg-ingest
+  cancel-in-progress: false
+
+jobs:
+  send:
+    if: github.event_name != 'workflow_run' || (github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.head_repository.full_name == github.repository)
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          persist-credentials: false
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+      - name: Test Lensadata sender
+        run: python -m unittest discover -s tests -p test_send_lensadata.py -v
+      - name: Send earthquake data to Lensadata
+        env:
+          LENSADATA_BMKG_TOKEN: ${{ secrets.LENSADATA_BMKG_TOKEN }}
+          LENSADATA_SITES_TOKEN: ${{ secrets.LENSADATA_SITES_TOKEN }}
+          DRY_RUN: ${{ inputs.dry_run }}
+        run: |
+          if [ "$DRY_RUN" = "true" ]; then
+            python scripts/send_lensadata.py --dry-run
+          else
+            python scripts/send_lensadata.py
+          fi
