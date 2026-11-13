@@ -12,9 +12,10 @@ import time
 import urllib.error
 import urllib.request
 
-ENDPOINT = 'https://lensadata-ridha.perdanark.chatgpt.site/api/integrations/bmkg/earthquakes'
+ENDPOINT = 'https://lensadata.perdanark.chatgpt.site/api/integrations/bmkg/earthquakes'
 # Ingestion start: publication thresholds and Indonesia scope are enforced by the CMS.
 START_AT = '2026-11-12T11:11:48Z'
+EXPECTED_POLICY = 'indonesia-5.5-daily-5.0-v1'
 MAX_BATCH = 50
 MAX_BYTES = 256 * 1024
 
@@ -111,6 +112,8 @@ def send_events(events, config, dry_run=False, opener=None, sleeper=time.sleep, 
                     receipt = json.load(response)
                 if not receipt.get('ok') or receipt.get('result', {}).get('rejected', 0):
                     raise ValueError('Lensadata rejected one or more events')
+                if receipt.get('policy', {}).get('version') != EXPECTED_POLICY:
+                    raise ValueError('Lensadata editorial policy does not match the configured Indonesia thresholds')
                 receipts.append(receipt)
                 break
             except urllib.error.HTTPError as error:

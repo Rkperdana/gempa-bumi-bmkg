@@ -33,7 +33,7 @@ class Opener:
         if self.failures:
             self.failures -= 1
             raise urllib.error.HTTPError(request.full_url, self.code, 'error', {}, None)
-        return Response({'ok':True,'result':{'rejected':0,'published':1}})
+        return Response({'ok':True,'result':{'rejected':0,'published':1},'policy':{'version':sender.EXPECTED_POLICY}})
 
 
 class SenderTests(unittest.TestCase):
@@ -95,6 +95,13 @@ class SenderTests(unittest.TestCase):
         payload = json.loads(opener.requests[0].data)
         self.assertEqual(payload['events'], [])
         self.assertEqual(payload['history'][0]['eventId'], 'known-revision')
+
+    def test_stale_server_policy_is_rejected(self):
+        class OldPolicy:
+            def open(self, request, timeout):
+                return Response({'ok': True, 'result': {'rejected': 0}, 'policy': {'version': 'old-policy'}})
+        with self.assertRaises(ValueError):
+            sender.send_events([{'eventId': 'one'}], CONFIG, opener=OldPolicy())
 
     def test_redirects_do_not_receive_credentials(self):
         self.assertIsNone(sender.NoRedirect().redirect_request(None,None,302,'',{},'https://other.example'))
