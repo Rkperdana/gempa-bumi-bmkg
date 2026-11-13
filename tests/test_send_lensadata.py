@@ -51,6 +51,17 @@ class SenderTests(unittest.TestCase):
         rows = sender.select_events({'status':'live','events':[old,small,felt]}, now=NOW)
         self.assertEqual([row['eventId'] for row in rows],['felt'])
 
+    def test_history_includes_small_events_without_publishing_them(self):
+        small = {**EVENT,'id':'context-only','magnitude':2.5}
+        snapshot = {'status':'live','events':[EVENT,small]}
+        self.assertEqual(len(sender.select_events(snapshot,now=NOW)),1)
+        self.assertEqual(len(sender.select_events(snapshot,now=NOW,include_context=True)),2)
+        opener=Opener()
+        sender.send_events([{'eventId':'main'}],CONFIG,opener=opener,history=[{'eventId':str(i)} for i in range(230)])
+        payload=json.loads(opener.requests[0].data)
+        self.assertEqual(len(payload['history']),200)
+        self.assertEqual(payload['events'],[{'eventId':'main'}])
+
     def test_preview_and_invalid_data_rejected(self):
         for snapshot in [{'status':'preview','events':[EVENT]}, {'status':'live','events':[{**EVENT,'magnitude':float('nan')}]}, {'status':'live','events':[{**EVENT,'datetime':'2030-01-01T00:00:00Z'}]}]:
             with self.assertRaises(ValueError): sender.select_events(snapshot,now=NOW)

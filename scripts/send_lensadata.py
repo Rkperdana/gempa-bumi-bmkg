@@ -26,7 +26,7 @@ def instant(value):
     return result.astimezone(dt.timezone.utc)
 
 
-def select_events(snapshot, start_at=START_AT, now=None):
+def select_events(snapshot, start_at=START_AT, now=None, include_context=False):
     if snapshot.get('status') != 'live':
         raise ValueError('Refusing to send a preview or unavailable snapshot')
     now = now or dt.datetime.now(dt.timezone.utc)
@@ -39,7 +39,7 @@ def select_events(snapshot, start_at=START_AT, now=None):
             raise ValueError('Invalid magnitude')
         if occurred > now + dt.timedelta(minutes=10):
             raise ValueError('Event time is in the future')
-        if occurred < cutoff or not (magnitude >= 5 or event.get('felt') or event.get('felt_info')):
+        if not include_context and (occurred < cutoff or not (magnitude >= 5 or event.get('felt') or event.get('felt_info'))):
             continue
         latitude, longitude = float(event['lat']), float(event['lon'])
         if not (-90 <= latitude <= 90 and -180 <= longitude <= 180):
@@ -73,7 +73,7 @@ class NoRedirect(urllib.request.HTTPRedirectHandler):
         return None
 
 
-def send_events(events, config, dry_run=False, opener=None, sleeper=time.sleep):
+def send_events(events, config, dry_run=False, opener=None, sleeper=time.sleep, history=None):
     token = config.get('ingest_token') or ''
     site_token = config.get('sites_token') or ''
     if not token or not site_token:
@@ -84,7 +84,7 @@ def send_events(events, config, dry_run=False, opener=None, sleeper=time.sleep):
     # cannot accidentally look like a successful integration.
     for batch_index, offset in enumerate(range(0, len(events), MAX_BATCH)):
         chunk = events[offset:offset + MAX_BATCH]
-        body = json.dumps({'events': chunk}, ensure_ascii=False).encode('utf-8')
+        body = json.dumps({'events': chunk, 'history': (history or [])[-200:]}, ensure_ascii=False).encode('utf-8')
         if len(body) > MAX_BYTES:
             raise ValueError('Batch exceeds the endpoint size limit')
         payload_hash = hashlib.sha256(body).hexdigest()[:16]
@@ -139,10 +139,11 @@ def main():
     }
     snapshot = json.loads(Path(args.snapshot).read_text(encoding='utf-8'))
     events = select_events(snapshot, os.environ.get('LENSADATA_START_AT', START_AT))
+    history = select_events(snapshot, include_context=True)[-200:]
     if args.payload_only:
-        print(json.dumps({'events': events}, ensure_ascii=False))
+        print(json.dumps({'events': events, 'history': history}, ensure_ascii=False))
         return
-    receipts = send_events(events, config, args.dry_run)
+    receipts = send_events(events, config, args.dry_run, history=history)
     print(json.dumps({'selected': len(events), 'dryRun': args.dry_run, 'receipts': receipts}, ensure_ascii=False))
 
 
