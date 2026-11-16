@@ -1,0 +1,77 @@
+name: Dataloka | Gempa BMKG ke WordPress
+
+on:
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: "live (terbit M5,5+), drafts, atau dry-run"
+        required: true
+        type: choice
+        default: dry-run
+        options: [dry-run, drafts, live]
+      task:
+        description: "events atau daily"
+        required: true
+        type: choice
+        default: events
+        options: [events, daily]
+  schedule:
+    - cron: '7,17,27,37,47,57 * * * *'
+    - cron: '15 17 * * *'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: dataloka-wp-earthquake-only
+  cancel-in-progress: false
+
+jobs:
+  send-to-dataloka:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    env:
+      MODE: ${{ github.event_name == 'workflow_dispatch' && inputs.mode || 'live' }}
+      TASK: ${{ github.event_name == 'workflow_dispatch' && inputs.task || (github.event.schedule == '15 17 * * *' && 'daily' || 'events') }}
+      WP_USERNAME: ${{ secrets.DATALOKA_WP_USERNAME }}
+      WP_APP_PASSWORD: ${{ secrets.DATALOKA_WP_APP_PASSWORD }}
+      WP_CATEGORY_ID: ${{ vars.DATALOKA_WP_CATEGORY_ID }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+      - name: Run publisher unit tests
+        run: python -m unittest discover -s tests -p test_dataloka_wp_gempa.py -v
+      - name: Check WordPress credentials exist before live requests
+        if: ${{ env.MODE != 'dry-run' }}
+        run: |
+          test -n "$WP_USERNAME" || { echo "Missing DATALOKA_WP_USERNAME secret"; exit 1; }
+          test -n "$WP_APP_PASSWORD" || { echo "Missing DATALOKA_WP_APP_PASSWORD secret"; exit 1; }
+      - name: Process official BMKG feeds
+        run: python scripts/dataloka_wp_gempa.py --mode "$MODE" --task "$TASK"
+      - name: Persist isolated Dataloka publication state
+        if: ${{ env.MODE != 'dry-run' }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/dataloka-wp-state.json
+          if git diff --cached --quiet; then
+            echo "No changes to Dataloka ledger"
+            exit 0
+          fi
+          git commit -m "data: sinkronkan ledger publikasi gempa Dataloka"
+          for attempt in 1 2 3; do
+            git fetch origin main
+            if git rebase origin/main && git push origin HEAD:main; then
+              exit 0
+            fi
+            git rebase --abort || true
+            sleep "$attempt"
+          done
+          echo "Could not save ledger; WordPress slug lookup prevents creating duplicate posts"
+          exit 1
