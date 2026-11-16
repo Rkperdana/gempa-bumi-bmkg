@@ -1,6 +1,11 @@
 name: Dataloka | Gempa BMKG ke WordPress
 
 on:
+  pull_request:
+    paths:
+      - '.github/workflows/dataloka-wp-gempa.yml'
+      - 'scripts/dataloka_wp_gempa.py'
+      - 'tests/test_dataloka_wp_gempa.py'
   workflow_dispatch:
     inputs:
       mode:
@@ -27,7 +32,23 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
+  validate:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+      - name: Check Python syntax
+        run: python -m py_compile scripts/dataloka_wp_gempa.py
+      - name: Run unit tests without WordPress credentials
+        run: python -m unittest discover -s tests -p test_dataloka_wp_gempa.py -v
+
   send-to-dataloka:
+    if: github.event_name != 'pull_request'
     runs-on: ubuntu-latest
     timeout-minutes: 8
     env:
