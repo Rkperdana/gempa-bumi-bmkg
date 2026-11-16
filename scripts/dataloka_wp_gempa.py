@@ -207,8 +207,9 @@ def daily_article(records, day):
     rows = []
     for e in selected:
         time = timestamp(e["datetime"]).astimezone(WIB).strftime("%H.%M")
+        depth = format(e["depth_km"], "g")
         rows.append(f"<tr><td>{escape(time)} WIB</td><td>{escape(magnitude(e['magnitude']))}"
-                    f"</td><td>{escape(e['region'])}</td><td>{escape(f'{e['depth_km']:g}')} km</td></tr>")
+                    f"</td><td>{escape(e['region'])}</td><td>{escape(depth)} km</td></tr>")
     title = f"Ringkasan Gempa M5,0–5,4 BMKG pada {day:%d-%m-%Y}"
     body = (f"<p>Berdasarkan kejadian yang berhasil dipantau Dataloka dari BMKG, terdapat "
             f"{len(selected)} gempa berkekuatan M5,0–5,4 pada {day:%d-%m-%Y}. "
