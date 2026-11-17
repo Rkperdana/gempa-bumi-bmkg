@@ -289,6 +289,47 @@ class WordPress:
         except urllib.error.HTTPError as err:
             raise RuntimeError(f"WordPress returned HTTP {err.code} on {method} {route}") from None
 
+    def cover_image(self, event):
+        """Reuse a stable upload when a retry occurs after WordPress accepted media."""
+        from scripts.dataloka_gempa_image import render
+
+        media_slug = "bmkg-gempa-" + event["key"] + "-peta"
+        matching = self.call("GET", "media", {
+            "slug": media_slug, "context": "edit", "per_page": 2,
+        })
+        if matching:
+            return int(matching[0]["id"])
+
+        jpg = render(event)
+        filename = media_slug + ".jpg"
+        req = urllib.request.Request(
+            WP_URL + "/wp-json/wp/v2/media",
+            data=jpg,
+            method="POST",
+            headers={
+                "Authorization": self.authorization,
+                "Accept": "application/json",
+                "Content-Type": "image/jpeg",
+                "Content-Disposition": 'attachment; filename="' + filename + '"',
+                "User-Agent": "Dataloka-BMKG/1.0",
+            },
+        )
+        try:
+            with urllib.request.urlopen(req, timeout=40) as response:
+                created = json.loads(response.read(1_000_000).decode("utf-8"))
+        except urllib.error.HTTPError as err:
+            raise RuntimeError(f"WordPress refused cover image upload: HTTP {err.code}") from None
+
+        media_id = int(created["id"])
+        mag = magnitude(event["magnitude"])
+        description = f"Peta episentrum gempa M{mag} di {event['region']} berdasarkan koordinat BMKG"
+        self.call("POST", "media/" + str(media_id), payload={
+            "alt_text": description,
+            "title": description,
+            "caption": "Peta lokasi episentrum berdasarkan data BMKG. Geografi: Natural Earth.",
+        })
+        return media_id
+
     def by_slug(self, slug):
         posts = self.call("GET", "posts", {
             "slug": slug, "status": "any", "context": "edit", "per_page": 2})
@@ -297,38 +338,53 @@ class WordPress:
     def by_id(self, post_id):
         return self.call("GET", "posts/" + str(int(post_id)), {"context": "edit"})
 
-    def save(self, payload, ledger, status, marker):
+    def save(self, payload, ledger, status, marker, event=None):
         found = self.by_id(ledger["post_id"]) if ledger.get("post_id") else self.by_slug(payload["slug"])
         if found:
             raw = found.get("content", {}).get("raw", "")
             if marker not in raw:
                 raise RuntimeError(f"Post {found['id']} has no Dataloka ownership marker")
-            if not ledger.get("last_wp_digest"):
+            previous_digest = ledger.get("last_wp_digest")
+            if not previous_digest:
                 if hash_value(raw) != hash_value(payload["content"]) or found.get("status") != status:
                     raise RuntimeError("Untracked WordPress post was changed; manual reconciliation required")
-                return self._mapping(found, payload)
-            if hash_value(raw) != ledger["last_wp_digest"]:
+                previous_digest = hash_value(raw)
+            if hash_value(raw) != previous_digest:
                 raise RuntimeError(f"Post {found['id']} edited manually; refusing overwrite")
             if found.get("status") == "publish" and status != "publish":
                 raise RuntimeError(f"Cannot downgrade published post {found['id']}")
+            # Do not overwrite a human-changed featured image.
+            prior_media = ledger.get("media_id")
+            current_media = int(found.get("featured_media") or 0)
+            if prior_media and current_media not in (0, int(prior_media)):
+                raise RuntimeError(f"Featured image on post {found['id']} edited manually")
             new_payload = dict(payload)
             new_payload.pop("slug", None)
             new_payload["status"] = status
+            if status == "publish" and event and not current_media:
+                new_payload["featured_media"] = self.cover_image(event)
             post = self.call("POST", "posts/" + str(found["id"]), payload=new_payload)
         else:
             new_payload = dict(payload, status=status)
             if self.category:
                 new_payload["categories"] = [self.category]
+            # Upload first, then publish. Do not publish a new live post without its map.
+            if status == "publish" and event:
+                new_payload["featured_media"] = self.cover_image(event)
             post = self.call("POST", "posts", payload=new_payload)
+
         confirmed = self.by_id(post["id"])
         if marker not in confirmed.get("content", {}).get("raw", ""):
             raise RuntimeError(f"WordPress stripped ownership marker for post {post['id']}")
+        if status == "publish" and event and not int(confirmed.get("featured_media") or 0):
+            raise RuntimeError(f"Published post {post['id']} has no featured media")
         return self._mapping(confirmed, payload)
 
     @staticmethod
     def _mapping(post, payload):
         return {
             "post_id": post["id"],
+            "media_id": int(post.get("featured_media") or 0),
             "last_wp_digest": hash_value(post.get("content", {}).get("raw", "")),
             "status": post["status"],
             "last_payload_digest": hash_value(json.dumps(
@@ -361,7 +417,9 @@ def events_task(mode, wp, now):
         status = status_for(event, mode)
         payload = article(event)
         payload_digest = hash_value(json.dumps(payload, ensure_ascii=False, sort_keys=True))
-        if record.get("last_payload_digest") == payload_digest and record.get("status") == status:
+        if (record.get("last_payload_digest") == payload_digest and
+                record.get("status") == status and
+                (status != "publish" or record.get("media_id"))):
             continue
         if record.get("status") == "publish" and not confirmed_no_tsunami(event):
             print(f"REVIEW: tsunami uncertainty changed, no automatic overwrite ({event['key']})")
@@ -369,7 +427,7 @@ def events_task(mode, wp, now):
         print(f"{mode}: {status} M{event['magnitude']:.1f} {event['region']}")
         if mode != "dry-run":
             record.update(wp.save(
-                payload, record, status, f"<!-- {MARKER}{record['key']} -->"))
+                payload, record, status, f"<!-- {MARKER}{record['key']} -->", event=event))
     if mode != "dry-run":
         state["events"] = [
             x for x in state["events"] if x.get("post_id") or
