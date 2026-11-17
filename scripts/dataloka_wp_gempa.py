@@ -165,33 +165,60 @@ def escape(s):
     return html.escape(str(s), quote=True)
 
 
+def coordinate(value, north_east, south_west):
+    direction = north_east if float(value) >= 0 else south_west
+    number = f"{abs(float(value)):.2f}".replace(".", ",")
+    return f"{number}° {direction}"
+
+
 def article(e):
     local = timestamp(e["datetime"]).astimezone(WIB)
-    date = local.strftime("%d-%m-%Y")
+    days = ("Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu", "Minggu")
+    months = ("Januari", "Februari", "Maret", "April", "Mei", "Juni",
+              "Juli", "Agustus", "September", "Oktober", "November", "Desember")
+    date = f"{local.day} {months[local.month - 1]} {local.year}"
+    day = days[local.weekday()]
     time = local.strftime("%H.%M")
     mag = magnitude(e["magnitude"])
     depth = f"{e['depth_km']:g}".replace(".", ",")
-    region = e["region"]
-    sentences = [
-        (f"Menurut Badan Meteorologi, Klimatologi, dan Geofisika (BMKG), gempa "
-         f"magnitudo {mag} terjadi di {region} pada {date} pukul {time} WIB. "
-         f"Pusat gempa berada pada kedalaman {depth} kilometer."),
-        (f"Koordinat pusat gempa berada di {e['lat']:g} lintang dan "
-         f"{e['lon']:g} bujur. " +
-         (f"Keterangan potensi dari BMKG: {e['potential']}." if e["potential"]
-          else "Informasi potensi tsunami belum tercantum dalam data ini.")),
+    region = escape(e["region"])
+
+    # Exactly four editorial paragraphs; never infer damage, casualties or shaking intensity.
+    paragraphs = [
+        (f"Badan Meteorologi, Klimatologi, dan Geofisika (BMKG) melaporkan "
+         f"gempa bumi magnitudo {mag} di {region} pada {day}, {date}, pukul "
+         f"{time} WIB. Informasi kejadian tersebut dipublikasikan melalui "
+         f"data gempa resmi BMKG."),
+        (f"Menurut parameter BMKG, koordinat episentrum berada di "
+         f"{escape(coordinate(e['lat'], 'LU', 'LS'))} dan "
+         f"{escape(coordinate(e['lon'], 'BT', 'BB'))}. "
+         f"Pusat gempa dilaporkan berada pada kedalaman {depth} kilometer."),
     ]
-    if e["felt_info"]:
-        sentences.append(f"BMKG menyertakan laporan gempa dirasakan: {e['felt_info']}.")
+    potential = str(e.get("potential") or "").strip()
+    felt = str(e.get("felt_info") or "").strip()
+    p3a = (f"BMKG menyampaikan keterangan mengenai potensi tsunami: "
+           f"{escape(potential.rstrip('.'))}." if potential else
+           "Keterangan potensi tsunami belum tercantum dalam data BMKG yang digunakan.")
+    p3b = (f"BMKG juga menyertakan informasi guncangan yang dirasakan: "
+           f"{escape(felt.rstrip('.'))}." if felt else
+           "Rincian wilayah yang merasakan guncangan belum tercantum dalam data yang digunakan.")
+    paragraphs.append(p3a + " " + p3b)
+
     sources = sorted({BASE + name for name in e["sources"]})
-    body = "\n".join(f"<p>{escape(s)}</p>" for s in sentences)
-    body += '\n<p><strong>Sumber:</strong> BMKG (' + ", ".join(
-        f'<a href="{escape(u)}">data gempa</a>' for u in sources) + ').</p>'
-    body += f"\n<!-- {MARKER}{e['key']} -->"
+    links = ", ".join(f'<a href="{escape(url)}">data BMKG</a>' for url in sources)
+    paragraphs.append(
+        f"Informasi magnitudo, waktu, koordinat, dan kedalaman dalam artikel "
+        f"ini bersumber dari {links}. Parameter kejadian dapat berubah "
+        f"apabila BMKG merilis pembaruan. (RK/D-1)"
+    )
+    body = "".join(f"<p>{paragraph}</p>" for paragraph in paragraphs)
+    # Hidden provenance marker is adjacent to the final closing tag, with no newline.
+    body += f"<!-- {MARKER}{e['key']} -->"
     return {
-        "title": f"Gempa Magnitudo {mag} di {region}, {date}",
+        "title": f"Gempa Magnitudo {mag} di {escape(e['region'])}, {date}",
         "content": body,
-        "excerpt": f"BMKG: Gempa magnitudo {mag} di {region} pada {date}, kedalaman {depth} km.",
+        "excerpt": f"BMKG: Gempa magnitudo {mag} di {escape(e['region'])} pada {date}, "
+                   f"kedalaman {depth} km.",
         "slug": "bmkg-gempa-" + e["key"],
         "comment_status": "closed",
     }
@@ -206,19 +233,30 @@ def daily_article(records, day):
     selected.sort(key=lambda e: e["datetime"])
     rows = []
     for e in selected:
-        time = timestamp(e["datetime"]).astimezone(WIB).strftime("%H.%M")
+        when = timestamp(e["datetime"]).astimezone(WIB).strftime("%H.%M")
         depth = format(e["depth_km"], "g")
-        rows.append(f"<tr><td>{escape(time)} WIB</td><td>{escape(magnitude(e['magnitude']))}"
+        rows.append(f"<tr><td>{escape(when)} WIB</td><td>{escape(magnitude(e['magnitude']))}"
                     f"</td><td>{escape(e['region'])}</td><td>{escape(depth)} km</td></tr>")
     title = f"Ringkasan Gempa M5,0–5,4 BMKG pada {day:%d-%m-%Y}"
-    body = (f"<p>Berdasarkan kejadian yang berhasil dipantau Dataloka dari BMKG, terdapat "
-            f"{len(selected)} gempa berkekuatan M5,0–5,4 pada {day:%d-%m-%Y}. "
-            "Jumlah tersebut bukan total resmi seluruh gempa pada tanggal itu.</p>\n"
-            "<table><thead><tr><th>Waktu</th><th>Magnitudo</th><th>Wilayah</th>"
-            "<th>Kedalaman</th></tr></thead><tbody>" + "".join(rows) + "</tbody></table>\n"
-            '<p>Sumber: <a href="https://data.bmkg.go.id/gempabumi/">BMKG</a>. '
-            "Ringkasan memerlukan pemeriksaan redaksi.</p>\n"
-            f"<!-- dataloka-bmkg-daily:{day.isoformat()} -->")
+    paragraphs = [
+        (f"Berdasarkan kejadian yang berhasil dipantau Dataloka dari BMKG, "
+         f"terdapat {len(selected)} gempa bermagnitudo 5,0 hingga kurang dari "
+         f"5,5 pada {day:%d-%m-%Y}. Angka tersebut bukan total resmi seluruh gempa "
+         f"pada tanggal itu."),
+        ("Rincian kejadian yang terpantau ditampilkan dalam tabel berikut. "
+         "Waktu kejadian telah dinyatakan dalam Waktu Indonesia Barat (WIB)."),
+        ('Data diperoleh dari <a href="https://data.bmkg.go.id/gempabumi/">BMKG</a>. '
+         "Rangkuman menggunakan kejadian yang tersimpan dalam pemantauan Dataloka, "
+         "sehingga cakupannya dapat berbeda dari rekap lengkap instansi."),
+        ("Ringkasan ini bersifat pendahuluan dan memerlukan pemeriksaan redaksi "
+         "sebelum diterbitkan. Parameter kejadian dapat berubah apabila BMKG "
+         "memperbarui data. (RK/D-1)"),
+    ]
+    table = ("<table><thead><tr><th>Waktu</th><th>Magnitudo</th><th>Wilayah</th>"
+             "<th>Kedalaman</th></tr></thead><tbody>" + "".join(rows) + "</tbody></table>")
+    body = "<p>" + paragraphs[0] + "</p><p>" + paragraphs[1] + "</p>" + table
+    body += "<p>" + paragraphs[2] + "</p><p>" + paragraphs[3] + "</p>"
+    body += f"<!-- dataloka-bmkg-daily:{day.isoformat()} -->"
     return {"title": title, "content": body,
             "excerpt": title,
             "slug": f"ringkasan-bmkg-m50-m54-{day.isoformat()}",
