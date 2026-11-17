@@ -352,6 +352,7 @@ class WordPress:
         self.authorization = "Basic " + base64.b64encode(
             f"{user}:{password}".encode("utf-8")).decode("ascii")
         self.category = int(category) if category else None
+        self._tag_cache = {}
 
     def call(self, method, route, params=None, payload=None):
         url = WP_URL + "/wp-json/wp/v2/" + route
@@ -412,6 +413,44 @@ class WordPress:
         })
         return media_id
 
+    def resolve_tags(self, names):
+        """Resolve existing WP term IDs, create missing terms if role permits.
+
+        A missing ability to create tags must not delay a time-sensitive earthquake
+        publication. Unresolved tags are reported in Actions logs for editorial review.
+        """
+        term_ids = []
+        for name in list(dict.fromkeys(names))[:8]:
+            if not name or " " in name:
+                continue
+            if name in self._tag_cache:
+                term_id = self._tag_cache[name]
+            else:
+                try:
+                    matches = self.call("GET", "tags", {
+                        "search": name, "per_page": 100,
+                    })
+                    exact = next(
+                        (tag for tag in matches if
+                         html.unescape(str(tag.get("name", ""))).casefold() == name.casefold()),
+                        None)
+                    if exact:
+                        term_id = int(exact["id"])
+                    else:
+                        created = self.call("POST", "tags", payload={
+                            "name": name, "slug": slugify(name),
+                        })
+                        term_id = int(created["id"])
+                except (RuntimeError, KeyError, ValueError, TypeError) as exc:
+                    # Permission 403 on /tags creation is common for Author roles.
+                    print(f"WARNING: WordPress tag '{name}' unavailable: {exc}",
+                          file=sys.stderr)
+                    term_id = 0
+                self._tag_cache[name] = term_id
+            if term_id and term_id not in term_ids:
+                term_ids.append(term_id)
+        return term_ids
+
     def by_slug(self, slug):
         posts = self.call("GET", "posts", {
             "slug": slug, "status": "any", "context": "edit", "per_page": 2})
@@ -442,12 +481,23 @@ class WordPress:
                 raise RuntimeError(f"Featured image on post {found['id']} edited manually")
             new_payload = dict(payload)
             new_payload.pop("slug", None)
+            tag_names = new_payload.pop("tag_names", [])
             new_payload["status"] = status
+            # Do not replace tags a human editor has already curated.
+            if tag_names and not found.get("tags"):
+                term_ids = self.resolve_tags(tag_names)
+                if term_ids:
+                    new_payload["tags"] = term_ids
             if status == "publish" and event and not current_media:
                 new_payload["featured_media"] = self.cover_image(event)
             post = self.call("POST", "posts/" + str(found["id"]), payload=new_payload)
         else:
             new_payload = dict(payload, status=status)
+            tag_names = new_payload.pop("tag_names", [])
+            if tag_names:
+                term_ids = self.resolve_tags(tag_names)
+                if term_ids:
+                    new_payload["tags"] = term_ids
             if self.category:
                 new_payload["categories"] = [self.category]
             # Upload first, then publish. Do not publish a new live post without its map.
