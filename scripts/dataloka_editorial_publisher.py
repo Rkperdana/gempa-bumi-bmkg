@@ -242,9 +242,23 @@ def newly_added(before, after):
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--before", required=True)
-    parser.add_argument("--after", required=True)
+    parser.add_argument("--health-check", action="store_true")
+    parser.add_argument("--before")
+    parser.add_argument("--after")
     args = parser.parse_args()
+    if args.health_check:
+        wp = WPClient(os.getenv("DATALOKA_WP_USERNAME"),
+                      os.getenv("DATALOKA_WP_APP_PASSWORD"))
+        posts = wp.call("GET", "posts", {
+            "per_page": 1, "status": "any", "context": "edit"
+        })
+        if not isinstance(posts, list):
+            raise RuntimeError("Unexpected WordPress posts response")
+        wp.category_id("berita")
+        print("Dataloka WordPress REST authentication and Berita category OK (read-only)")
+        return
+    if not args.before or not args.after:
+        parser.error("--before and --after required unless --health-check")
     paths = newly_added(args.before, args.after)
     if not paths:
         print("No new editorial publication requests")
