@@ -499,6 +499,11 @@ class WordPress:
 
     def cover_image(self, event):
         """Reuse a stable upload when a retry occurs after WordPress accepted media."""
+        # GitHub Actions calls this as `python scripts/dataloka_wp_gempa.py`.
+        # In direct-script mode sys.path contains scripts/, not the repo root;
+        # add ROOT so the map module can be imported as a namespace package.
+        if str(ROOT) not in sys.path:
+            sys.path.insert(0, str(ROOT))
         from scripts.dataloka_gempa_image import render
 
         media_slug = "bmkg-gempa-" + event["key"] + "-peta"
