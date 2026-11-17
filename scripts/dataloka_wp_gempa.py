@@ -19,6 +19,7 @@ import sys
 import urllib.error
 import urllib.parse
 import urllib.request
+import unicodedata
 
 UTC = dt.timezone.utc
 WIB = dt.timezone(dt.timedelta(hours=7))
@@ -171,6 +172,84 @@ def coordinate(value, north_east, south_west):
     return f"{number}° {direction}"
 
 
+def slugify(value):
+    """Human-readable ASCII slug; always bounded and safe for WordPress."""
+    ascii_text = unicodedata.normalize("NFKD", str(value))
+    ascii_text = ascii_text.encode("ascii", "ignore").decode("ascii").lower()
+    return re.sub(r"[^a-z0-9]+", "-", ascii_text).strip("-")
+
+
+def readable_region(value):
+    """Avoid markup in SEO metadata while preserving the actual BMKG location."""
+    plain = html.unescape(re.sub(r"<[^>]*>", " ", str(value)))
+    return " ".join(plain.split())
+
+
+def seo_title(e, date):
+    mag = magnitude(e["magnitude"])
+    region = readable_region(e["region"])
+    full = f"Gempa M{mag} di {region}, {date} - BMKG"
+    if len(full) <= 75:
+        return full
+    concise = f"Gempa M{mag} di {region}, {date}"
+    if len(concise) <= 78:
+        return concise
+    # Prefer a complete word in a shortened headline, not a misleading new place.
+    left, right = f"Gempa M{mag} di ", f", {date}"
+    limit = max(12, 78 - len(left) - len(right) - 1)
+    short = region[:limit].rsplit(" ", 1)[0] or region[:limit]
+    return left + short.rstrip(" ,") + "…" + right
+
+
+def seo_slug(e, date_iso):
+    region = slugify(readable_region(e["region"]))
+    # Full source region is kept in the title/body; the URL keeps its main keywords.
+    region = "-".join(region.split("-")[:6])[:42].rstrip("-") or "episentrum"
+    # Stable occurrence suffix prevents collisions for multiple earthquakes.
+    return f"gempa-{region}-{date_iso}-{e['key'][:8]}"
+
+
+def seo_excerpt(e, date, time, depth):
+    mag = magnitude(e["magnitude"])
+    region = readable_region(e["region"])
+    prefix = f"Gempa M{mag} di {region} pada {date}, pukul {time} WIB. "
+    middle = f"Kedalaman {depth} km. "
+    ending = ("BMKG: tidak berpotensi tsunami." if confirmed_no_tsunami(e)
+              else "Simak informasi resmi BMKG.")
+    summary = prefix + middle + ending
+    if len(summary) <= 160:
+        return summary
+    # Preserve the factual tsunami wording by reducing the location, not the claim.
+    fixed = f"Gempa M{mag} di " + f" pada {date}. " + middle + ending
+    budget = 160 - len(fixed) - 1
+    if budget > 15:
+        short = region[:budget].rsplit(" ", 1)[0] or region[:budget]
+        return f"Gempa M{mag} di {short.rstrip(' ,')}… pada {date}. " + middle + ending
+    return f"Gempa M{mag} pada {date}. " + middle + ending
+
+
+def editorial_tags(e):
+    """Curated single-word tags; no unbounded taxonomy from BMKG free text."""
+    names = ["Gempa", "BMKG", "Episentrum", "Seismik"]
+    location = readable_region(e["region"]).casefold()
+    mapping = (
+        ("jawa", "Jawa"), ("java", "Jawa"), ("sumatera", "Sumatera"),
+        ("sumatra", "Sumatera"), ("sulawesi", "Sulawesi"),
+        ("kalimantan", "Kalimantan"), ("borneo", "Kalimantan"),
+        ("papua", "Papua"), ("maluku", "Maluku"), ("bali", "Bali"),
+        ("aceh", "Aceh"), ("lombok", "Lombok"), ("flores", "Flores"),
+        ("banda", "Banda"), ("sumbawa", "Sumbawa"),
+        ("halmahera", "Halmahera"), ("ambon", "Ambon"),
+        ("seram", "Seram"), ("timor", "Timor"),
+    )
+    for token, tag in mapping:
+        if re.search(r"(?<!\\w)" + re.escape(token) + r"(?!\\w)", location):
+            if tag not in names:
+                names.append(tag)
+            break
+    return names[:8]
+
+
 def article(e):
     local = timestamp(e["datetime"]).astimezone(WIB)
     days = ("Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu", "Minggu")
@@ -215,11 +294,11 @@ def article(e):
     # Hidden provenance marker is adjacent to the final closing tag, with no newline.
     body += f"<!-- {MARKER}{e['key']} -->"
     return {
-        "title": f"Gempa Magnitudo {mag} di {escape(e['region'])}, {date}",
+        "title": escape(seo_title(e, date)),
         "content": body,
-        "excerpt": f"BMKG: Gempa magnitudo {mag} di {escape(e['region'])} pada {date}, "
-                   f"kedalaman {depth} km.",
-        "slug": "bmkg-gempa-" + e["key"],
+        "excerpt": escape(seo_excerpt(e, date, time, depth)),
+        "slug": seo_slug(e, local.strftime("%Y-%m-%d")),
+        "tag_names": editorial_tags(e),
         "comment_status": "closed",
     }
 
@@ -237,7 +316,8 @@ def daily_article(records, day):
         depth = format(e["depth_km"], "g")
         rows.append(f"<tr><td>{escape(when)} WIB</td><td>{escape(magnitude(e['magnitude']))}"
                     f"</td><td>{escape(e['region'])}</td><td>{escape(depth)} km</td></tr>")
-    title = f"Ringkasan Gempa M5,0–5,4 BMKG pada {day:%d-%m-%Y}"
+    readable_day = f"{day.day} {('Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember')[day.month - 1]} {day.year}"
+    title = f"Daftar Gempa M5,0–5,4 pada {readable_day} Menurut BMKG"
     paragraphs = [
         (f"Berdasarkan kejadian yang berhasil dipantau Dataloka dari BMKG, "
          f"terdapat {len(selected)} gempa bermagnitudo 5,0 hingga kurang dari "
@@ -258,8 +338,10 @@ def daily_article(records, day):
     body += "<p>" + paragraphs[2] + "</p><p>" + paragraphs[3] + "</p>"
     body += f"<!-- dataloka-bmkg-daily:{day.isoformat()} -->"
     return {"title": title, "content": body,
-            "excerpt": title,
-            "slug": f"ringkasan-bmkg-m50-m54-{day.isoformat()}",
+            "excerpt": (f"Daftar gempa M5,0–5,4 pada {readable_day} berdasarkan data "
+                        f"BMKG yang dipantau Dataloka. Lihat waktu, wilayah, dan kedalaman."),
+            "slug": f"daftar-gempa-m50-m54-{day.isoformat()}",
+            "tag_names": ["Gempa", "BMKG", "Seismik"],
             "comment_status": "closed"}
 
 
