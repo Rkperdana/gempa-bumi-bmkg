@@ -278,7 +278,7 @@ assert str(root) in sys.path
         payload = p.article(event)
         calls = []
         wp.by_slug = lambda slug: None
-        wp.resolve_tags = lambda names: []
+        wp.resolve_tags = lambda names: [15] if "Featured" in names else []
         wp.berita_category_id = lambda: 43
         wp.cover_image = lambda quake: 123
 
