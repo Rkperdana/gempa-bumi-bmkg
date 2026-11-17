@@ -21,7 +21,7 @@ import urllib.request
 
 POST_ID = 9044
 BASE = "https://dataloka.id/wp-json/wp/v2"
-BMKG_SOURCE = "https://stageof-jayapura.bmkg.go.id/siaran-pers/315/"
+BMKG_SOURCE = "https://www.bmkg.go.id/gempabumi/gempabumi-realtime"
 MARKER = "bmkg-parameter-revision-2026-11-17-maluku-tenggara"
 REVISION_NOTE = (
     '<p><strong>Pembaruan parameter BMKG (17 November 2026):</strong> '
