@@ -361,6 +361,10 @@ def daily_article(records, day):
             "comment_status": "closed"}
 
 
+class EditorialConflict(RuntimeError):
+    """Human-owned WordPress changes: never overwrite, skip only this event."""
+
+
 class WordPress:
     def __init__(self, user, password):
         if not user or not password:
@@ -527,25 +531,25 @@ class WordPress:
         if found:
             raw = found.get("content", {}).get("raw", "")
             if marker not in raw:
-                raise RuntimeError(f"Post {found['id']} has no Dataloka ownership marker")
+                raise EditorialConflict(f"Post {found['id']} has no Dataloka ownership marker")
             previous_digest = ledger.get("last_wp_digest")
             if not previous_digest:
                 if (hash_value(raw) != hash_value(payload["content"]) or
                     found.get("status") not in (status, "draft")):
-                    raise RuntimeError(
+                    raise EditorialConflict(
                         "Existing untracked WordPress post differs from bot payload; "
                         "manual reconciliation required"
                     )
                 previous_digest = hash_value(raw)
             if hash_value(raw) != previous_digest:
-                raise RuntimeError(f"Post {found['id']} edited manually; refusing overwrite")
+                raise EditorialConflict(f"Post {found['id']} edited manually; refusing overwrite")
             if found.get("status") == "publish" and status != "publish":
-                raise RuntimeError(f"Cannot downgrade published post {found['id']}")
+                raise EditorialConflict(f"Cannot downgrade published post {found['id']}")
 
             prior_media = ledger.get("media_id")
             current_media = int(found.get("featured_media") or 0)
             if prior_media and current_media not in (0, int(prior_media)):
-                raise RuntimeError(f"Featured image on post {found['id']} edited manually")
+                raise EditorialConflict(f"Featured image on post {found['id']} edited manually")
 
             # Check that old SEO metadata is readable before modifying existing posts.
             existing_meta = found.get("meta")
@@ -559,12 +563,12 @@ class WordPress:
             previous_yoast_digest = ledger.get("yoast_meta_digest")
             if previous_yoast_digest:
                 if hash_value(json.dumps(before, sort_keys=True, ensure_ascii=False)) != previous_yoast_digest:
-                    raise RuntimeError(
+                    raise EditorialConflict(
                         f"Yoast SEO fields on post {found['id']} edited manually; refusing overwrite"
                     )
             elif any(before[key] and before[key] != desired_yoast[key]
                      for key in YOAST_KEYS):
-                raise RuntimeError(
+                raise EditorialConflict(
                     f"Existing Yoast SEO fields on post {found['id']} differ; "
                     "refusing overwrite without editor reconciliation"
                 )
@@ -673,8 +677,12 @@ def events_task(mode, wp, now):
             continue
         print(f"{mode}: {status} M{event['magnitude']:.1f} {event['region']}")
         if mode != "dry-run":
-            record.update(wp.save(
-                payload, record, status, f"<!-- {MARKER}{record['key']} -->", event=event))
+            try:
+                record.update(wp.save(
+                    payload, record, status, f"<!-- {MARKER}{record['key']} -->", event=event))
+            except EditorialConflict as exc:
+                # A human-edited draft must not block all other earthquakes.
+                print(f"SKIP editorial conflict on event {record['key']}: {exc}", file=sys.stderr)
     if mode != "dry-run":
         state["events"] = [
             x for x in state["events"] if x.get("post_id") or
@@ -695,8 +703,12 @@ def daily_task(mode, wp, now):
     if mode == "dry-run":
         return
     old = state.setdefault("daily", {}).get(day.isoformat(), {})
-    result = wp.save(payload, old, "draft",
-                     f"<!-- dataloka-bmkg-daily:{day.isoformat()} -->")
+    try:
+        result = wp.save(payload, old, "draft",
+                         f"<!-- dataloka-bmkg-daily:{day.isoformat()} -->")
+    except EditorialConflict as exc:
+        print(f"SKIP daily editorial conflict {day}: {exc}", file=sys.stderr)
+        return
     state["daily"][day.isoformat()] = result
     STATE.write_text(json.dumps(state, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
 
