@@ -1,6 +1,50 @@
 {
   "version": 1,
+  "daily": {},
   "events": [
+    {
+      "key": "e46b62b06fb2cc",
+      "data": {
+        "key": "e46b62b06fb2cc",
+        "datetime": "2026-11-17T01:10:10Z",
+        "magnitude": 5.6,
+        "depth_km": 10.0,
+        "lat": -6.2,
+        "lon": 106.82,
+        "region": "Selatan Jawa",
+        "potential": "Tidak berpotensi tsunami",
+        "felt_info": "",
+        "felt": false,
+        "sources": [
+          "gempaterkini.json"
+        ]
+      }
+    },
+    {
+      "key": "2cba3dde5800ca",
+      "data": {
+        "key": "2cba3dde5800ca",
+        "datetime": "2026-11-17T00:49:17Z",
+        "magnitude": 4.8,
+        "depth_km": 2.0,
+        "lat": -8.22,
+        "lon": 120.66,
+        "region": "Pusat gempa berada di laut 49 km timur laut Ruteng, Manggarai",
+        "potential": "Gempa ini dirasakan untuk diteruskan pada masyarakat",
+        "felt_info": "III Kab. Manggarai",
+        "felt": true,
+        "sources": [
+          "autogempa.json",
+          "gempadirasakan.json"
+        ]
+      },
+      "post_id": 9057,
+      "media_id": 0,
+      "last_wp_digest": "a32cb7d84f88d72c57999ac51165fa20fb0db35dec2d4ccdc20b079d26e6da10",
+      "yoast_meta_digest": "8d7274854b5e95694cf96e5ea66c3ea793adb63feb21fb03add2b1fa69df37d9",
+      "status": "draft",
+      "last_payload_digest": "5f83651aa8c5d0999d5f3be68d2b4f1afe4c3617044ae1fa02693e4ff01d1709"
+    },
     {
       "key": "cec790483c9fbd",
       "data": {
@@ -15,14 +59,15 @@
         "felt_info": "III Nyalindung",
         "felt": true,
         "sources": [
-          "autogempa.json",
           "gempadirasakan.json"
         ]
       },
-      "post_id": 9041,
-      "last_wp_digest": "6fdab73b68d82bb9909359735ee3bfe146a1ea9660b8cdca1d3350b04122532f",
+      "post_id": 9058,
+      "media_id": 0,
+      "last_wp_digest": "68899c4e2c7e616c974dc0309ef5332bef8665d94f99bed65c26d42a0b23e325",
+      "yoast_meta_digest": "92dc1be4b64dfe12c056739bd9b4464d688475689176c5c2bf87495529a7352b",
       "status": "draft",
-      "last_payload_digest": "a018ba852f755609d57df7565e417ee0b6ab7b1e2d7807b513547c9f6da7ea94"
+      "last_payload_digest": "e03684099b7fc5e4ef0030c8e73162dec27a308519e7c18521fa5c8492ad2de2"
     },
     {
       "key": "4ca0ee78c9b4c0",
@@ -261,25 +306,6 @@
       }
     },
     {
-      "key": "b7b4f5fde73648",
-      "data": {
-        "key": "b7b4f5fde73648",
-        "datetime": "2026-11-10T01:53:28Z",
-        "magnitude": 5.4,
-        "depth_km": 84.0,
-        "lat": -8.02,
-        "lon": 130.49,
-        "region": "90 km BaratDaya TANIMBAR",
-        "potential": "Tidak berpotensi tsunami",
-        "felt_info": "III Saumlaki",
-        "felt": true,
-        "sources": [
-          "gempadirasakan.json",
-          "gempaterkini.json"
-        ]
-      }
-    },
-    {
       "key": "2ee2d310cae945",
       "data": {
         "key": "2ee2d310cae945",
@@ -334,6 +360,24 @@
       }
     },
     {
+      "key": "b7b4f5fde73648",
+      "data": {
+        "key": "b7b4f5fde73648",
+        "datetime": "2026-11-10T01:53:28Z",
+        "magnitude": 5.4,
+        "depth_km": 84.0,
+        "lat": -8.02,
+        "lon": 130.49,
+        "region": "90 km BaratDaya TANIMBAR",
+        "potential": "Tidak berpotensi tsunami",
+        "felt_info": "",
+        "felt": false,
+        "sources": [
+          "gempaterkini.json"
+        ]
+      }
+    },
+    {
       "key": "4cd3ed77114554",
       "data": {
         "key": "4cd3ed77114554",
@@ -350,26 +394,6 @@
           "gempaterkini.json"
         ]
       }
-    },
-    {
-      "key": "2cba3dde5800ca",
-      "data": {
-        "key": "2cba3dde5800ca",
-        "datetime": "2026-11-17T00:49:17Z",
-        "magnitude": 4.8,
-        "depth_km": 2.0,
-        "lat": -8.22,
-        "lon": 120.66,
-        "region": "Pusat gempa berada di laut 49 km timur laut Ruteng, Manggarai",
-        "potential": "Gempa ini dirasakan untuk diteruskan pada masyarakat",
-        "felt_info": "III Kab. Manggarai",
-        "felt": true,
-        "sources": [
-          "autogempa.json",
-          "gempadirasakan.json"
-        ]
-      }
     }
-  ],
-  "daily": {}
+  ]
 }
