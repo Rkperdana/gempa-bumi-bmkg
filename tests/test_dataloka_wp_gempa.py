@@ -358,8 +358,10 @@ class PublisherTests(unittest.TestCase):
         with mock.patch.object(p, "get_events", return_value=[event]), (
             mock.patch.object(p, "read_state", return_value=state)
         ):
-            with self.assertRaisesRegex(RuntimeError, "HTTP 403"):
-                p.events_task("live", BrokenWP(), now)
+            with mock.patch("sys.stderr", new_callable=io.StringIO) as errors:
+                with self.assertRaisesRegex(RuntimeError, "1 BMKG events still need WordPress retry"):
+                    p.events_task("live", BrokenWP(), now)
+                self.assertIn("HTTP 403", errors.getvalue())
 
     def test_delayed_felt_m48_becomes_draft_without_backfilling_old_m71(self):
         # At 15.45 WIB, Ruteng M4.8 is nearly eight hours old, so it must
