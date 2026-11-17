@@ -71,6 +71,7 @@ class PublisherTests(unittest.TestCase):
         self.assertRegex(result["content"],
                          r" \(RK/D-1\)</p><!-- dataloka-bmkg-daily:")
 
+    @unittest.skipUnless(importlib.util.find_spec("PIL") is not None, "Pillow tidak dipakai workflow dashboard BMKG")
     def test_map_jpeg_16_by_9_small_and_valid(self):
         from PIL import Image
         from scripts.dataloka_gempa_image import render
