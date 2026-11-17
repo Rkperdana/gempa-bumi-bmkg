@@ -87,11 +87,16 @@ class SEOOnlyUpdateTests(unittest.TestCase):
         self.assertEqual(wp.meta["_yoast_wpseo_title"],
                          self.old_meta["_yoast_wpseo_title"])
 
-    def test_human_edited_yoast_blocks_update(self):
+    def test_explicitly_requested_fields_can_replace_previous_editor_seo(self):
         wp = self.fake_wp(seo_modified=True)
-        with self.assertRaisesRegex(RuntimeError, "edited since"):
-            m.reconcile(wp, self.state)
-        self.assertEqual(wp.writes, [])
+        wp.meta["_yoast_wpseo_title"] = "Judul SEO yang telah diubah editor"
+        m.reconcile(wp, self.state)
+        self.assertEqual(len(wp.writes), 1)
+        self.assertEqual(
+            wp.meta["_yoast_wpseo_focuskw"], "gempa M4.8 di Ruteng Manggarai")
+        self.assertEqual(wp.meta["_yoast_wpseo_title"],
+                         "Judul SEO yang telah diubah editor")
+        self.assertEqual(set(wp.writes[0][2]["meta"]), set(m.EDITABLE_KEYS))
 
     def test_missing_bot_marker_blocks_update(self):
         wp = self.fake_wp(marker_present=False)
