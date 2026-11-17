@@ -3,6 +3,8 @@ import importlib.util
 import io
 import re
 import json
+import subprocess
+import sys
 import tempfile
 from unittest import mock
 from pathlib import Path
@@ -98,6 +100,47 @@ class PublisherTests(unittest.TestCase):
         with Image.open(io.BytesIO(jpg)) as im:
             self.assertEqual(im.size, (1200, 675))
             self.assertEqual(im.format, "JPEG")
+
+    @unittest.skipUnless(importlib.util.find_spec("PIL") is not None,
+                         "Pillow diperlukan untuk pengujian generator gambar")
+    def test_map_renderer_import_in_direct_actions_script_execution(self):
+        # Use a fresh Python process with repo root absent from sys.path.
+        # This reproduces `python scripts/dataloka_wp_gempa.py` in GitHub Actions.
+        code = """
+import importlib.util
+import io
+import sys
+from pathlib import Path
+filename = Path(sys.argv[1]).resolve()
+root = filename.parents[1]
+sys.path[:] = [str(filename.parent)] + [
+    value for value in sys.path
+    if value and Path(value).resolve() != root and value != str(filename.parent)
+]
+spec = importlib.util.spec_from_file_location("direct_actions_script", filename)
+publisher = importlib.util.module_from_spec(spec)
+spec.loader.exec_module(publisher)
+assert str(root) not in sys.path
+client = publisher.WordPress("test", "fake")
+client.call = lambda method, route, params=None, payload=None: (
+    [] if method == "GET" else {"id": 99})
+publisher.urllib.request.urlopen = lambda *args, **kwargs: io.BytesIO(b'{"id":99}')
+event = publisher.normalize({
+    "DateTime": "2026-11-17T01:10:10+00:00",
+    "Coordinates": "-6.2,106.82",
+    "Magnitude": "4.8",
+    "Kedalaman": "10 km",
+    "Wilayah": "Selatan Jawa",
+    "Dirasakan": "III",
+}, "gempadirasakan.json")
+assert client.cover_image(event) == 99
+assert str(root) in sys.path
+"""
+        outcome = subprocess.run(
+            [sys.executable, "-c", code, str(ROOT / "scripts" / "dataloka_wp_gempa.py")],
+            cwd=ROOT, text=True, capture_output=True, timeout=35,
+        )
+        self.assertEqual(outcome.returncode, 0, outcome.stdout + outcome.stderr)
 
     def test_wordpress_new_live_post_receives_featured_image(self):
         wp = p.WordPress("test_user", "fake_password")
