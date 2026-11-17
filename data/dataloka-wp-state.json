@@ -1,5 +1,356 @@
 {
   "version": 1,
-  "events": [],
+  "events": [
+    {
+      "key": "cec790483c9fbd",
+      "data": {
+        "key": "cec790483c9fbd",
+        "datetime": "2026-11-16T23:30:16Z",
+        "magnitude": 2.6,
+        "depth_km": 5.0,
+        "lat": -7.0,
+        "lon": 106.95,
+        "region": "Pusat gempa berada di darat 10 km selatan Kota Sukabumi",
+        "potential": "Gempa ini dirasakan untuk diteruskan pada masyarakat",
+        "felt_info": "III Nyalindung",
+        "felt": true,
+        "sources": [
+          "autogempa.json",
+          "gempadirasakan.json"
+        ]
+      },
+      "post_id": 9041,
+      "last_wp_digest": "6fdab73b68d82bb9909359735ee3bfe146a1ea9660b8cdca1d3350b04122532f",
+      "status": "draft",
+      "last_payload_digest": "a018ba852f755609d57df7565e417ee0b6ab7b1e2d7807b513547c9f6da7ea94"
+    },
+    {
+      "key": "4ca0ee78c9b4c0",
+      "data": {
+        "key": "4ca0ee78c9b4c0",
+        "datetime": "2026-11-16T21:11:20Z",
+        "magnitude": 7.1,
+        "depth_km": 115.0,
+        "lat": -6.03,
+        "lon": 131.62,
+        "region": "130 km BaratDaya MALUKUTENGGARA",
+        "potential": "Tidak berpotensi tsunami",
+        "felt_info": "III Saumlaki, III Tiakur, III Dobo, III Sorong, III Manokwari, III Manokwari Selatan, III Bintuni, III Tual, III Fakfak, III Kaimana, II Nabire, II Serui",
+        "felt": true,
+        "sources": [
+          "gempadirasakan.json",
+          "gempaterkini.json"
+        ]
+      }
+    },
+    {
+      "key": "5a2735a61ee0a8",
+      "data": {
+        "key": "5a2735a61ee0a8",
+        "datetime": "2026-11-16T11:36:57Z",
+        "magnitude": 3.8,
+        "depth_km": 10.0,
+        "lat": -5.41,
+        "lon": 104.6,
+        "region": "Pusat gempa berada di darat 12 km Barat Laut Tanggamus-Lampung",
+        "potential": "",
+        "felt_info": "III Tanggamus",
+        "felt": true,
+        "sources": [
+          "gempadirasakan.json"
+        ]
+      }
+    },
+    {
+      "key": "ce88ae583d5e74",
+      "data": {
+        "key": "ce88ae583d5e74",
+        "datetime": "2026-11-14T21:24:20Z",
+        "magnitude": 4.5,
+        "depth_km": 2.0,
+        "lat": -8.1,
+        "lon": 120.49,
+        "region": "Pusat gempa berada di laut 56 km utara Ruteng, Manggarai",
+        "potential": "",
+        "felt_info": "II Manggarai",
+        "felt": true,
+        "sources": [
+          "gempadirasakan.json"
+        ]
+      }
+    },
+    {
+      "key": "d733cdf9c4fbaa",
+      "data": {
+        "key": "d733cdf9c4fbaa",
+        "datetime": "2026-11-13T07:31:39Z",
+        "magnitude": 4.1,
+        "depth_km": 24.0,
+        "lat": -5.56,
+        "lon": 102.24,
+        "region": "Pusat gempa berada di laut 24 km selatan Enggano",
+        "potential": "",
+        "felt_info": "II - III Enggano",
+        "felt": true,
+        "sources": [
+          "gempadirasakan.json"
+        ]
+      }
+    },
+    {
+      "key": "9ed8f27f93d031",
+      "data": {
+        "key": "9ed8f27f93d031",
+        "datetime": "2026-11-13T04:49:34Z",
+        "magnitude": 4.9,
+        "depth_km": 17.0,
+        "lat": -8.22,
+        "lon": 116.77,
+        "region": "Pusat gempa berada di laut 29 km Barat Laut PULAUPANJANG",
+        "potential": "",
+        "felt_info": "IV Kab. Lombok Timur, III Kab. Lombok Tengah, III Kab. Lombok Barat, II-III Kota Mataram, II Kab. Sumbawa",
+        "felt": true,
+        "sources": [
+          "gempadirasakan.json"
+        ]
+      }
+    },
+    {
+      "key": "f2c3d197d4d102",
+      "data": {
+        "key": "f2c3d197d4d102",
+        "datetime": "2026-11-12T19:14:40Z",
+        "magnitude": 4.6,
+        "depth_km": 17.0,
+        "lat": -8.2,
+        "lon": 116.76,
+        "region": "Pusat gempa berada di laut 32 km barat laut Pulau Panjang",
+        "potential": "",
+        "felt_info": "III Kab. Sumbawa, III Kab. Sumbawa Barat, III Kab. Lombok Utara, III Kab. Lombok Timur, II Kota Mataram",
+        "felt": true,
+        "sources": [
+          "gempadirasakan.json"
+        ]
+      }
+    },
+    {
+      "key": "7641d577918d30",
+      "data": {
+        "key": "7641d577918d30",
+        "datetime": "2026-11-12T14:19:05Z",
+        "magnitude": 1.9,
+        "depth_km": 17.0,
+        "lat": -3.95,
+        "lon": 121.66,
+        "region": "Pusat gempa berada di darat 13 km utara Kolaka",
+        "potential": "",
+        "felt_info": "II Kolaka",
+        "felt": true,
+        "sources": [
+          "gempadirasakan.json"
+        ]
+      }
+    },
+    {
+      "key": "906a019d2d0682",
+      "data": {
+        "key": "906a019d2d0682",
+        "datetime": "2026-11-12T11:16:30Z",
+        "magnitude": 4.8,
+        "depth_km": 13.0,
+        "lat": -8.06,
+        "lon": 120.81,
+        "region": "Pusat gempa berada di laut 73 km Timur Laut Ruteng, Manggarai",
+        "potential": "",
+        "felt_info": "II Kab. Manggarai",
+        "felt": true,
+        "sources": [
+          "gempadirasakan.json"
+        ]
+      }
+    },
+    {
+      "key": "dbe1b338ad0450",
+      "data": {
+        "key": "dbe1b338ad0450",
+        "datetime": "2026-11-10T23:05:21Z",
+        "magnitude": 4.3,
+        "depth_km": 5.0,
+        "lat": 4.15,
+        "lon": 97.49,
+        "region": "Pusat gempa berada di darat 23 km timur laut Kab. Gayo Lues",
+        "potential": "",
+        "felt_info": "III Gayo Lues, II-III Aceh Tengah, II-III Bener Meriah",
+        "felt": true,
+        "sources": [
+          "gempadirasakan.json"
+        ]
+      }
+    },
+    {
+      "key": "6644db643aaa54",
+      "data": {
+        "key": "6644db643aaa54",
+        "datetime": "2026-11-10T22:09:09Z",
+        "magnitude": 4.9,
+        "depth_km": 4.0,
+        "lat": 4.05,
+        "lon": 97.34,
+        "region": "Pusat gempa berada di darat 6 km utara Kab. Gayo Lues",
+        "potential": "",
+        "felt_info": "III-IV Gayo Lues, III-IV Aceh Timur, III Aceh Tengah, III Bener Meriah, III Lhokseumawe",
+        "felt": true,
+        "sources": [
+          "gempadirasakan.json"
+        ]
+      }
+    },
+    {
+      "key": "9302050448d713",
+      "data": {
+        "key": "9302050448d713",
+        "datetime": "2026-11-10T16:04:15Z",
+        "magnitude": 4.0,
+        "depth_km": 5.0,
+        "lat": -4.29,
+        "lon": 122.38,
+        "region": "Pusat gempa berada di darat 12 km timur Konawe Selatan",
+        "potential": "",
+        "felt_info": "IV Konawe Selatan, III Kendari",
+        "felt": true,
+        "sources": [
+          "gempadirasakan.json"
+        ]
+      }
+    },
+    {
+      "key": "43843fa13b24c5",
+      "data": {
+        "key": "43843fa13b24c5",
+        "datetime": "2026-11-10T14:31:38Z",
+        "magnitude": 4.0,
+        "depth_km": 102.0,
+        "lat": -7.04,
+        "lon": 106.98,
+        "region": "Pusat gempa berada di darat 15 km selatan Kota Sukabumi",
+        "potential": "",
+        "felt_info": "III Cianjur, II Sukabumi, II - III Ciwidey, II - III Pangalengan, II - III Nagrak, II Kec. Kebonpedes, II Cihanjuang, II Padalarang, II Cihideung, II Ngamprah, II Cisarua, II Lembang, II Karawang Selatan",
+        "felt": true,
+        "sources": [
+          "gempadirasakan.json"
+        ]
+      }
+    },
+    {
+      "key": "949d050ce63a1f",
+      "data": {
+        "key": "949d050ce63a1f",
+        "datetime": "2026-11-10T08:34:04Z",
+        "magnitude": 5.3,
+        "depth_km": 10.0,
+        "lat": -0.19,
+        "lon": 132.98,
+        "region": "69 km BaratLaut KEBARMANOKWARI-PAPUABRT",
+        "potential": "Tidak berpotensi tsunami",
+        "felt_info": "II - III Manokwari",
+        "felt": true,
+        "sources": [
+          "gempadirasakan.json",
+          "gempaterkini.json"
+        ]
+      }
+    },
+    {
+      "key": "b7b4f5fde73648",
+      "data": {
+        "key": "b7b4f5fde73648",
+        "datetime": "2026-11-10T01:53:28Z",
+        "magnitude": 5.4,
+        "depth_km": 84.0,
+        "lat": -8.02,
+        "lon": 130.49,
+        "region": "90 km BaratDaya TANIMBAR",
+        "potential": "Tidak berpotensi tsunami",
+        "felt_info": "III Saumlaki",
+        "felt": true,
+        "sources": [
+          "gempadirasakan.json",
+          "gempaterkini.json"
+        ]
+      }
+    },
+    {
+      "key": "2ee2d310cae945",
+      "data": {
+        "key": "2ee2d310cae945",
+        "datetime": "2026-11-15T20:51:57Z",
+        "magnitude": 5.4,
+        "depth_km": 323.0,
+        "lat": -5.97,
+        "lon": 128.82,
+        "region": "265 km Tenggara BURUSELATAN-MALUKU",
+        "potential": "Tidak berpotensi tsunami",
+        "felt_info": "",
+        "felt": false,
+        "sources": [
+          "gempaterkini.json"
+        ]
+      }
+    },
+    {
+      "key": "0ea17721b3c1cc",
+      "data": {
+        "key": "0ea17721b3c1cc",
+        "datetime": "2026-11-15T15:41:15Z",
+        "magnitude": 5.4,
+        "depth_km": 465.0,
+        "lat": 1.79,
+        "lon": 122.3,
+        "region": "127 km BaratLaut GORONTALOUTARA-GORONTALO",
+        "potential": "Tidak berpotensi tsunami",
+        "felt_info": "",
+        "felt": false,
+        "sources": [
+          "gempaterkini.json"
+        ]
+      }
+    },
+    {
+      "key": "01629aad592e63",
+      "data": {
+        "key": "01629aad592e63",
+        "datetime": "2026-11-10T15:51:37Z",
+        "magnitude": 5.1,
+        "depth_km": 10.0,
+        "lat": -0.93,
+        "lon": 128.6,
+        "region": "116 km TimurLaut HALMAHERASELATAN-MALUT",
+        "potential": "Tidak berpotensi tsunami",
+        "felt_info": "",
+        "felt": false,
+        "sources": [
+          "gempaterkini.json"
+        ]
+      }
+    },
+    {
+      "key": "4cd3ed77114554",
+      "data": {
+        "key": "4cd3ed77114554",
+        "datetime": "2026-11-09T09:48:29Z",
+        "magnitude": 5.5,
+        "depth_km": 10.0,
+        "lat": -2.93,
+        "lon": 130.44,
+        "region": "20 km BaratLaut SERAMBAGIANTIMUR-MALUKU",
+        "potential": "Tidak berpotensi tsunami",
+        "felt_info": "",
+        "felt": false,
+        "sources": [
+          "gempaterkini.json"
+        ]
+      }
+    }
+  ],
   "daily": {}
 }
