@@ -2,6 +2,9 @@ import datetime as dt
 import importlib.util
 import io
 import re
+import json
+import tempfile
+from unittest import mock
 from pathlib import Path
 import unittest
 
@@ -297,6 +300,66 @@ class PublisherTests(unittest.TestCase):
             "gempa M5,0–5,4",
             fields["yoast_meta"]["_yoast_wpseo_focuskw"]
         )
+
+    def test_human_edited_draft_does_not_block_next_m55_post(self):
+        old = self.event(
+            feed="gempadirasakan.json",
+            DateTime="2026-11-17T01:15:10+00:00",
+            Magnitude="2.6", Dirasakan="III Sukabumi")
+        new = self.event(
+            DateTime="2026-11-17T01:32:10+00:00",
+            Coordinates="-7.20,107.82", Magnitude="5.6")
+        state = {
+            "version": 1, "daily": {},
+            "events": [{"key": old["key"], "data": old,
+                        "post_id": 9041, "status": "draft"}],
+        }
+        calls = []
+
+        class FakeWP:
+            def save(self, payload, record, status, marker, event=None):
+                calls.append((event["key"], status))
+                if record.get("post_id") == 9041:
+                    raise p.EditorialConflict(
+                        "Post 9041 edited manually; refusing overwrite")
+                return {
+                    "post_id": 9200,
+                    "status": "publish",
+                    "media_id": 500,
+                    "last_wp_digest": p.hash_value(payload["content"]),
+                    "last_payload_digest": p.hash_value(json.dumps(
+                        payload, ensure_ascii=False, sort_keys=True)),
+                }
+
+        now = dt.datetime(2026, 11, 17, 1, 55, tzinfo=dt.timezone.utc)
+        with tempfile.TemporaryDirectory() as temp, (
+            mock.patch.object(p, "get_events", return_value=[old, new])
+        ), mock.patch.object(p, "read_state", return_value=state), (
+            mock.patch.object(p, "STATE", Path(temp) / "ledger.json")
+        ):
+            p.events_task("live", FakeWP(), now)
+            saved = json.loads((Path(temp) / "ledger.json").read_text())
+        self.assertEqual(len(calls), 2)
+        self.assertEqual(calls[1][1], "publish")
+        self.assertEqual(next(item for item in saved["events"]
+                              if item.get("post_id") == 9041)["status"], "draft")
+        self.assertEqual(next(item for item in saved["events"]
+                              if item.get("post_id") == 9200)["status"], "publish")
+
+    def test_api_failure_still_fails_workflow(self):
+        event = self.event()
+        state = {"version": 1, "daily": {}, "events": []}
+
+        class BrokenWP:
+            def save(self, *args, **kwargs):
+                raise RuntimeError("WordPress returned HTTP 403")
+
+        now = dt.datetime(2026, 11, 17, 1, 55, tzinfo=dt.timezone.utc)
+        with mock.patch.object(p, "get_events", return_value=[event]), (
+            mock.patch.object(p, "read_state", return_value=state)
+        ):
+            with self.assertRaisesRegex(RuntimeError, "HTTP 403"):
+                p.events_task("live", BrokenWP(), now)
 
     def test_site_is_dataloka_only(self):
         self.assertEqual(p.WP_URL, "https://dataloka.id")
