@@ -60,7 +60,6 @@ jobs:
       TASK: ${{ github.event_name == 'workflow_dispatch' && inputs.task || (github.event.schedule == '15 17 * * *' && 'daily' || 'events') }}
       WP_USERNAME: ${{ secrets.DATALOKA_WP_USERNAME }}
       WP_APP_PASSWORD: ${{ secrets.DATALOKA_WP_APP_PASSWORD }}
-      WP_CATEGORY_ID: ${{ vars.DATALOKA_WP_CATEGORY_ID }}
     steps:
       - uses: actions/checkout@v4
         with:
