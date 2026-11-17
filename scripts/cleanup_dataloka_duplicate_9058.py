@@ -7,7 +7,9 @@ matches the exact SHA-256 digest confirmed in the production ledger.
 """
 import os
 import sys
+from pathlib import Path
 
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from scripts.dataloka_wp_gempa import WordPress, hash_value
 
 ORIGINAL_ID = 9041
