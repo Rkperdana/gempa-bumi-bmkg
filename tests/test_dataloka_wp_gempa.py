@@ -306,6 +306,7 @@ class PublisherTests(unittest.TestCase):
         wp.by_id = lambda post_id: {
             "id": post_id, "status": "draft",
             "slug": updated["slug"],
+            "title": {"raw": p.seo_title(event, "17 November 2026") if not writes else updated["title"]},
             "content": {"raw": previous["content"] if not writes else updated["content"]},
             "featured_media": 0 if not writes else 881,
             "tags": [10],
@@ -326,6 +327,27 @@ class PublisherTests(unittest.TestCase):
         self.assertEqual(writes[0][2]["content"], updated["content"])
         self.assertNotIn("slug", writes[0][2])
         self.assertEqual(response["media_id"], 881)
+
+    def test_manually_edited_headline_is_not_overwritten_or_given_image(self):
+        wp = p.WordPress("test", "fake")
+        event = self.event(feed="gempadirasakan.json",
+                           Magnitude="4.8", Dirasakan="III")
+        updated = p.article(event)
+        seen = []
+        wp.by_slug = lambda slug: {
+            "id": 9110, "status": "draft",
+            "slug": updated["slug"],
+            "title": {"raw": "Judul Redaksi Khusus yang Sudah Disunting"},
+            "content": {"raw": updated["content"]},
+            "featured_media": 0,
+            "meta": updated["yoast_meta"],
+        }
+        wp.cover_image = lambda event: seen.append("image") or 800
+        wp.call = lambda *a, **k: seen.append("write")
+        with self.assertRaisesRegex(p.EditorialConflict, "Title"):
+            wp.save(updated, {}, "draft",
+                    f"<!-- {p.MARKER}{event['key']} -->", event=event)
+        self.assertEqual(seen, [])
 
     def test_new_draft_also_receives_featured_map(self):
         wp = p.WordPress("test", "fake")
