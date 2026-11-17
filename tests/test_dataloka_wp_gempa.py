@@ -282,7 +282,7 @@ assert str(root) in sys.path
         )
         self.assertLessEqual(len(fields["excerpt"]), 160)
         self.assertIn("pukul 08.10 WIB", fields["excerpt"])
-        self.assertIn("tidak berpotensi tsunami", fields["excerpt"])
+        self.assertIn("Simak informasi resmi BMKG.", fields["excerpt"])
         self.assertIn("Jawa", fields["tag_names"])
         self.assertTrue(all(" " not in tag for tag in fields["tag_names"]))
         self.assertEqual(fields["content"].count("<p>"), 4)
@@ -291,7 +291,7 @@ assert str(root) in sys.path
         )
         self.assertEqual(
             fields["yoast_meta"]["_yoast_wpseo_focuskw"],
-            "gempa M5,6 di Selatan Jawa",
+            "gempa M5.6 di Selatan Jawa",
         )
         self.assertNotEqual(
             fields["yoast_meta"]["_yoast_wpseo_title"], fields["title"]
@@ -308,6 +308,66 @@ assert str(root) in sys.path
         self.assertIn("gempa m5,6 di selatan jawa", fields["content"].casefold())
         self.assertTrue(fields["content"].startswith("<p>Dataloka.id - "))
         self.assertRegex(fields["content"], r" \(RK/D-1\)</p><!-- dataloka-bmkg:")
+
+    def test_seo_description_exact_bmkg_example_and_dot_keyphrase(self):
+        event = self.event(
+            feed="gempadirasakan.json",
+            DateTime="2026-11-17T00:49:17+00:00",
+            Magnitude="4.8", Kedalaman="2 km",
+            Wilayah="Pusat gempa berada di laut 49 km timur laut Ruteng, Manggarai",
+            Dirasakan="III Kab. Manggarai",
+        )
+        fields = p.article(event)
+        expected_description = (
+            "Pusat gempa M4,8 berada di laut 49 km timur laut Ruteng, "
+            "Manggarai pada 17 November 2026, pukul 07.49 WIB. "
+            "Simak informasi resmi BMKG."
+        )
+        self.assertEqual(fields["excerpt"], expected_description)
+        self.assertEqual(
+            fields["yoast_meta"]["_yoast_wpseo_metadesc"],
+            expected_description,
+        )
+        self.assertEqual(
+            fields["yoast_meta"]["_yoast_wpseo_focuskw"],
+            "gempa M4.8 di Ruteng Manggarai",
+        )
+        self.assertNotIn(",", fields["yoast_meta"]["_yoast_wpseo_focuskw"])
+        self.assertLessEqual(len(expected_description), 160)
+
+    def test_no_duplicate_epicenter_prefix_and_long_meta_stays_under_limit(self):
+        event = self.event(
+            Wilayah=("Pusat gempa berada di laut 123 km barat laut "
+                     "Kabupaten Administrasi Kepulauan Seribu dan pulau-pulau sekitarnya "
+                     "di perairan utara Pulau Jawa, Indonesia"),
+            Dirasakan="III",
+        )
+        fields = p.article(event)
+        desc = fields["yoast_meta"]["_yoast_wpseo_metadesc"]
+        self.assertTrue(desc.startswith("Pusat gempa M5,6 "))
+        self.assertNotIn("Pusat gempa M5,6 Pusat gempa", desc)
+        self.assertTrue(desc.endswith("Simak informasi resmi BMKG."))
+        self.assertIn("17 November 2026, pukul 08.10 WIB.", desc)
+        self.assertLessEqual(len(desc), 160)
+        focus = fields["yoast_meta"]["_yoast_wpseo_focuskw"]
+        self.assertIn("M5.6", focus)
+        self.assertNotIn(",", focus)
+
+    def test_bmkg_distance_only_region_keeps_distance_not_invents_sea(self):
+        event = self.event(
+            Wilayah="130 km BaratDaya MALUKUTENGGARA",
+            Magnitude="6.8",
+        )
+        fields = p.article(event)
+        desc = fields["yoast_meta"]["_yoast_wpseo_metadesc"]
+        self.assertTrue(desc.startswith(
+            "Pusat gempa M6,8 berada 130 km BaratDaya MALUKUTENGGARA"
+        ))
+        self.assertNotIn("berada di laut", desc)
+        self.assertEqual(
+            fields["yoast_meta"]["_yoast_wpseo_focuskw"],
+            "gempa M6.8 di Maluku Tenggara",
+        )
 
     def test_editorial_headline_felt_manggarai_uses_place_not_raw_bmkg_sentence(self):
         event = self.event(
