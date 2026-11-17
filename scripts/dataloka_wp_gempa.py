@@ -300,23 +300,47 @@ def seo_slug(e, date_iso):
     return f"gempa-{region}-{date_iso}-{e['key'][:8]}"
 
 
+def focus_keyphrase(e):
+    """Search keyphrase uses decimal DOT, with no comma punctuation anywhere."""
+    place = re.sub(r"[,.;:]+", " ", editorial_region(e["region"]))
+    place = " ".join(place.split())
+    return f"gempa M{float(e['magnitude']):.1f} di {place}"
+
+
 def seo_excerpt(e, date, time, depth):
+    """BMKG description: explicit epicenter, timestamp, and official attribution.
+
+    Unlike editorial copy, meta descriptions keep the Indonesian magnitude
+    comma. Never invent epicenter distance or a tsunami clearance.
+    """
     mag = magnitude(e["magnitude"])
     region = readable_region(e["region"])
-    prefix = f"Gempa M{mag} di {region} pada {date}, pukul {time} WIB. "
-    middle = f"Kedalaman {depth} km. "
-    ending = ("BMKG: tidak berpotensi tsunami." if confirmed_no_tsunami(e)
-              else "Simak informasi resmi BMKG.")
-    summary = prefix + middle + ending
+    # Felt/auto BMKG feed often provides "Pusat gempa berada di laut 49 km ...".
+    # Avoid accidentally producing "Pusat gempa M4,8 Pusat gempa berada ...".
+    if region.casefold().startswith("pusat gempa berada "):
+        clause = region[len("Pusat gempa "):]
+    elif re.match(r"^\d+(?:[.,]\d+)?\s*km\b", region):
+        clause = "berada " + region
+    else:
+        clause = "berada di " + region
+    ending = "Simak informasi resmi BMKG."
+    suffix = f" pada {date}, pukul {time} WIB. {ending}"
+    summary = f"Pusat gempa M{mag} {clause}{suffix}"
     if len(summary) <= 160:
         return summary
-    # Preserve the factual tsunami wording by reducing the location, not the claim.
-    fixed = f"Gempa M{mag} di " + f" pada {date}. " + middle + ending
-    budget = 160 - len(fixed) - 1
-    if budget > 15:
-        short = region[:budget].rsplit(" ", 1)[0] or region[:budget]
-        return f"Gempa M{mag} di {short.rstrip(' ,')}… pada {date}. " + middle + ending
-    return f"Gempa M{mag} pada {date}. " + middle + ending
+
+    # If the official full location is too long, retain a real, shorter
+    # location derived from BMKG; don't truncate the date or time.
+    short_location = editorial_region(e["region"])
+    intro = f"Pusat gempa M{mag} berada di sekitar "
+    budget = 160 - len(intro) - len(suffix)
+    if budget >= 6:
+        words = short_location.split()
+        while words and len(" ".join(words)) > budget:
+            words.pop()
+        if words:
+            return f"{intro}{' '.join(words)}{suffix}"
+    return f"Pusat gempa M{mag} terjadi{suffix}"
 
 
 def editorial_tags(e):
@@ -385,7 +409,7 @@ def article(e):
     # Hidden provenance marker is adjacent to the final closing tag, with no newline.
     body += f"<!-- {MARKER}{e['key']} -->"
     yoast_meta = {
-        "_yoast_wpseo_focuskw": f"gempa M{mag} di {readable_region(e['region'])}",
+        "_yoast_wpseo_focuskw": focus_keyphrase(e),
         "_yoast_wpseo_title": seo_title(e, date),
         "_yoast_wpseo_metadesc": seo_excerpt(e, date, time, depth),
     }
