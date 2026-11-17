@@ -648,6 +648,16 @@ class WordPress:
                 previous_digest = hash_value(raw)
             if hash_value(raw) != previous_digest:
                 raise EditorialConflict(f"Post {found['id']} edited manually; refusing overwrite")
+            # Preserve headlines rewritten by the editor, not just body and SEO.
+            # The previous bot used the Yoast SEO title as the WordPress title.
+            old_headline = desired_yoast["_yoast_wpseo_title"]
+            current_headline = (found.get("title") or {}).get("raw")
+            if event and isinstance(current_headline, str) and current_headline.strip():
+                current_headline = html.unescape(current_headline).strip()
+                allowed = {old_headline, html.unescape(payload["title"])}
+                if current_headline not in allowed:
+                    raise EditorialConflict(
+                        f"Title on post {found['id']} edited manually; refusing overwrite")
             if found.get("status") == "publish" and status != "publish":
                 raise EditorialConflict(f"Cannot downgrade published post {found['id']}")
 
