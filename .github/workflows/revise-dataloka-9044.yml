@@ -1,0 +1,51 @@
+name: Dataloka | Koreksi BMKG artikel 9044 (sekali)
+
+on:
+  pull_request:
+    paths:
+      - 'scripts/revise_dataloka_9044.py'
+      - 'tests/test_revise_dataloka_9044.py'
+      - '.github/workflows/revise-dataloka-9044.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/revise_dataloka_9044.py'
+      - 'tests/test_revise_dataloka_9044.py'
+      - '.github/workflows/revise-dataloka-9044.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: dataloka-wp-earthquake-only
+  cancel-in-progress: false
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+      - name: Syntax and one-off correction tests
+        run: |
+          python -m py_compile scripts/revise_dataloka_9044.py
+          python -m unittest discover -s tests -p test_revise_dataloka_9044.py -v
+
+  update-existing-article:
+    needs: verify
+    if: github.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    env:
+      DATALOKA_WP_USERNAME: ${{ secrets.DATALOKA_WP_USERNAME }}
+      DATALOKA_WP_APP_PASSWORD: ${{ secrets.DATALOKA_WP_APP_PASSWORD }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+      - name: Correct published post 9044 in place, never create a duplicate
+        run: python scripts/revise_dataloka_9044.py
