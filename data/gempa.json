@@ -2,7 +2,7 @@
   "schema_version": 2,
   "status": "live",
   "data_origin": "realtime_table",
-  "checked_at": "2026-11-17T09:15:59.230882Z",
+  "checked_at": "2026-11-17T10:46:08.506819Z",
   "source": "Badan Meteorologi, Klimatologi, dan Geofisika (BMKG)",
   "coverage_note": "200 gempa terbaru pada tabel real-time BMKG (jumlah aktual dapat kurang dari 200), termasuk episentrum di luar Indonesia; gempa dirasakan dilengkapi dari feed terpisah. Bukan total seluruh gempa dalam periode tersebut.",
   "sources": {
@@ -13,6 +13,29 @@
   },
   "errors": [],
   "events": [
+    {
+      "id": "62816347137f3d",
+      "datetime": "2026-11-17T10:06:20Z",
+      "magnitude": 4.2,
+      "depth_km": 117.0,
+      "lat": -5.95,
+      "lon": 130.56,
+      "region": "Banda Sea",
+      "felt": false,
+      "felt_info": "",
+      "tsunami": false,
+      "potential_text": "",
+      "significant": false,
+      "source_types": [
+        "realtime"
+      ],
+      "source_urls": [
+        "https://www.bmkg.go.id/gempabumi/gempabumi-realtime"
+      ],
+      "shakemap": "",
+      "first_seen_at": "2026-11-17T10:46:08.506819Z",
+      "last_updated_at": "2026-11-17T10:46:08.506819Z"
+    },
     {
       "id": "b3f59a14c7a755",
       "datetime": "2026-11-17T09:08:03Z",
@@ -130,11 +153,11 @@
     },
     {
       "id": "73a333858e1bb9",
-      "datetime": "2026-11-17T03:52:28Z",
+      "datetime": "2026-11-17T03:52:27Z",
       "magnitude": 5.3,
       "depth_km": 96.0,
-      "lat": -14.83,
-      "lon": 167.47,
+      "lat": -14.84,
+      "lon": 167.48,
       "region": "Vanuatu Islands",
       "felt": false,
       "felt_info": "",
@@ -149,7 +172,7 @@
       ],
       "shakemap": "",
       "first_seen_at": "2026-11-17T04:34:52.391753Z",
-      "last_updated_at": "2026-11-17T04:34:52.391753Z"
+      "last_updated_at": "2026-11-17T10:46:08.506819Z"
     },
     {
       "id": "2cbac78bb5ec40",
@@ -4619,29 +4642,6 @@
       "shakemap": "",
       "first_seen_at": "2026-11-11T03:06:49.783367Z",
       "last_updated_at": "2026-11-11T03:06:49.783367Z"
-    },
-    {
-      "id": "e10557ec489647",
-      "datetime": "2026-11-10T19:44:38Z",
-      "magnitude": 2.9,
-      "depth_km": 10.0,
-      "lat": -2.9,
-      "lon": 127.72,
-      "region": "Ceram Sea",
-      "felt": false,
-      "felt_info": "",
-      "tsunami": false,
-      "potential_text": "",
-      "significant": false,
-      "source_types": [
-        "realtime"
-      ],
-      "source_urls": [
-        "https://www.bmkg.go.id/gempabumi/gempabumi-realtime"
-      ],
-      "shakemap": "",
-      "first_seen_at": "2026-11-10T22:03:13.301163Z",
-      "last_updated_at": "2026-11-10T22:03:13.301163Z"
     }
   ]
 }
