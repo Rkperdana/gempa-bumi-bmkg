@@ -67,6 +67,7 @@ class PublisherTests(unittest.TestCase):
         self.assertNotIn("RKP", body)
         self.assertNotIn("LD1", body)
         self.assertEqual(body.count("<p>"), 4)
+        self.assertTrue(body.startswith("<p>Dataloka.id - "))
         self.assertRegex(body, r" \(RK/D-1\)</p><!-- dataloka-bmkg:")
         self.assertNotIn("\n", body)
         self.assertIn("6,20° LS", body)
@@ -84,6 +85,7 @@ class PublisherTests(unittest.TestCase):
         a = self.event(Magnitude="5.2")
         result = p.daily_article([{"data": a}], dt.date(2026, 11, 17))
         self.assertEqual(result["content"].count("<p>"), 4)
+        self.assertTrue(result["content"].startswith("<p>Dataloka.id - "))
         self.assertRegex(result["content"],
                          r" \(RK/D-1\)</p><!-- dataloka-bmkg-daily:")
 
@@ -248,9 +250,11 @@ class PublisherTests(unittest.TestCase):
             fields["yoast_meta"]["_yoast_wpseo_focuskw"],
             "gempa M5,6 di Selatan Jawa",
         )
-        self.assertEqual(
+        self.assertNotEqual(
             fields["yoast_meta"]["_yoast_wpseo_title"], fields["title"]
         )
+        self.assertIn("2026", fields["yoast_meta"]["_yoast_wpseo_title"])
+        self.assertIn("BMKG: Tidak Berpotensi Tsunami", fields["title"])
         self.assertEqual(
             fields["yoast_meta"]["_yoast_wpseo_metadesc"],
             fields["excerpt"]
@@ -259,7 +263,115 @@ class PublisherTests(unittest.TestCase):
             len(fields["yoast_meta"]["_yoast_wpseo_metadesc"]), 160
         )
         self.assertIn("gempa m5,6 di selatan jawa", fields["content"].casefold())
+        self.assertTrue(fields["content"].startswith("<p>Dataloka.id - "))
         self.assertRegex(fields["content"], r" \(RK/D-1\)</p><!-- dataloka-bmkg:")
+
+    def test_editorial_headline_felt_manggarai_uses_place_not_raw_bmkg_sentence(self):
+        event = self.event(
+            feed="gempadirasakan.json",
+            Magnitude="4.8",
+            Wilayah="Pusat gempa berada di laut 49 km timur laut Ruteng, Manggarai",
+            Dirasakan="III Kab. Manggarai")
+        result = p.article(event)
+        self.assertEqual(
+            result["title"],
+            "Gempa M4,8 di Ruteng, Manggarai, Terasa hingga III MMI")
+        self.assertTrue(result["content"].startswith("<p>Dataloka.id - "))
+        self.assertNotIn("Pusat gempa berada", result["title"])
+        self.assertIn("Pusat gempa berada", result["content"])
+        self.assertNotEqual(result["title"], result["yoast_meta"]["_yoast_wpseo_title"])
+
+    def test_existing_unedited_draft_gets_new_headline_lead_and_featured_map(self):
+        wp = p.WordPress("test_user", "fake_password")
+        event = self.event(
+            feed="gempadirasakan.json",
+            Magnitude="4.8",
+            Wilayah="Pusat gempa berada di laut 49 km timur laut Ruteng, Manggarai",
+            Dirasakan="III Kab. Manggarai")
+        updated = p.article(event)
+        previous = dict(updated)
+        previous["content"] = updated["content"].replace(
+            "<p>Dataloka.id - ", "<p>", 1)
+        previous["title"] = p.seo_title(
+            event, "17 November 2026")
+        ledger = {
+            "post_id": 9057,
+            "status": "draft",
+            "media_id": 0,
+            "last_wp_digest": p.hash_value(previous["content"]),
+        }
+        writes = []
+        image_calls = []
+        wp.cover_image = lambda quake: (image_calls.append(quake["key"]) or 881)
+        wp.by_id = lambda post_id: {
+            "id": post_id, "status": "draft",
+            "slug": updated["slug"],
+            "title": {"raw": p.seo_title(event, "17 November 2026") if not writes else updated["title"]},
+            "content": {"raw": previous["content"] if not writes else updated["content"]},
+            "featured_media": 0 if not writes else 881,
+            "tags": [10],
+            "meta": dict(updated["yoast_meta"]),
+        }
+        wp.call = lambda method, route, params=None, payload=None: (
+            writes.append((method, route, payload)) or {"id": 9057}
+        )
+        wp.berita_category_id = lambda: 43
+        response = wp.save(updated, ledger, "draft",
+                           f"<!-- {p.MARKER}{event['key']} -->", event=event)
+        self.assertEqual(image_calls, [event["key"]])
+        self.assertEqual(len(writes), 1)
+        self.assertEqual(writes[0][1], "posts/9057")
+        self.assertEqual(writes[0][2]["featured_media"], 881)
+        self.assertEqual(writes[0][2]["status"], "draft")
+        self.assertEqual(writes[0][2]["title"], updated["title"])
+        self.assertEqual(writes[0][2]["content"], updated["content"])
+        self.assertNotIn("slug", writes[0][2])
+        self.assertEqual(response["media_id"], 881)
+
+    def test_manually_edited_headline_is_not_overwritten_or_given_image(self):
+        wp = p.WordPress("test", "fake")
+        event = self.event(feed="gempadirasakan.json",
+                           Magnitude="4.8", Dirasakan="III")
+        updated = p.article(event)
+        seen = []
+        wp.by_slug = lambda slug: {
+            "id": 9110, "status": "draft",
+            "slug": updated["slug"],
+            "title": {"raw": "Judul Redaksi Khusus yang Sudah Disunting"},
+            "content": {"raw": updated["content"]},
+            "featured_media": 0,
+            "meta": updated["yoast_meta"],
+        }
+        wp.cover_image = lambda event: seen.append("image") or 800
+        wp.call = lambda *a, **k: seen.append("write")
+        with self.assertRaisesRegex(p.EditorialConflict, "Title"):
+            wp.save(updated, {}, "draft",
+                    f"<!-- {p.MARKER}{event['key']} -->", event=event)
+        self.assertEqual(seen, [])
+
+    def test_new_draft_also_receives_featured_map(self):
+        wp = p.WordPress("test", "fake")
+        event = self.event(feed="gempadirasakan.json",
+                           Magnitude="4.8", Dirasakan="III")
+        payload = p.article(event)
+        wp.by_slug = lambda slug: None
+        wp.resolve_tags = lambda names: [10]
+        wp.berita_category_id = lambda: 43
+        wp.cover_image = lambda quake: 801
+        writes = []
+        wp.call = lambda method, route, params=None, payload=None: (
+            writes.append((route, payload)) or {"id": 9100})
+        wp.by_id = lambda post_id: {
+            "id": post_id, "status": "draft",
+            "slug": payload["slug"], "content": {"raw": payload["content"]},
+            "featured_media": 801, "meta": dict(payload["yoast_meta"]),
+        }
+        outcome = wp.save(payload, {}, "draft",
+                          f"<!-- {p.MARKER}{event['key']} -->", event=event)
+        self.assertEqual(len(writes), 1)
+        self.assertEqual(writes[0][0], "posts")
+        self.assertEqual(writes[0][1]["featured_media"], 801)
+        self.assertEqual(outcome["media_id"], 801)
 
     def test_berita_id_lookup_and_cache(self):
         wp = p.WordPress("test", "fake")

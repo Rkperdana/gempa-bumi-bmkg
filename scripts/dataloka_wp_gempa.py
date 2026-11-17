@@ -227,6 +227,55 @@ def readable_region(value):
     return " ".join(plain.split())
 
 
+def editorial_region(value):
+    """Turn the BMKG distance/direction sentence into a readable place name."""
+    region = readable_region(value)
+    region = re.sub(
+        r"^Pusat gempa berada di\s+(?:darat|laut)\s+",
+        "", region, flags=re.IGNORECASE)
+    region = re.sub(
+        r"^\d+(?:[.,]\d+)?\s*km\s+"
+        r"(?:barat\s*daya|barat\s*laut|timur\s*laut|"
+        r"tenggara|barat|timur|utara|selatan)\s+",
+        "", region, flags=re.IGNORECASE)
+    known = {
+        "MALUKUTENGGARA": "Maluku Tenggara",
+        "BURUSELATAN-MALUKU": "Buru Selatan, Maluku",
+        "GORONTALOUTARA-GORONTALO": "Gorontalo Utara, Gorontalo",
+        "HALMAHERASELATAN-MALUT": "Halmahera Selatan, Maluku Utara",
+    }
+    region = known.get(region.upper(), region)
+    # The source sentence remains complete in the body. Avoid overly long titles.
+    if len(region) > 55:
+        region = region[:55].rsplit(" ", 1)[0].rstrip(", ") or region[:55]
+    return region or "wilayah Indonesia"
+
+
+def editorial_title(e):
+    """Headline for readers, distinct from search-engine metadata."""
+    mag = magnitude(e["magnitude"])
+    region = editorial_region(e["region"])
+    intro = f"Gempa M{mag} di {region}"
+    felt_info = str(e.get("felt_info") or "")
+    roman = {
+        "I": 1, "II": 2, "III": 3, "IV": 4, "V": 5, "VI": 6,
+        "VII": 7, "VIII": 8, "IX": 9, "X": 10, "XI": 11, "XII": 12,
+    }
+    levels = re.findall(
+        r"\b(?:XII|XI|IX|VIII|VII|VI|IV|V|III|II|I|X)\b",
+        felt_info.upper())
+    if levels:
+        strongest = max(levels, key=lambda x: roman[x])
+        return f"{intro}, Terasa hingga {strongest} MMI"
+    if e.get("felt"):
+        return f"{intro}, Dilaporkan Dirasakan Warga"
+    if confirmed_no_tsunami(e):
+        return f"{intro}, BMKG: Tidak Berpotensi Tsunami"
+    if "berpotensi tsunami" in str(e.get("potential") or "").casefold():
+        return f"{intro}, BMKG: Berpotensi Tsunami"
+    return f"{intro}, Menurut BMKG"
+
+
 def seo_title(e, date):
     mag = magnitude(e["magnitude"])
     region = readable_region(e["region"])
@@ -306,7 +355,7 @@ def article(e):
 
     # Exactly four editorial paragraphs; never infer damage, casualties or shaking intensity.
     paragraphs = [
-        (f"Gempa M{mag} di {region} terjadi pada {day}, {date}, pukul "
+        (f"Dataloka.id - Gempa M{mag} di {region} terjadi pada {day}, {date}, pukul "
          f"{time} WIB, menurut Badan Meteorologi, Klimatologi, dan Geofisika "
          f"(BMKG). Informasi kejadian tersebut dipublikasikan melalui data "
          f"gempa resmi BMKG."),
@@ -341,7 +390,7 @@ def article(e):
         "_yoast_wpseo_metadesc": seo_excerpt(e, date, time, depth),
     }
     return {
-        "title": escape(seo_title(e, date)),
+        "title": escape(editorial_title(e)),
         "content": body,
         "excerpt": escape(seo_excerpt(e, date, time, depth)),
         "slug": seo_slug(e, local.strftime("%Y-%m-%d")),
@@ -367,7 +416,7 @@ def daily_article(records, day):
     readable_day = f"{day.day} {('Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember')[day.month - 1]} {day.year}"
     title = f"Daftar Gempa M5,0–5,4 pada {readable_day} Menurut BMKG"
     paragraphs = [
-        (f"Berdasarkan kejadian yang berhasil dipantau Dataloka dari BMKG, "
+        (f"Dataloka.id - Berdasarkan kejadian yang berhasil dipantau Dataloka dari BMKG, "
          f"terdapat {len(selected)} gempa bermagnitudo 5,0 hingga kurang dari "
          f"5,5 pada {day:%d-%m-%Y}. Angka tersebut bukan total resmi seluruh gempa "
          f"pada tanggal itu."),
@@ -599,6 +648,16 @@ class WordPress:
                 previous_digest = hash_value(raw)
             if hash_value(raw) != previous_digest:
                 raise EditorialConflict(f"Post {found['id']} edited manually; refusing overwrite")
+            # Preserve headlines rewritten by the editor, not just body and SEO.
+            # The previous bot used the Yoast SEO title as the WordPress title.
+            old_headline = desired_yoast["_yoast_wpseo_title"]
+            current_headline = (found.get("title") or {}).get("raw")
+            if event and isinstance(current_headline, str) and current_headline.strip():
+                current_headline = html.unescape(current_headline).strip()
+                allowed = {old_headline, html.unescape(payload["title"])}
+                if current_headline not in allowed:
+                    raise EditorialConflict(
+                        f"Title on post {found['id']} edited manually; refusing overwrite")
             if found.get("status") == "publish" and status != "publish":
                 raise EditorialConflict(f"Cannot downgrade published post {found['id']}")
 
@@ -639,7 +698,9 @@ class WordPress:
                 term_ids = self.resolve_tags(tag_names)
                 if term_ids:
                     new_payload["tags"] = term_ids
-            if status == "publish" and event and not current_media:
+            # Every earthquake article, including a draft, gets its epicenter
+            # map. Preserve any cover already selected by an editor.
+            if event and not current_media:
                 new_payload["featured_media"] = self.cover_image(event)
 
             post = self.call("POST", "posts/" + str(found["id"]), payload=new_payload)
@@ -656,7 +717,7 @@ class WordPress:
                 if term_ids:
                     new_payload["tags"] = term_ids
             new_payload["categories"] = [self.berita_category_id()]
-            if status == "publish" and event:
+            if event:
                 new_payload["featured_media"] = self.cover_image(event)
             post = self.call("POST", "posts", payload=new_payload)
             confirmed = self.by_id(post["id"])
@@ -679,8 +740,8 @@ class WordPress:
             raise RuntimeError(
                 f"WordPress returned status {confirmed.get('status')} instead of {status}"
             )
-        if status == "publish" and event and not int(confirmed.get("featured_media") or 0):
-            raise RuntimeError(f"Published post {post['id']} has no featured media")
+        if event and not int(confirmed.get("featured_media") or 0):
+            raise RuntimeError(f"Earthquake post {post['id']} has no featured media")
         return self._mapping(confirmed, payload)
 
     @staticmethod
@@ -736,7 +797,7 @@ def events_task(mode, wp, now):
         payload_digest = hash_value(json.dumps(payload, ensure_ascii=False, sort_keys=True))
         if (record.get("last_payload_digest") == payload_digest and
                 record.get("status") == status and
-                (status != "publish" or record.get("media_id"))):
+                record.get("media_id")):
             continue
         print(f"{mode}: {status} M{event['magnitude']:.1f} {event['region']}")
         if mode != "dry-run":
