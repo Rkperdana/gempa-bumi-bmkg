@@ -362,6 +362,9 @@ def editorial_tags(e):
             if tag not in names:
                 names.append(tag)
             break
+    # Featured is a WordPress tag for major earthquakes, not an image flag.
+    if float(e["magnitude"]) >= 5.5:
+        names.append("Featured")
     return names[:8]
 
 
@@ -723,7 +726,17 @@ class WordPress:
             new_payload["meta"] = new_payload.pop("yoast_meta")
             new_payload["status"] = status
             new_payload["categories"] = [self.berita_category_id()]
-            if tag_names and not found.get("tags"):
+            existing_tags = [int(term) for term in (found.get("tags") or [])]
+            if "Featured" in tag_names:
+                # Revisions must add Featured even when the article already has
+                # ordinary editorial tags. Preserve every existing tag.
+                featured_ids = self.resolve_tags(["Featured"])
+                if not featured_ids:
+                    raise RuntimeError("WordPress tag Featured unavailable; article unchanged")
+                combined = list(dict.fromkeys(existing_tags + featured_ids))
+                if combined != existing_tags:
+                    new_payload["tags"] = combined
+            elif tag_names and not existing_tags:
                 term_ids = self.resolve_tags(tag_names)
                 if term_ids:
                     new_payload["tags"] = term_ids
@@ -743,6 +756,8 @@ class WordPress:
             new_payload["status"] = "draft"
             if tag_names:
                 term_ids = self.resolve_tags(tag_names)
+                if "Featured" in tag_names and not self.resolve_tags(["Featured"]):
+                    raise RuntimeError("WordPress tag Featured unavailable; refusing live post")
                 if term_ids:
                     new_payload["tags"] = term_ids
             new_payload["categories"] = [self.berita_category_id()]
@@ -757,12 +772,22 @@ class WordPress:
                     "new article is not being published"
                 )
             if status == "publish":
+                if "Featured" in tag_names:
+                    featured_ids = self.resolve_tags(["Featured"])
+                    if not set(featured_ids).issubset(set(confirmed.get("tags") or [])):
+                        raise RuntimeError(
+                            f"Draft {post['id']} has no Featured tag; refusing publication"
+                        )
                 post = self.call("POST", "posts/" + str(post["id"]), payload={
                     "status": "publish",
                 })
                 confirmed = self.by_id(post["id"])
                 self._verified_yoast(confirmed, desired_yoast)
 
+        if status == "publish" and "Featured" in payload.get("tag_names", []):
+            featured_ids = self.resolve_tags(["Featured"])
+            if not featured_ids or not set(featured_ids).issubset(set(confirmed.get("tags") or [])):
+                raise RuntimeError(f"WordPress post {post['id']} has no Featured tag")
         if marker not in confirmed.get("content", {}).get("raw", ""):
             raise RuntimeError(f"WordPress stripped ownership marker for post {post['id']}")
         if confirmed.get("status") != status:
