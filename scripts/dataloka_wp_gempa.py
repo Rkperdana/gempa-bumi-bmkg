@@ -13,6 +13,7 @@ import html
 import json
 import math
 import os
+import time
 from pathlib import Path
 import re
 import sys
@@ -30,6 +31,11 @@ STATE = ROOT / "data" / "dataloka-wp-state.json"
 WP_URL = "https://dataloka.id"
 MARKER = "dataloka-bmkg:"
 YOAST_KEYS = ("_yoast_wpseo_focuskw", "_yoast_wpseo_title", "_yoast_wpseo_metadesc")
+
+# Short live-news window, longer catch-up for drafts when GitHub schedules lag.
+LIVE_NEW_EVENT_MINUTES = 120
+DRAFT_NEW_EVENT_MINUTES = 720  # 12 hours, not historical bulk backfill.
+TRANSIENT_HTTP = frozenset((429, 500, 502, 503, 504))
 
 
 def timestamp(value):
@@ -115,41 +121,73 @@ def status_for(event, mode):
 
 
 def fetch_feed(feed):
+    """Retry temporary feed failures; no stale cached earthquake data is used."""
     req = urllib.request.Request(BASE + feed, headers={
         "User-Agent": "Dataloka BMKG WordPress Publisher/1.0",
         "Accept": "application/json",
         "Cache-Control": "no-cache",
     })
-    with urllib.request.urlopen(req, timeout=25) as response:
-        if response.status != 200:
-            raise RuntimeError(f"BMKG HTTP {response.status}")
-        return json.loads(response.read(250_000).decode("utf-8-sig"))
+    for attempt in range(3):
+        try:
+            with urllib.request.urlopen(req, timeout=18) as response:
+                if response.status != 200:
+                    raise RuntimeError(f"BMKG HTTP {response.status}")
+                return json.loads(response.read(250_000).decode("utf-8-sig"))
+        except urllib.error.HTTPError as exc:
+            if exc.code not in TRANSIENT_HTTP or attempt == 2:
+                raise
+        except (urllib.error.URLError, TimeoutError, OSError):
+            if attempt == 2:
+                raise
+        print(f"WARNING: transient BMKG failure {feed}; retry {attempt + 2}/3",
+              file=sys.stderr)
+        time.sleep(2 ** attempt)
+    raise AssertionError("Unreachable BMKG retry loop")
 
 
 def get_events():
+    """Use independently available BMKG feeds if one is temporarily unavailable.
+
+    Never use stale snapshots as a substitute for official live feeds; the next
+    scheduled check can recover missing felt events within the draft window.
+    """
     results = []
+    completed = []
+    failures = []
     for feed in FEEDS:
-        doc = fetch_feed(feed)
-        raw = doc.get("Infogempa", {}).get("gempa")
-        if isinstance(raw, dict):
-            raw = [raw]
-        if not isinstance(raw, list) or not raw:
-            raise ValueError(f"Empty BMKG feed: {feed}")
-        valid = 0
-        for item in raw:
-            try:
-                event = normalize(item, feed)
-            except (ValueError, KeyError, TypeError) as exc:
-                print(f"Skipping invalid BMKG entry in {feed}: {exc}", file=sys.stderr)
-                continue
-            valid += 1
-            idx = next((i for i, x in enumerate(results) if same_event(x, event)), None)
-            if idx is None:
-                results.append(event)
-            else:
-                results[idx] = merge(results[idx], event)
-        if valid == 0:
-            raise ValueError(f"No valid earthquakes in {feed}")
+        try:
+            doc = fetch_feed(feed)
+            raw = doc.get("Infogempa", {}).get("gempa")
+            if isinstance(raw, dict):
+                raw = [raw]
+            if not isinstance(raw, list) or not raw:
+                raise ValueError(f"Empty BMKG feed: {feed}")
+            valid = 0
+            for item in raw:
+                try:
+                    event = normalize(item, feed)
+                except (ValueError, KeyError, TypeError) as exc:
+                    print(f"Skipping invalid BMKG entry in {feed}: {exc}", file=sys.stderr)
+                    continue
+                valid += 1
+                idx = next((i for i, x in enumerate(results) if same_event(x, event)), None)
+                if idx is None:
+                    results.append(event)
+                else:
+                    results[idx] = merge(results[idx], event)
+            if valid == 0:
+                raise ValueError(f"No valid earthquakes in {feed}")
+            completed.append(feed)
+        except (urllib.error.URLError, TimeoutError, OSError, RuntimeError, ValueError,
+                KeyError, TypeError, json.JSONDecodeError) as exc:
+            print(f"WARNING: BMKG feed unavailable {feed}: {type(exc).__name__}: {exc}",
+                  file=sys.stderr)
+            failures.append(feed)
+    if not completed:
+        raise RuntimeError("All official BMKG feeds unavailable; no WordPress writes")
+    if failures:
+        print(f"WARNING: partial BMKG feed coverage: {', '.join(failures)}; "
+              "the next scheduled check will retry", file=sys.stderr)
     return results
 
 
@@ -386,11 +424,26 @@ class WordPress:
             "Content-Type": "application/json; charset=utf-8",
             "User-Agent": "Dataloka-BMKG/1.0",
         })
-        try:
-            with urllib.request.urlopen(req, timeout=25) as response:
-                return json.loads(response.read(1_000_000).decode("utf-8"))
-        except urllib.error.HTTPError as err:
-            raise RuntimeError(f"WordPress returned HTTP {err.code} on {method} {route}") from None
+        # GET is safely retryable. POST must never be blindly retried: a
+        # server may have committed a post before the client timed out.
+        tries = 3 if method == "GET" else 1
+        for attempt in range(tries):
+            try:
+                with urllib.request.urlopen(req, timeout=18) as response:
+                    return json.loads(response.read(1_000_000).decode("utf-8"))
+            except urllib.error.HTTPError as err:
+                if method != "GET" or err.code not in TRANSIENT_HTTP or attempt == tries - 1:
+                    raise RuntimeError(
+                        f"WordPress returned HTTP {err.code} on {method} {route}") from None
+            except (urllib.error.URLError, TimeoutError, OSError) as err:
+                if attempt == tries - 1:
+                    raise RuntimeError(
+                        f"WordPress network error on {method} {route}: "
+                        f"{type(err).__name__}") from None
+            print(f"WARNING: temporary WordPress GET failure {route}; "
+                  f"retry {attempt + 2}/{tries}", file=sys.stderr)
+            time.sleep(2 ** attempt)
+        raise AssertionError("Unreachable WordPress retry loop")
 
     def cover_image(self, event):
         """Reuse a stable upload when a retry occurs after WordPress accepted media."""
@@ -662,8 +715,14 @@ def events_task(mode, wp, now):
         event = record["data"]
         if not (event["magnitude"] >= 5 or event["felt"]):
             continue
-        if not record.get("post_id") and age > 120:
-            continue
+        if not record.get("post_id"):
+            # Never retroactively publish an old M5.5+ event. A separate
+            # 12-hour recovery window is safe for draft-only earthquakes,
+            # including felt M4.x after delayed GitHub schedules.
+            freshness = (LIVE_NEW_EVENT_MINUTES if event["magnitude"] >= 5.5
+                         else DRAFT_NEW_EVENT_MINUTES)
+            if age > freshness:
+                continue
         status = status_for(event, mode)
         # A corrected magnitude does not automatically unpublish an existing
         # article; update its facts in place while retaining the public URL.

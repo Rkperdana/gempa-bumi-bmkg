@@ -361,6 +361,110 @@ class PublisherTests(unittest.TestCase):
             with self.assertRaisesRegex(RuntimeError, "HTTP 403"):
                 p.events_task("live", BrokenWP(), now)
 
+    def test_delayed_felt_m48_becomes_draft_without_backfilling_old_m71(self):
+        # At 15.45 WIB, Ruteng M4.8 is nearly eight hours old, so it must
+        # enter drafts; the earlier M7.1 is not retroactively published.
+        felt = self.event(
+            feed="gempadirasakan.json",
+            DateTime="2026-11-17T00:49:17+00:00",
+            Coordinates="-8.22,120.66",
+            Magnitude="4.8", Kedalaman="2 km",
+            Wilayah="Pusat gempa berada di laut 49 km timur laut Ruteng, Manggarai",
+            Dirasakan="III Kab. Manggarai")
+        old_71 = self.event(
+            DateTime="2026-11-16T21:11:20+00:00",
+            Coordinates="-6.03,131.62", Magnitude="7.1",
+            Wilayah="130 km BaratDaya MALUKUTENGGARA",
+            Dirasakan="III Saumlaki")
+        new_56 = self.event(
+            DateTime="2026-11-17T07:50:00+00:00",
+            Coordinates="-2.99,129.71", Magnitude="5.6",
+            Wilayah="Perairan Maluku", Dirasakan="")
+        small_unfelt = self.event(
+            DateTime="2026-11-17T07:51:00+00:00",
+            Coordinates="2.10,119.20", Magnitude="4.9",
+            Wilayah="Laut Sulawesi", Dirasakan="")
+        creates = []
+        class WP:
+            def save(self, payload, record, status, marker, event=None):
+                creates.append((event["magnitude"], status))
+                return {
+                    "post_id": 9500 + len(creates),
+                    "status": status,
+                    "media_id": 777 if status == "publish" else 0,
+                    "last_payload_digest": p.hash_value(json.dumps(
+                        payload, ensure_ascii=False, sort_keys=True)),
+                }
+        now = dt.datetime(2026, 11, 17, 8, 45, tzinfo=dt.timezone.utc)
+        state = {"events": [], "daily": {}}
+        with tempfile.TemporaryDirectory() as temp, (
+            mock.patch.object(p, "get_events", return_value=[
+                felt, old_71, new_56, small_unfelt])
+        ), mock.patch.object(p, "read_state", return_value=state), (
+            mock.patch.object(p, "STATE", Path(temp) / "state.json")
+        ):
+            p.events_task("live", WP(), now)
+            persisted = json.loads((Path(temp) / "state.json").read_text())
+        self.assertEqual(creates, [(4.8, "draft"), (5.6, "publish")])
+        self.assertEqual(len([x for x in persisted["events"] if x.get("post_id")]), 2)
+        self.assertFalse(any(x.get("post_id") and x["data"]["magnitude"] == 7.1
+                             for x in persisted["events"]))
+
+    def test_draft_window_expires_after_twelve_hours(self):
+        felt = self.event(
+            DateTime="2026-11-16T18:00:00+00:00",
+            Magnitude="4.8", Dirasakan="III")
+        now = dt.datetime(2026, 11, 17, 8, 45, tzinfo=dt.timezone.utc)
+        state = {"events": [], "daily": {}}
+        class WP:
+            def save(self, *args, **kwargs):
+                self.fail("Stale draft should not be created")
+        with tempfile.TemporaryDirectory() as temp, (
+            mock.patch.object(p, "get_events", return_value=[felt])
+        ), mock.patch.object(p, "read_state", return_value=state), (
+            mock.patch.object(p, "STATE", Path(temp) / "state.json")
+        ):
+            p.events_task("live", WP(), now)
+        self.assertIsNone(state["events"][0].get("post_id"))
+
+    def test_bmkg_transient_timeout_is_retried(self):
+        class FakeResponse(io.BytesIO):
+            status = 200
+        doc = {"Infogempa": {"gempa": [RAW]}}
+        response = FakeResponse(json.dumps(doc).encode("utf-8"))
+        with mock.patch.object(p.urllib.request, "urlopen", side_effect=[
+            TimeoutError("temporary timeout"), response
+        ]) as urlopen, mock.patch.object(p.time, "sleep") as sleep:
+            self.assertEqual(p.fetch_feed("gempaterkini.json"), doc)
+        self.assertEqual(urlopen.call_count, 2)
+        sleep.assert_called_once_with(1)
+
+    def test_partial_bmkg_feed_error_does_not_block_other_official_feeds(self):
+        def fake_fetch(feed):
+            if feed == "gempadirasakan.json":
+                raise TimeoutError("BMKG temporarily unavailable")
+            return {"Infogempa": {"gempa": [RAW]}}
+        with mock.patch.object(p, "fetch_feed", side_effect=fake_fetch):
+            events = p.get_events()
+        self.assertEqual(len(events), 1)
+        self.assertEqual(events[0]["magnitude"], 5.6)
+
+    def test_wordpress_retries_get_but_never_post(self):
+        wp = p.WordPress("fake-test-user", "fake-test-password")
+        class FakeResponse(io.BytesIO):
+            status = 200
+        with mock.patch.object(p.urllib.request, "urlopen", side_effect=[
+            TimeoutError("temporary read timeout"), FakeResponse(b'[]')
+        ]) as urlopen, mock.patch.object(p.time, "sleep") as sleep:
+            self.assertEqual(wp.call("GET", "posts"), [])
+        self.assertEqual(urlopen.call_count, 2)
+        sleep.assert_called_once_with(1)
+        with mock.patch.object(p.urllib.request, "urlopen",
+                               side_effect=TimeoutError("write timeout")) as urlopen:
+            with self.assertRaisesRegex(RuntimeError, "WordPress network error"):
+                wp.call("POST", "posts", payload={"status": "draft"})
+        self.assertEqual(urlopen.call_count, 1)
+
     def test_site_is_dataloka_only(self):
         self.assertEqual(p.WP_URL, "https://dataloka.id")
 
