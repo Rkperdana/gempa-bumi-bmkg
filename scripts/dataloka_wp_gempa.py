@@ -317,10 +317,9 @@ def seo_excerpt(e, date, time, depth):
     region = readable_region(e["region"])
     # Felt/auto BMKG feed often provides "Pusat gempa berada di laut 49 km ...".
     # Avoid accidentally producing "Pusat gempa M4,8 Pusat gempa berada ...".
-    if re.match(r"^Pusat gempa berada\\b", region, flags=re.IGNORECASE):
-        clause = re.sub(r"^Pusat gempa\\s+", "", region,
-                        count=1, flags=re.IGNORECASE)
-    elif re.match(r"^\\d+(?:[.,]\\d+)?\\s*km\\b", region):
+    if region.casefold().startswith("pusat gempa berada "):
+        clause = region[len("Pusat gempa "):]
+    elif re.match(r"^\d+(?:[.,]\d+)?\s*km\b", region):
         clause = "berada " + region
     else:
         clause = "berada di " + region
