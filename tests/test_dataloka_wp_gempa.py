@@ -358,8 +358,10 @@ class PublisherTests(unittest.TestCase):
         with mock.patch.object(p, "get_events", return_value=[event]), (
             mock.patch.object(p, "read_state", return_value=state)
         ):
-            with self.assertRaisesRegex(RuntimeError, "HTTP 403"):
-                p.events_task("live", BrokenWP(), now)
+            with mock.patch("sys.stderr", new_callable=io.StringIO) as errors:
+                with self.assertRaisesRegex(RuntimeError, "1 BMKG events still need WordPress retry"):
+                    p.events_task("live", BrokenWP(), now)
+                self.assertIn("HTTP 403", errors.getvalue())
 
     def test_delayed_felt_m48_becomes_draft_without_backfilling_old_m71(self):
         # At 15.45 WIB, Ruteng M4.8 is nearly eight hours old, so it must
@@ -458,12 +460,47 @@ class PublisherTests(unittest.TestCase):
         ]) as urlopen, mock.patch.object(p.time, "sleep") as sleep:
             self.assertEqual(wp.call("GET", "posts"), [])
         self.assertEqual(urlopen.call_count, 2)
+        self.assertEqual(urlopen.call_args_list[0].kwargs["timeout"], 45)
         sleep.assert_called_once_with(1)
         with mock.patch.object(p.urllib.request, "urlopen",
                                side_effect=TimeoutError("write timeout")) as urlopen:
             with self.assertRaisesRegex(RuntimeError, "WordPress network error"):
                 wp.call("POST", "posts", payload={"status": "draft"})
         self.assertEqual(urlopen.call_count, 1)
+        self.assertEqual(urlopen.call_args_list[0].kwargs["timeout"], 35)
+
+    def test_single_wordpress_failure_does_not_block_other_events(self):
+        felt = self.event(
+            feed="gempadirasakan.json",
+            DateTime="2026-11-17T00:49:17+00:00",
+            Coordinates="-8.22,120.66", Magnitude="4.8",
+            Dirasakan="III Kab. Manggarai")
+        fresh = self.event(
+            DateTime="2026-11-17T07:50:00+00:00",
+            Coordinates="-2.99,129.71", Magnitude="5.6",
+            Wilayah="Perairan Maluku")
+        calls = []
+        class WP:
+            def save(self, payload, record, status, marker, event=None):
+                calls.append((event["magnitude"], status))
+                if event["magnitude"] == 4.8:
+                    raise RuntimeError("WordPress network error on GET posts: TimeoutError")
+                return {"post_id": 9501, "status": "publish", "media_id": 101,
+                        "last_payload_digest": p.hash_value(json.dumps(
+                            payload, ensure_ascii=False, sort_keys=True))}
+        state = {"events": [], "daily": {}}
+        now = dt.datetime(2026, 11, 17, 8, 45, tzinfo=dt.timezone.utc)
+        with tempfile.TemporaryDirectory() as temp, (
+            mock.patch.object(p, "get_events", return_value=[felt, fresh])
+        ), mock.patch.object(p, "read_state", return_value=state), (
+            mock.patch.object(p, "STATE", Path(temp) / "state.json")
+        ):
+            with self.assertRaisesRegex(RuntimeError, "1 BMKG events"):
+                p.events_task("live", WP(), now)
+            saved = json.loads((Path(temp) / "state.json").read_text())
+        self.assertEqual(calls, [(4.8, "draft"), (5.6, "publish")])
+        self.assertEqual([x["post_id"] for x in saved["events"] if x.get("post_id")],
+                         [9501])
 
     def test_site_is_dataloka_only(self):
         self.assertEqual(p.WP_URL, "https://dataloka.id")
