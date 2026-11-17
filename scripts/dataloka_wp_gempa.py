@@ -104,9 +104,12 @@ def confirmed_no_tsunami(event):
 
 
 def status_for(event, mode):
-    eligible = ("autogempa.json" in event["sources"] or
-                "gempaterkini.json" in event["sources"])
-    if mode == "live" and event["magnitude"] >= 5.5 and eligible and confirmed_no_tsunami(event):
+    """M5.5+ always qualifies for live publication, regardless of tsunami status.
+
+    Tsunami potential is a factual field in the article; it must never be
+    interpreted as a reason to suppress the official earthquake report.
+    """
+    if mode == "live" and event["magnitude"] >= 5.5:
         return "publish"
     return "draft"
 
@@ -663,9 +666,6 @@ def events_task(mode, wp, now):
         if (record.get("last_payload_digest") == payload_digest and
                 record.get("status") == status and
                 (status != "publish" or record.get("media_id"))):
-            continue
-        if record.get("status") == "publish" and not confirmed_no_tsunami(event):
-            print(f"REVIEW: tsunami uncertainty changed, no automatic overwrite ({event['key']})")
             continue
         print(f"{mode}: {status} M{event['magnitude']:.1f} {event['region']}")
         if mode != "dry-run":
