@@ -51,8 +51,8 @@ class PublisherTests(unittest.TestCase):
         self.assertNotIn("RKP", body)
         self.assertNotIn("LD1", body)
         self.assertEqual(body.count("<p>"), 4)
-        self.assertRegex(body, r" \\(RK/D-1\\)</p><!-- dataloka-bmkg:")
-        self.assertNotIn("\\n", body)
+        self.assertRegex(body, r" \(RK/D-1\)</p><!-- dataloka-bmkg:")
+        self.assertNotIn("\n", body)
         self.assertIn("6,20° LS", body)
 
     def test_daily_summary_only_m5_to_m54(self):
@@ -69,7 +69,7 @@ class PublisherTests(unittest.TestCase):
         result = p.daily_article([{"data": a}], dt.date(2026, 11, 17))
         self.assertEqual(result["content"].count("<p>"), 4)
         self.assertRegex(result["content"],
-                         r" \\(RK/D-1\\)</p><!-- dataloka-bmkg-daily:")
+                         r" \(RK/D-1\)</p><!-- dataloka-bmkg-daily:")
 
     def test_map_jpeg_16_by_9_small_and_valid(self):
         from PIL import Image
