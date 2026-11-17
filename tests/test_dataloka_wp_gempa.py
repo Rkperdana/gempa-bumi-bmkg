@@ -37,7 +37,7 @@ class PublisherTests(unittest.TestCase):
                 self.assertEqual(p.status_for(event, "live"), "publish")
                 body = p.article(event)["content"]
                 self.assertEqual(body.count("<p>"), 4)
-                self.assertRegex(body, r" \\(RK/D-1\\)</p><!-- dataloka-bmkg:")
+                self.assertRegex(body, r" \(RK/D-1\)</p><!-- dataloka-bmkg:")
                 if potential:
                     self.assertIn(p.escape(potential), body)
                 else:
