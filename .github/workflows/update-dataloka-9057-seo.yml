@@ -1,0 +1,57 @@
+name: Dataloka | Koreksi SEO draf 9057 (sekali)
+
+# Only two Yoast SEO keys, only when still matching last bot-owned meta.
+# Editorial title, article, featured image, excerpt and slug are untouched.
+on:
+  pull_request:
+    paths:
+      - 'scripts/update_dataloka_9057_seo_only.py'
+      - 'tests/test_update_dataloka_9057_seo_only.py'
+      - '.github/workflows/update-dataloka-9057-seo.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/update_dataloka_9057_seo_only.py'
+      - 'tests/test_update_dataloka_9057_seo_only.py'
+      - '.github/workflows/update-dataloka-9057-seo.yml'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: dataloka-wp-earthquake-only
+  cancel-in-progress: false
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+      - name: Syntax and test SEO-only guardrails without WordPress writes
+        run: |
+          python -m py_compile scripts/update_dataloka_9057_seo_only.py
+          python -m unittest discover -s tests -p test_update_dataloka_9057_seo_only.py -v
+          git diff --exit-code -- data/dataloka-wp-state.json
+
+  seo-only-update:
+    if: github.event_name == 'push'
+    needs: validate
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    env:
+      WP_USERNAME: ${{ secrets.DATALOKA_WP_USERNAME }}
+      WP_APP_PASSWORD: ${{ secrets.DATALOKA_WP_APP_PASSWORD }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+      - name: Update only Yoast focus and meta description of unchanged SEO draft 9057
+        run: python scripts/update_dataloka_9057_seo_only.py
