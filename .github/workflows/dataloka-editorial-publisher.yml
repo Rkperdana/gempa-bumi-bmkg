@@ -1,0 +1,48 @@
+name: Dataloka | Publisher Artikel Umum
+
+# Workflow is intentionally scoped to a dedicated branch, not main.
+# No push to main, no modifications to the BMKG dashboard or Pirsadata.
+on:
+  push:
+    branches: [dataloka-publisher]
+    paths:
+      - 'publisher/outbox/*.json'
+      - 'scripts/dataloka_editorial_publisher.py'
+      - 'tests/test_dataloka_editorial_publisher.py'
+      - '.github/workflows/dataloka-editorial-publisher.yml'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: dataloka-editorial-publisher
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      BEFORE_SHA: ${{ github.event.before }}
+      AFTER_SHA: ${{ github.sha }}
+      DATALOKA_WP_USERNAME: ${{ secrets.DATALOKA_WP_USERNAME }}
+      DATALOKA_WP_APP_PASSWORD: ${{ secrets.DATALOKA_WP_APP_PASSWORD }}
+    steps:
+      - name: Checkout isolated publisher branch
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Setup Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+
+      - name: Test publisher without credentials or web writes
+        run: |
+          python -m py_compile scripts/dataloka_editorial_publisher.py
+          python -m unittest discover -s tests -p test_dataloka_editorial_publisher.py -v
+
+      - name: Publish only NEW explicitly approved editorial requests
+        run: python scripts/dataloka_editorial_publisher.py --before "$BEFORE_SHA" --after "$AFTER_SHA"
