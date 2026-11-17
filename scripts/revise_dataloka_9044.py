@@ -63,9 +63,13 @@ def revise_html(raw):
     # Add a prominently visible correction directly after the lead paragraph.
     # The rest of the article (MMI table, evidence and reporter credit) is retained.
     p_end = re.search(r"</p\s*>", out, re.IGNORECASE)
-    if not p_end:
-        raise ValueError("Unable to locate article lead paragraph")
-    out = out[:p_end.end()] + "\n" + REVISION_NOTE + out[p_end.end():]
+    if p_end:
+        out = out[:p_end.end()] + "\n" + REVISION_NOTE + out[p_end.end():]
+    else:
+        # Dataloka can store classic-editor article text without <p> wrappers.
+        # Prepend the correction as one explicit paragraph, keeping every
+        # original character and its surrounding formatting intact.
+        out = REVISION_NOTE + "\n\n" + out
     if MARKER not in out or out.count(MARKER) != 1:
         raise AssertionError("Correction insertion failed")
     return out

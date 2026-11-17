@@ -54,6 +54,22 @@ class RevisionTests(unittest.TestCase):
         self.assertNotIn("slug", updated)
         self.assertNotIn("status", updated)
 
+    def test_editor_plain_text_without_html_paragraphs(self):
+        plain = (
+            "Dataloka.id – Gempa bumi berkekuatan magnitudo 7,1 mengguncang "
+            "Maluku Tenggara berdasarkan BMKG.\\n"
+            "Koordinat 6,03 derajat lintang selatan dan 131,62 derajat bujur timur, "
+            "kedalaman 115 kilometer.\\n"
+            "Sepuluh wilayah merasakan guncangan M7,1."
+        )
+        fixed = revision.revise_html(plain)
+        self.assertIn(revision.MARKER, fixed)
+        self.assertIn("M6,8", fixed)
+        self.assertIn("97 kilometer", fixed)
+        self.assertTrue(fixed.startswith("<p><strong>Pembaruan parameter BMKG"))
+        self.assertEqual(fixed.count(revision.MARKER), 1)
+        self.assertIn("Sepuluh wilayah merasakan guncangan M6,8", fixed)
+
     def test_no_duplicate_revision(self):
         existing = BODY + revision.REVISION_NOTE
         self.assertIsNone(revision.build_payload(self.post(content={"raw": existing})))
