@@ -243,7 +243,7 @@ def editorial_tags(e):
         ("seram", "Seram"), ("timor", "Timor"),
     )
     for token, tag in mapping:
-        if re.search(r"(?<!\\w)" + re.escape(token) + r"(?!\\w)", location):
+        if re.search(r"(?<!\w)" + re.escape(token) + r"(?!\w)", location):
             if tag not in names:
                 names.append(tag)
             break
@@ -346,13 +346,13 @@ def daily_article(records, day):
 
 
 class WordPress:
-    def __init__(self, user, password, category=None):
+    def __init__(self, user, password):
         if not user or not password:
             raise ValueError("Missing Dataloka WordPress secrets")
         self.authorization = "Basic " + base64.b64encode(
             f"{user}:{password}".encode("utf-8")).decode("ascii")
-        self.category = int(category) if category else None
         self._tag_cache = {}
+        self._berita_id = None
 
     def call(self, method, route, params=None, payload=None):
         url = WP_URL + "/wp-json/wp/v2/" + route
@@ -412,6 +412,30 @@ class WordPress:
             "caption": "Peta lokasi episentrum berdasarkan data BMKG. Geografi: Natural Earth.",
         })
         return media_id
+
+    def berita_category_id(self):
+        """Find the existing WordPress category named Berita; never assume an ID."""
+        if self._berita_id is not None:
+            return self._berita_id
+        terms = self.call("GET", "categories", {
+            "search": "Berita", "per_page": 100,
+        })
+        exact = [
+            term for term in terms if
+            html.unescape(str(term.get("name", ""))).strip().casefold() == "berita"
+            or str(term.get("slug", "")).strip().casefold() == "berita"
+        ]
+        if not exact:
+            raise RuntimeError(
+                "Kategori 'Berita' tidak ditemukan di WordPress Dataloka; "
+                "artikel bot tidak dikirim agar tidak salah kategori."
+            )
+        selected = next(
+            (term for term in exact if term.get("slug") == "berita"),
+            exact[0],
+        )
+        self._berita_id = int(selected["id"])
+        return self._berita_id
 
     def resolve_tags(self, names):
         """Resolve existing WP term IDs, create missing terms if role permits.
@@ -483,6 +507,7 @@ class WordPress:
             new_payload.pop("slug", None)
             tag_names = new_payload.pop("tag_names", [])
             new_payload["status"] = status
+            new_payload["categories"] = [self.berita_category_id()]
             # Do not replace tags a human editor has already curated.
             if tag_names and not found.get("tags"):
                 term_ids = self.resolve_tags(tag_names)
@@ -498,8 +523,7 @@ class WordPress:
                 term_ids = self.resolve_tags(tag_names)
                 if term_ids:
                     new_payload["tags"] = term_ids
-            if self.category:
-                new_payload["categories"] = [self.category]
+            new_payload["categories"] = [self.berita_category_id()]
             # Upload first, then publish. Do not publish a new live post without its map.
             if status == "publish" and event:
                 new_payload["featured_media"] = self.cover_image(event)
@@ -592,8 +616,7 @@ def main():
     parser.add_argument("--task", choices=("events", "daily"), default="events")
     args = parser.parse_args()
     wp = None if args.mode == "dry-run" else WordPress(
-        os.getenv("WP_USERNAME"), os.getenv("WP_APP_PASSWORD"),
-        os.getenv("WP_CATEGORY_ID"))
+        os.getenv("WP_USERNAME"), os.getenv("WP_APP_PASSWORD"))
     now = dt.datetime.now(UTC)
     if args.task == "events":
         events_task(args.mode, wp, now)
