@@ -58,6 +58,8 @@ jobs:
         run: python -m py_compile scripts/dataloka_wp_gempa.py scripts/dataloka_gempa_image.py
       - name: Run unit tests without WordPress credentials
         run: python -m unittest discover -s tests -p test_dataloka_wp_gempa.py -v
+      - name: Ensure tests leave real publication ledger unchanged
+        run: git diff --exit-code -- data/dataloka-wp-state.json
 
   send-to-dataloka:
     # Never send articles if the upstream data synchronization failed.
