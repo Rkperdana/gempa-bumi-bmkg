@@ -661,6 +661,10 @@ def events_task(mode, wp, now):
         if not record.get("post_id") and age > 120:
             continue
         status = status_for(event, mode)
+        # A corrected magnitude does not automatically unpublish an existing
+        # article; update its facts in place while retaining the public URL.
+        if record.get("status") == "publish":
+            status = "publish"
         payload = article(event)
         payload_digest = hash_value(json.dumps(payload, ensure_ascii=False, sort_keys=True))
         if (record.get("last_payload_digest") == payload_digest and
