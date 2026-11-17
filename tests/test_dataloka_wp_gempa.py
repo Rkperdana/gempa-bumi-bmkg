@@ -83,13 +83,15 @@ class PublisherTests(unittest.TestCase):
 
     def test_wordpress_new_live_post_receives_featured_image(self):
         wp = p.WordPress("test_user", "fake_password")
-        article = p.article(self.event())
-        seen = []
+        event = self.event()
+        article = p.article(event)
+        calls = []
+        current_status = {"value": "draft"}
         wp.by_slug = lambda slug: None
-        wp.cover_image = lambda event: 1234
+        wp.cover_image = lambda quake: 1234
 
         def fake_call(method, route, params=None, payload=None):
-            seen.append((method, route, payload))
+            calls.append((method, route, payload))
             if route == "categories":
                 return [{"id": 43, "name": "Berita", "slug": "berita"}]
             if route == "tags":
@@ -100,20 +102,113 @@ class PublisherTests(unittest.TestCase):
                     {"id": 13, "name": "Seismik"},
                     {"id": 14, "name": "Jawa"},
                 ]
-            return {"id": 77}
+            if route in ("posts", "posts/77"):
+                if payload:
+                    current_status["value"] = payload.get(
+                        "status", current_status["value"]
+                    )
+                return {"id": 77}
+            return []
         wp.call = fake_call
         wp.by_id = lambda post_id: {
-            "id": post_id, "content": {"raw": article["content"]},
-            "status": "publish", "featured_media": 1234}
-        result = wp.save(article, {}, "publish",
-                         f"<!-- {p.MARKER}{self.event()['key']} -->",
-                         event=self.event())
-        creation = next(item[2] for item in seen if item[0] == "POST" and item[1] == "posts")
+            "id": post_id,
+            "content": {"raw": article["content"]},
+            "status": current_status["value"],
+            "featured_media": 1234,
+            "slug": article["slug"],
+            "meta": dict(article["yoast_meta"]),
+        }
+
+        result = wp.save(
+            article, {}, "publish",
+            f"<!-- {p.MARKER}{event['key']} -->", event=event
+        )
+        creation = next(payload for method, path, payload in calls
+                        if method == "POST" and path == "posts")
         self.assertEqual(creation["featured_media"], 1234)
-        self.assertEqual(creation["status"], "publish")
         self.assertEqual(creation["categories"], [43])
         self.assertEqual(creation["tags"], [10, 11, 12, 13, 14])
+        self.assertEqual(creation["meta"], article["yoast_meta"])
+        self.assertEqual(creation["status"], "draft")
+        self.assertNotIn("yoast_meta", creation)
+        publication = next(payload for method, path, payload in calls
+                           if method == "POST" and path == "posts/77")
+        self.assertEqual(publication, {"status": "publish"})
         self.assertEqual(result["media_id"], 1234)
+        self.assertEqual(result["status"], "publish")
+        self.assertIn("yoast_meta_digest", result)
+
+    def test_no_publication_if_yoast_fields_not_exposed(self):
+        wp = p.WordPress("test", "fake")
+        event = self.event()
+        article = p.article(event)
+        calls = []
+        wp.by_slug = lambda slug: None
+        wp.resolve_tags = lambda names: []
+        wp.berita_category_id = lambda: 43
+        wp.cover_image = lambda quake: 123
+
+        def fake_call(method, route, params=None, payload=None):
+            calls.append((method, route, payload))
+            return {"id": 99}
+        wp.call = fake_call
+        wp.by_id = lambda post_id: {
+            "id": post_id, "status": "draft",
+            "featured_media": 123, "content": {"raw": article["content"]},
+            "meta": {},
+        }
+        with self.assertRaisesRegex(RuntimeError, "Yoast metadata"):
+            wp.save(article, {}, "publish",
+                    f"<!-- {p.MARKER}{event['key']} -->", event=event)
+        post_writes = [item[2] for item in calls if item[0] == "POST"
+                       and item[1].startswith("posts")]
+        self.assertEqual(len(post_writes), 1)
+        self.assertEqual(post_writes[0]["status"], "draft")
+
+    def test_post_stays_draft_if_wordpress_rewrites_slug(self):
+        wp = p.WordPress("test", "fake")
+        event = self.event()
+        payload = p.article(event)
+        calls = []
+        wp.by_slug = lambda slug: None
+        wp.resolve_tags = lambda names: []
+        wp.berita_category_id = lambda: 43
+        wp.cover_image = lambda quake: 123
+
+        def fake_call(method, route, params=None, payload=None):
+            calls.append((method, route, payload))
+            return {"id": 99}
+        wp.call = fake_call
+        wp.by_id = lambda post_id: {
+            "id": post_id, "status": "draft", "featured_media": 123,
+            "content": {"raw": payload["content"]},
+            "slug": "unexpected-slug",
+            "meta": payload["yoast_meta"],
+        }
+        with self.assertRaisesRegex(RuntimeError, "SEO slug"):
+            wp.save(payload, {}, "publish",
+                    f"<!-- {p.MARKER}{event['key']} -->", event=event)
+        self.assertEqual([call[1] for call in calls if call[1].startswith("posts")],
+                         ["posts"])
+
+    def test_prior_human_yoast_edits_are_preserved(self):
+        wp = p.WordPress("test", "fake")
+        event = self.event()
+        article = p.article(event)
+        found_meta = dict(article["yoast_meta"])
+        found_meta["_yoast_wpseo_metadesc"] = "Editorial special description"
+        wp.by_slug = lambda slug: {
+            "id": 77, "status": "publish", "featured_media": 1234,
+            "content": {"raw": article["content"]}, "meta": found_meta,
+            "tags": [10], "slug": article["slug"],
+        }
+        wp.call = lambda *args, **kwargs: self.fail(
+            "Must not write a post with manually edited Yoast SEO fields"
+        )
+        with self.assertRaisesRegex(RuntimeError, "Existing Yoast SEO"):
+            wp.save(article, {}, "publish",
+                    f"<!-- {p.MARKER}{event['key']} -->", event=event)
+
 
     def test_seo_headline_slug_excerpt_and_tags(self):
         event = self.event()
@@ -130,6 +225,24 @@ class PublisherTests(unittest.TestCase):
         self.assertIn("Jawa", fields["tag_names"])
         self.assertTrue(all(" " not in tag for tag in fields["tag_names"]))
         self.assertEqual(fields["content"].count("<p>"), 4)
+        self.assertEqual(
+            set(fields["yoast_meta"]), set(p.YOAST_KEYS)
+        )
+        self.assertEqual(
+            fields["yoast_meta"]["_yoast_wpseo_focuskw"],
+            "gempa M5,6 di Selatan Jawa",
+        )
+        self.assertEqual(
+            fields["yoast_meta"]["_yoast_wpseo_title"], fields["title"]
+        )
+        self.assertEqual(
+            fields["yoast_meta"]["_yoast_wpseo_metadesc"],
+            fields["excerpt"]
+        )
+        self.assertLessEqual(
+            len(fields["yoast_meta"]["_yoast_wpseo_metadesc"]), 160
+        )
+        self.assertIn("gempa m5,6 di selatan jawa", fields["content"].casefold())
         self.assertRegex(fields["content"], r" \(RK/D-1\)</p><!-- dataloka-bmkg:")
 
     def test_berita_id_lookup_and_cache(self):
@@ -163,6 +276,14 @@ class PublisherTests(unittest.TestCase):
         self.assertIn("daftar-gempa-m50-m54-2026-11-17", fields["slug"])
         self.assertLessEqual(len(fields["excerpt"]), 160)
         self.assertIn("BMKG", fields["tag_names"])
+        self.assertEqual(
+            fields["yoast_meta"]["_yoast_wpseo_metadesc"],
+            fields["excerpt"]
+        )
+        self.assertIn(
+            "gempa M5,0–5,4",
+            fields["yoast_meta"]["_yoast_wpseo_focuskw"]
+        )
 
     def test_site_is_dataloka_only(self):
         self.assertEqual(p.WP_URL, "https://dataloka.id")

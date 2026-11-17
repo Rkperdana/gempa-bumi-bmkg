@@ -14,6 +14,10 @@ Integrasi ini **hanya** mengakses REST API Posts dan Media Dataloka di https://d
 - **Judul SEO**: `Gempa M5,6 di Selatan Jawa, 17 November 2026 - BMKG` (contoh simulasi). Angka, wilayah, dan tanggal berasal dari BMKG.
 - **Slug SEO**: `gempa-selatan-jawa-2026-11-17-xxxxxxxx`. Akhiran ID ringkas mencegah tabrakan URL jika terjadi beberapa gempa berlokasi dan bertanggal sama. Slug artikel yang sudah terbit **tidak diubah** untuk menghindari kerusakan URL/SEO.
 - **Excerpt**: ringkasan faktual maksimal sekitar 160 karakter, mencakup lokasi, magnitudo, waktu WIB, kedalaman, serta status tsunami hanya bila diverifikasi. Field WordPress `excerpt` bukan otomatis meta description milik Yoast/Rank Math.
+- **Yoast SEO (otomatis dan diverifikasi)**: `Focus keyphrase` → `_yoast_wpseo_focuskw`; `SEO title` → `_yoast_wpseo_title`; `Meta description` → `_yoast_wpseo_metadesc`; `Slug` → field `slug` bawaan WordPress. Seluruh nilai berasal dari data kejadian BMKG; Yoast meta description disimpan secara terpisah dari excerpt, meskipun teks dasarnya sama.
+- **Verifikasi Yoast sebelum terbit**: post baru dibuat sebagai draf terlebih dahulu. Skrip melakukan pembacaan kembali tiga meta Yoast dari `/wp-json/wp/v2/posts/{id}?context=edit`. Hanya jika semuanya persis tersimpan, status diganti menjadi `publish`. Jika belum, post tetap draf untuk pemeriksaan (workflow menunjukkan error yang jelas).
+- **Mempertahankan suntingan manusia**: jika editor mengubah isi artikel, permalink, gambar, atau field Yoast secara manual, bot tidak akan menimpanya. Artikel lama tidak diubah slug-nya.
+
 - **Tag WordPress**: tag satu kata yang relevan, seperti `Gempa`, `BMKG`, `Episentrum`, `Seismik`, dan wilayah bila bisa dipetakan dari nama BMKG. Skrip mencari tag berdasarkan nama dan mencoba membuatnya bila belum tersedia. Bila hak akun tidak cukup, artikel tetap diproses dan log memberi peringatan; editor dapat memasang tag secara manual.
 - Sumber resmi: https://data.bmkg.go.id/gempabumi/
 - Semua artikel (termasuk draf ringkasan) mempunyai minimal **empat paragraf**. Pada akhir kalimat di paragraf terakhir tertulis **(RK/D-1)** tanpa pindah baris atau paragraf baru.
@@ -35,6 +39,19 @@ Integrasi ini **hanya** mengakses REST API Posts dan Media Dataloka di https://d
 7. Tinjau log Actions, halaman Posts di WordPress, dan status penerbitan. Jika terdapat 401/403, cek hak akses pengguna, Application Password, dan firewall.
 8. Untuk menghentikan penerbitan segera, **disable workflow** di GitHub Actions (atau cabut Application Password di WordPress).
 
+## Dukungan Yoast REST API
+
+Yoast menyediakan endpoint `/yoast/v1/get_head` yang **hanya bisa membaca**. Beberapa versi Yoast sudah mengekspos tiga field di atas dalam `meta` pada REST API WordPress bawaan; versi lain belum. Skrip memeriksa benar-benar tersimpan, bukan hanya mengandalkan status HTTP 200.
+
+Jika log Actions menyatakan *Yoast metadata belum tersedia pada REST API WordPress*:
+
+1. Pastikan Yoast SEO aktif dan mutakhir. Periksa apakah ketiga field Yoast ada dalam objek `meta` ketika mengambil artikel via WordPress REST API dengan akun yang berhak mengedit.
+2. Jika masih tidak tersedia, instal bridge khusus Dataloka: `wordpress/dataloka-yoast-rest-bridge/dataloka-yoast-rest-bridge.php`. Unggah dalam format ZIP lewat **WordPress → Plugins → Add New → Upload Plugin**, lalu **Activate**. Plugin bridge hanya mendaftarkan tiga meta Yoast untuk tipe konten `post`, dengan kontrol akses `edit_post`; ia tidak mengubah konten lain, Pirsadata, atau file tema.
+3. Jalankan satu siklus otomatisasi/pengujian penerbitan. Periksa panel Yoast pada draf dan pastikan **Focus keyphrase**, **SEO title**, dan **Meta description** terisi. Slug diperiksa dari permalink WordPress.
+4. Jika data Yoast tidak terlihat tetapi API menyatakan tersimpan, coba menyimpan artikel secara manual atau fitur optimasi data SEO Yoast dan periksa tampilan frontend; indexables Yoast mungkin memerlukan sinkronisasi.
+
+**Jangan** menaruh kata sandi aplikasi dalam kode, plugin, atau PR. Bot menggunakan dua GitHub Secrets yang sudah disiapkan.
+
 ## Pembatasan penting
 
 - Kunci deduplikasi berbasis waktu/koordinat adalah heuristik karena feed JSON BMKG yang digunakan tidak menyertakan ID kejadian permanen. Perubahan waktu/koordinat besar dapat memerlukan rekonsiliasi manual.
@@ -51,3 +68,6 @@ https://developer.wordpress.org/rest-api/reference/posts/
 https://developer.wordpress.org/rest-api/reference/media/
 https://www.naturalearthdata.com/downloads/110m-cultural-vectors/
 https://developer.wordpress.org/advanced-administration/security/application-passwords/
+
+https://developer.yoast.com/customization/apis/rest-api/
+https://developer.wordpress.org/rest-api/extending-the-rest-api/modifying-responses/

@@ -29,6 +29,7 @@ ROOT = Path(__file__).resolve().parents[1]
 STATE = ROOT / "data" / "dataloka-wp-state.json"
 WP_URL = "https://dataloka.id"
 MARKER = "dataloka-bmkg:"
+YOAST_KEYS = ("_yoast_wpseo_focuskw", "_yoast_wpseo_title", "_yoast_wpseo_metadesc")
 
 
 def timestamp(value):
@@ -264,10 +265,10 @@ def article(e):
 
     # Exactly four editorial paragraphs; never infer damage, casualties or shaking intensity.
     paragraphs = [
-        (f"Badan Meteorologi, Klimatologi, dan Geofisika (BMKG) melaporkan "
-         f"gempa bumi magnitudo {mag} di {region} pada {day}, {date}, pukul "
-         f"{time} WIB. Informasi kejadian tersebut dipublikasikan melalui "
-         f"data gempa resmi BMKG."),
+        (f"Gempa M{mag} di {region} terjadi pada {day}, {date}, pukul "
+         f"{time} WIB, menurut Badan Meteorologi, Klimatologi, dan Geofisika "
+         f"(BMKG). Informasi kejadian tersebut dipublikasikan melalui data "
+         f"gempa resmi BMKG."),
         (f"Menurut parameter BMKG, koordinat episentrum berada di "
          f"{escape(coordinate(e['lat'], 'LU', 'LS'))} dan "
          f"{escape(coordinate(e['lon'], 'BT', 'BB'))}. "
@@ -293,12 +294,18 @@ def article(e):
     body = "".join(f"<p>{paragraph}</p>" for paragraph in paragraphs)
     # Hidden provenance marker is adjacent to the final closing tag, with no newline.
     body += f"<!-- {MARKER}{e['key']} -->"
+    yoast_meta = {
+        "_yoast_wpseo_focuskw": f"gempa M{mag} di {readable_region(e['region'])}",
+        "_yoast_wpseo_title": seo_title(e, date),
+        "_yoast_wpseo_metadesc": seo_excerpt(e, date, time, depth),
+    }
     return {
         "title": escape(seo_title(e, date)),
         "content": body,
         "excerpt": escape(seo_excerpt(e, date, time, depth)),
         "slug": seo_slug(e, local.strftime("%Y-%m-%d")),
         "tag_names": editorial_tags(e),
+        "yoast_meta": yoast_meta,
         "comment_status": "closed",
     }
 
@@ -337,11 +344,17 @@ def daily_article(records, day):
     body = "<p>" + paragraphs[0] + "</p><p>" + paragraphs[1] + "</p>" + table
     body += "<p>" + paragraphs[2] + "</p><p>" + paragraphs[3] + "</p>"
     body += f"<!-- dataloka-bmkg-daily:{day.isoformat()} -->"
+    description = (f"Daftar gempa M5,0–5,4 pada {readable_day} berdasarkan data "
+                   f"BMKG yang dipantau Dataloka. Lihat waktu, wilayah, dan kedalaman.")
     return {"title": title, "content": body,
-            "excerpt": (f"Daftar gempa M5,0–5,4 pada {readable_day} berdasarkan data "
-                        f"BMKG yang dipantau Dataloka. Lihat waktu, wilayah, dan kedalaman."),
+            "excerpt": description,
             "slug": f"daftar-gempa-m50-m54-{day.isoformat()}",
             "tag_names": ["Gempa", "BMKG", "Seismik"],
+            "yoast_meta": {
+                "_yoast_wpseo_focuskw": f"gempa M5,0–5,4 {readable_day}",
+                "_yoast_wpseo_title": title,
+                "_yoast_wpseo_metadesc": description,
+            },
             "comment_status": "closed"}
 
 
@@ -483,65 +496,139 @@ class WordPress:
     def by_id(self, post_id):
         return self.call("GET", "posts/" + str(int(post_id)), {"context": "edit"})
 
+    @staticmethod
+    def _verified_yoast(post, desired):
+        """Require exact persistence; WordPress can silently ignore unregistered meta."""
+        meta = post.get("meta")
+        if not isinstance(meta, dict) or any(k not in meta for k in YOAST_KEYS):
+            raise RuntimeError(
+                "Yoast metadata belum tersedia pada REST API WordPress. "
+                "Aktifkan dukungan meta REST (Yoast terbaru atau plugin bridge); "
+                "artikel baru tetap berstatus draf, tidak terbit tanpa SEO."
+            )
+        actual = {key: str(meta[key]) for key in YOAST_KEYS}
+        if any(actual[key] != desired[key] for key in YOAST_KEYS):
+            raise RuntimeError(
+                "WordPress tidak menyimpan seluruh Yoast SEO metadata sesuai permintaan. "
+                "Periksa dukungan REST Yoast dan hak akses akun bot; "
+                "publikasi artikel baru ditahan sebagai draf."
+            )
+        return actual
+
     def save(self, payload, ledger, status, marker, event=None):
-        found = self.by_id(ledger["post_id"]) if ledger.get("post_id") else self.by_slug(payload["slug"])
+        desired_yoast = payload.get("yoast_meta", {})
+        if set(desired_yoast) != set(YOAST_KEYS):
+            raise ValueError("Yoast field set incomplete; refusing unsafe publication")
+        found = (self.by_id(ledger["post_id"]) if ledger.get("post_id")
+                 else self.by_slug(payload["slug"]))
         if found:
             raw = found.get("content", {}).get("raw", "")
             if marker not in raw:
                 raise RuntimeError(f"Post {found['id']} has no Dataloka ownership marker")
             previous_digest = ledger.get("last_wp_digest")
             if not previous_digest:
-                if hash_value(raw) != hash_value(payload["content"]) or found.get("status") != status:
-                    raise RuntimeError("Untracked WordPress post was changed; manual reconciliation required")
+                if (hash_value(raw) != hash_value(payload["content"]) or
+                    found.get("status") not in (status, "draft")):
+                    raise RuntimeError(
+                        "Existing untracked WordPress post differs from bot payload; "
+                        "manual reconciliation required"
+                    )
                 previous_digest = hash_value(raw)
             if hash_value(raw) != previous_digest:
                 raise RuntimeError(f"Post {found['id']} edited manually; refusing overwrite")
             if found.get("status") == "publish" and status != "publish":
                 raise RuntimeError(f"Cannot downgrade published post {found['id']}")
-            # Do not overwrite a human-changed featured image.
+
             prior_media = ledger.get("media_id")
             current_media = int(found.get("featured_media") or 0)
             if prior_media and current_media not in (0, int(prior_media)):
                 raise RuntimeError(f"Featured image on post {found['id']} edited manually")
+
+            # Check that old SEO metadata is readable before modifying existing posts.
+            existing_meta = found.get("meta")
+            if not isinstance(existing_meta, dict) or any(
+                key not in existing_meta for key in YOAST_KEYS
+            ):
+                raise RuntimeError(
+                    "Yoast REST meta keys are not exposed; existing post unchanged"
+                )
+            before = {key: str(existing_meta[key]) for key in YOAST_KEYS}
+            previous_yoast_digest = ledger.get("yoast_meta_digest")
+            if previous_yoast_digest:
+                if hash_value(json.dumps(before, sort_keys=True, ensure_ascii=False)) != previous_yoast_digest:
+                    raise RuntimeError(
+                        f"Yoast SEO fields on post {found['id']} edited manually; refusing overwrite"
+                    )
+            elif any(before[key] and before[key] != desired_yoast[key]
+                     for key in YOAST_KEYS):
+                raise RuntimeError(
+                    f"Existing Yoast SEO fields on post {found['id']} differ; "
+                    "refusing overwrite without editor reconciliation"
+                )
+
             new_payload = dict(payload)
-            new_payload.pop("slug", None)
+            new_payload.pop("slug", None)  # Never rewrite existing public permalinks.
             tag_names = new_payload.pop("tag_names", [])
+            new_payload["meta"] = new_payload.pop("yoast_meta")
             new_payload["status"] = status
             new_payload["categories"] = [self.berita_category_id()]
-            # Do not replace tags a human editor has already curated.
             if tag_names and not found.get("tags"):
                 term_ids = self.resolve_tags(tag_names)
                 if term_ids:
                     new_payload["tags"] = term_ids
             if status == "publish" and event and not current_media:
                 new_payload["featured_media"] = self.cover_image(event)
+
             post = self.call("POST", "posts/" + str(found["id"]), payload=new_payload)
+            confirmed = self.by_id(post["id"])
+            self._verified_yoast(confirmed, desired_yoast)
         else:
-            new_payload = dict(payload, status=status)
+            new_payload = dict(payload)
             tag_names = new_payload.pop("tag_names", [])
+            new_payload["meta"] = new_payload.pop("yoast_meta")
+            # Publish only AFTER verifying the requested Yoast fields on the draft.
+            new_payload["status"] = "draft"
             if tag_names:
                 term_ids = self.resolve_tags(tag_names)
                 if term_ids:
                     new_payload["tags"] = term_ids
             new_payload["categories"] = [self.berita_category_id()]
-            # Upload first, then publish. Do not publish a new live post without its map.
             if status == "publish" and event:
                 new_payload["featured_media"] = self.cover_image(event)
             post = self.call("POST", "posts", payload=new_payload)
+            confirmed = self.by_id(post["id"])
+            self._verified_yoast(confirmed, desired_yoast)
+            if confirmed.get("slug") != payload["slug"]:
+                raise RuntimeError(
+                    f"WordPress changed the requested SEO slug for draft {post['id']}; "
+                    "new article is not being published"
+                )
+            if status == "publish":
+                post = self.call("POST", "posts/" + str(post["id"]), payload={
+                    "status": "publish",
+                })
+                confirmed = self.by_id(post["id"])
+                self._verified_yoast(confirmed, desired_yoast)
 
-        confirmed = self.by_id(post["id"])
         if marker not in confirmed.get("content", {}).get("raw", ""):
             raise RuntimeError(f"WordPress stripped ownership marker for post {post['id']}")
+        if confirmed.get("status") != status:
+            raise RuntimeError(
+                f"WordPress returned status {confirmed.get('status')} instead of {status}"
+            )
         if status == "publish" and event and not int(confirmed.get("featured_media") or 0):
             raise RuntimeError(f"Published post {post['id']} has no featured media")
         return self._mapping(confirmed, payload)
 
     @staticmethod
     def _mapping(post, payload):
+        actual_meta = {key: str(post["meta"][key]) for key in YOAST_KEYS}
         return {
             "post_id": post["id"],
             "media_id": int(post.get("featured_media") or 0),
             "last_wp_digest": hash_value(post.get("content", {}).get("raw", "")),
+            "yoast_meta_digest": hash_value(json.dumps(
+                actual_meta, ensure_ascii=False, sort_keys=True)),
             "status": post["status"],
             "last_payload_digest": hash_value(json.dumps(
                 payload, ensure_ascii=False, sort_keys=True)),
