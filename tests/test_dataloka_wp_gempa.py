@@ -60,7 +60,7 @@ class PublisherTests(unittest.TestCase):
         b = self.event(Magnitude="5.6")
         day = dt.date(2026, 11, 17)
         output = p.daily_article([{"data": a}, {"data": b}], day)
-        self.assertIn("Ringkasan", output["title"])
+        self.assertIn("Daftar Gempa", output["title"])
         self.assertIn("5,2", output["content"])
         self.assertNotIn("5,6", output["content"])
 
@@ -130,7 +130,7 @@ class PublisherTests(unittest.TestCase):
         self.assertIn("Jawa", fields["tag_names"])
         self.assertTrue(all(" " not in tag for tag in fields["tag_names"]))
         self.assertEqual(fields["content"].count("<p>"), 4)
-        self.assertRegex(fields["content"], r" \\(RK/D-1\\)</p><!-- dataloka-bmkg:")
+        self.assertRegex(fields["content"], r" \(RK/D-1\)</p><!-- dataloka-bmkg:")
 
     def test_berita_id_lookup_and_cache(self):
         wp = p.WordPress("test", "fake")
