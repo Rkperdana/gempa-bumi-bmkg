@@ -10,6 +10,11 @@ Integrasi ini **hanya** mengakses REST API Posts dan Media Dataloka di https://d
 - Revisi BMKG memperbarui artikel bot yang sama selama belum diedit manusia dan sidik kejadian masih cocok. Tidak mengubah artikel di luar bot.
 - Kejadian yang sudah berumur lebih dari 120 menit ketika pertama kali terlihat tidak dipublikasikan ulang.
 - Ledger publikasi terpisah: `data/dataloka-wp-state.json`.
+- **Kategori WordPress: Berita** untuk seluruh artikel dan draf bot. Skrip mencari ID kategori yang sudah ada lewat REST API `/wp/v2/categories?search=Berita`, mencocokkan nama/slug persis, lalu mengirim hanya kategori tersebut. Bila kategori tidak ditemukan, otomatisasi gagal tertutup dan **tidak menerbitkan ke Uncategorized**.
+- **Judul SEO**: `Gempa M5,6 di Selatan Jawa, 17 November 2026 - BMKG` (contoh simulasi). Angka, wilayah, dan tanggal berasal dari BMKG.
+- **Slug SEO**: `gempa-selatan-jawa-2026-11-17-xxxxxxxx`. Akhiran ID ringkas mencegah tabrakan URL jika terjadi beberapa gempa berlokasi dan bertanggal sama. Slug artikel yang sudah terbit **tidak diubah** untuk menghindari kerusakan URL/SEO.
+- **Excerpt**: ringkasan faktual maksimal sekitar 160 karakter, mencakup lokasi, magnitudo, waktu WIB, kedalaman, serta status tsunami hanya bila diverifikasi. Field WordPress `excerpt` bukan otomatis meta description milik Yoast/Rank Math.
+- **Tag WordPress**: tag satu kata yang relevan, seperti `Gempa`, `BMKG`, `Episentrum`, `Seismik`, dan wilayah bila bisa dipetakan dari nama BMKG. Skrip mencari tag berdasarkan nama dan mencoba membuatnya bila belum tersedia. Bila hak akun tidak cukup, artikel tetap diproses dan log memberi peringatan; editor dapat memasang tag secara manual.
 - Sumber resmi: https://data.bmkg.go.id/gempabumi/
 - Semua artikel (termasuk draf ringkasan) mempunyai minimal **empat paragraf**. Pada akhir kalimat di paragraf terakhir tertulis **(RK/D-1)** tanpa pindah baris atau paragraf baru.
 - Artikel yang diterbitkan otomatis mendapatkan **featured image JPEG 1200×675 (16:9), di bawah 500 KB**, berupa peta posisi episentrum dari koordinat BMKG.
@@ -24,7 +29,7 @@ Integrasi ini **hanya** mengakses REST API Posts dan Media Dataloka di https://d
 3. GitHub → repository **Rkperdana/gempa-bumi-bmkg** → **Settings** → **Secrets and variables** → **Actions** → **New repository secret**:
    - `DATALOKA_WP_USERNAME`: nama pengguna WordPress untuk bot.
    - `DATALOKA_WP_APP_PASSWORD`: Application Password untuk bot.
-4. Opsional: **Variables** → `DATALOKA_WP_CATEGORY_ID` = ID numerik kategori Dataloka. Jangan mengarang ID kategori.
+4. Pastikan di WordPress → **Posts → Categories** sudah ada kategori bernama **Berita**. Tidak perlu mengisi ID kategori di GitHub; skrip akan menemukannya otomatis.
 5. Gabungkan PR ke `main`. Scheduled workflow akan menjalankan mode **live**; sebelum Secrets terisi, workflow gagal tertutup tanpa menulis ke WordPress.
 6. Untuk uji manual: GitHub → **Actions** → **Dataloka | Gempa BMKG ke WordPress** → **Run workflow** → mode `dry-run`, task `events`.
 7. Tinjau log Actions, halaman Posts di WordPress, dan status penerbitan. Jika terdapat 401/403, cek hak akses pengguna, Application Password, dan firewall.
@@ -37,6 +42,7 @@ Integrasi ini **hanya** mengakses REST API Posts dan Media Dataloka di https://d
 - Untuk publikasi otomatis dengan gambar, akun WordPress memerlukan kapabilitas `upload_files` dan `publish_posts`.
 - Peta menunjukkan lokasi secara ilustratif; bukan peta intensitas guncangan, dampak, atau bahaya tsunami.
 - Draf ringkasan bukan angka total resmi harian; datanya hanya kejadian terpantau.
+- Jangan mengubah slug artikel yang sudah terbit tanpa strategi redirect 301. Bot secara sengaja mempertahankan slug lama pada pembaruan artikel bot.
 - Tidak memodifikasi kode CMS, dashboard, ataupun konten Pirsadata.
 - **Jangan pernah** menyimpan password dalam source code, PR, issue, log, maupun file ZIP.
 

@@ -19,6 +19,7 @@ import sys
 import urllib.error
 import urllib.parse
 import urllib.request
+import unicodedata
 
 UTC = dt.timezone.utc
 WIB = dt.timezone(dt.timedelta(hours=7))
@@ -171,6 +172,84 @@ def coordinate(value, north_east, south_west):
     return f"{number}° {direction}"
 
 
+def slugify(value):
+    """Human-readable ASCII slug; always bounded and safe for WordPress."""
+    ascii_text = unicodedata.normalize("NFKD", str(value))
+    ascii_text = ascii_text.encode("ascii", "ignore").decode("ascii").lower()
+    return re.sub(r"[^a-z0-9]+", "-", ascii_text).strip("-")
+
+
+def readable_region(value):
+    """Avoid markup in SEO metadata while preserving the actual BMKG location."""
+    plain = html.unescape(re.sub(r"<[^>]*>", " ", str(value)))
+    return " ".join(plain.split())
+
+
+def seo_title(e, date):
+    mag = magnitude(e["magnitude"])
+    region = readable_region(e["region"])
+    full = f"Gempa M{mag} di {region}, {date} - BMKG"
+    if len(full) <= 75:
+        return full
+    concise = f"Gempa M{mag} di {region}, {date}"
+    if len(concise) <= 78:
+        return concise
+    # Prefer a complete word in a shortened headline, not a misleading new place.
+    left, right = f"Gempa M{mag} di ", f", {date}"
+    limit = max(12, 78 - len(left) - len(right) - 1)
+    short = region[:limit].rsplit(" ", 1)[0] or region[:limit]
+    return left + short.rstrip(" ,") + "…" + right
+
+
+def seo_slug(e, date_iso):
+    region = slugify(readable_region(e["region"]))
+    # Full source region is kept in the title/body; the URL keeps its main keywords.
+    region = "-".join(region.split("-")[:6])[:42].rstrip("-") or "episentrum"
+    # Stable occurrence suffix prevents collisions for multiple earthquakes.
+    return f"gempa-{region}-{date_iso}-{e['key'][:8]}"
+
+
+def seo_excerpt(e, date, time, depth):
+    mag = magnitude(e["magnitude"])
+    region = readable_region(e["region"])
+    prefix = f"Gempa M{mag} di {region} pada {date}, pukul {time} WIB. "
+    middle = f"Kedalaman {depth} km. "
+    ending = ("BMKG: tidak berpotensi tsunami." if confirmed_no_tsunami(e)
+              else "Simak informasi resmi BMKG.")
+    summary = prefix + middle + ending
+    if len(summary) <= 160:
+        return summary
+    # Preserve the factual tsunami wording by reducing the location, not the claim.
+    fixed = f"Gempa M{mag} di " + f" pada {date}. " + middle + ending
+    budget = 160 - len(fixed) - 1
+    if budget > 15:
+        short = region[:budget].rsplit(" ", 1)[0] or region[:budget]
+        return f"Gempa M{mag} di {short.rstrip(' ,')}… pada {date}. " + middle + ending
+    return f"Gempa M{mag} pada {date}. " + middle + ending
+
+
+def editorial_tags(e):
+    """Curated single-word tags; no unbounded taxonomy from BMKG free text."""
+    names = ["Gempa", "BMKG", "Episentrum", "Seismik"]
+    location = readable_region(e["region"]).casefold()
+    mapping = (
+        ("jawa", "Jawa"), ("java", "Jawa"), ("sumatera", "Sumatera"),
+        ("sumatra", "Sumatera"), ("sulawesi", "Sulawesi"),
+        ("kalimantan", "Kalimantan"), ("borneo", "Kalimantan"),
+        ("papua", "Papua"), ("maluku", "Maluku"), ("bali", "Bali"),
+        ("aceh", "Aceh"), ("lombok", "Lombok"), ("flores", "Flores"),
+        ("banda", "Banda"), ("sumbawa", "Sumbawa"),
+        ("halmahera", "Halmahera"), ("ambon", "Ambon"),
+        ("seram", "Seram"), ("timor", "Timor"),
+    )
+    for token, tag in mapping:
+        if re.search(r"(?<!\w)" + re.escape(token) + r"(?!\w)", location):
+            if tag not in names:
+                names.append(tag)
+            break
+    return names[:8]
+
+
 def article(e):
     local = timestamp(e["datetime"]).astimezone(WIB)
     days = ("Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu", "Minggu")
@@ -215,11 +294,11 @@ def article(e):
     # Hidden provenance marker is adjacent to the final closing tag, with no newline.
     body += f"<!-- {MARKER}{e['key']} -->"
     return {
-        "title": f"Gempa Magnitudo {mag} di {escape(e['region'])}, {date}",
+        "title": escape(seo_title(e, date)),
         "content": body,
-        "excerpt": f"BMKG: Gempa magnitudo {mag} di {escape(e['region'])} pada {date}, "
-                   f"kedalaman {depth} km.",
-        "slug": "bmkg-gempa-" + e["key"],
+        "excerpt": escape(seo_excerpt(e, date, time, depth)),
+        "slug": seo_slug(e, local.strftime("%Y-%m-%d")),
+        "tag_names": editorial_tags(e),
         "comment_status": "closed",
     }
 
@@ -237,7 +316,8 @@ def daily_article(records, day):
         depth = format(e["depth_km"], "g")
         rows.append(f"<tr><td>{escape(when)} WIB</td><td>{escape(magnitude(e['magnitude']))}"
                     f"</td><td>{escape(e['region'])}</td><td>{escape(depth)} km</td></tr>")
-    title = f"Ringkasan Gempa M5,0–5,4 BMKG pada {day:%d-%m-%Y}"
+    readable_day = f"{day.day} {('Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember')[day.month - 1]} {day.year}"
+    title = f"Daftar Gempa M5,0–5,4 pada {readable_day} Menurut BMKG"
     paragraphs = [
         (f"Berdasarkan kejadian yang berhasil dipantau Dataloka dari BMKG, "
          f"terdapat {len(selected)} gempa bermagnitudo 5,0 hingga kurang dari "
@@ -258,18 +338,21 @@ def daily_article(records, day):
     body += "<p>" + paragraphs[2] + "</p><p>" + paragraphs[3] + "</p>"
     body += f"<!-- dataloka-bmkg-daily:{day.isoformat()} -->"
     return {"title": title, "content": body,
-            "excerpt": title,
-            "slug": f"ringkasan-bmkg-m50-m54-{day.isoformat()}",
+            "excerpt": (f"Daftar gempa M5,0–5,4 pada {readable_day} berdasarkan data "
+                        f"BMKG yang dipantau Dataloka. Lihat waktu, wilayah, dan kedalaman."),
+            "slug": f"daftar-gempa-m50-m54-{day.isoformat()}",
+            "tag_names": ["Gempa", "BMKG", "Seismik"],
             "comment_status": "closed"}
 
 
 class WordPress:
-    def __init__(self, user, password, category=None):
+    def __init__(self, user, password):
         if not user or not password:
             raise ValueError("Missing Dataloka WordPress secrets")
         self.authorization = "Basic " + base64.b64encode(
             f"{user}:{password}".encode("utf-8")).decode("ascii")
-        self.category = int(category) if category else None
+        self._tag_cache = {}
+        self._berita_id = None
 
     def call(self, method, route, params=None, payload=None):
         url = WP_URL + "/wp-json/wp/v2/" + route
@@ -330,6 +413,68 @@ class WordPress:
         })
         return media_id
 
+    def berita_category_id(self):
+        """Find the existing WordPress category named Berita; never assume an ID."""
+        if self._berita_id is not None:
+            return self._berita_id
+        terms = self.call("GET", "categories", {
+            "search": "Berita", "per_page": 100,
+        })
+        exact = [
+            term for term in terms if
+            html.unescape(str(term.get("name", ""))).strip().casefold() == "berita"
+            or str(term.get("slug", "")).strip().casefold() == "berita"
+        ]
+        if not exact:
+            raise RuntimeError(
+                "Kategori 'Berita' tidak ditemukan di WordPress Dataloka; "
+                "artikel bot tidak dikirim agar tidak salah kategori."
+            )
+        selected = next(
+            (term for term in exact if term.get("slug") == "berita"),
+            exact[0],
+        )
+        self._berita_id = int(selected["id"])
+        return self._berita_id
+
+    def resolve_tags(self, names):
+        """Resolve existing WP term IDs, create missing terms if role permits.
+
+        A missing ability to create tags must not delay a time-sensitive earthquake
+        publication. Unresolved tags are reported in Actions logs for editorial review.
+        """
+        term_ids = []
+        for name in list(dict.fromkeys(names))[:8]:
+            if not name or " " in name:
+                continue
+            if name in self._tag_cache:
+                term_id = self._tag_cache[name]
+            else:
+                try:
+                    matches = self.call("GET", "tags", {
+                        "search": name, "per_page": 100,
+                    })
+                    exact = next(
+                        (tag for tag in matches if
+                         html.unescape(str(tag.get("name", ""))).casefold() == name.casefold()),
+                        None)
+                    if exact:
+                        term_id = int(exact["id"])
+                    else:
+                        created = self.call("POST", "tags", payload={
+                            "name": name, "slug": slugify(name),
+                        })
+                        term_id = int(created["id"])
+                except (RuntimeError, KeyError, ValueError, TypeError) as exc:
+                    # Permission 403 on /tags creation is common for Author roles.
+                    print(f"WARNING: WordPress tag '{name}' unavailable: {exc}",
+                          file=sys.stderr)
+                    term_id = 0
+                self._tag_cache[name] = term_id
+            if term_id and term_id not in term_ids:
+                term_ids.append(term_id)
+        return term_ids
+
     def by_slug(self, slug):
         posts = self.call("GET", "posts", {
             "slug": slug, "status": "any", "context": "edit", "per_page": 2})
@@ -360,14 +505,25 @@ class WordPress:
                 raise RuntimeError(f"Featured image on post {found['id']} edited manually")
             new_payload = dict(payload)
             new_payload.pop("slug", None)
+            tag_names = new_payload.pop("tag_names", [])
             new_payload["status"] = status
+            new_payload["categories"] = [self.berita_category_id()]
+            # Do not replace tags a human editor has already curated.
+            if tag_names and not found.get("tags"):
+                term_ids = self.resolve_tags(tag_names)
+                if term_ids:
+                    new_payload["tags"] = term_ids
             if status == "publish" and event and not current_media:
                 new_payload["featured_media"] = self.cover_image(event)
             post = self.call("POST", "posts/" + str(found["id"]), payload=new_payload)
         else:
             new_payload = dict(payload, status=status)
-            if self.category:
-                new_payload["categories"] = [self.category]
+            tag_names = new_payload.pop("tag_names", [])
+            if tag_names:
+                term_ids = self.resolve_tags(tag_names)
+                if term_ids:
+                    new_payload["tags"] = term_ids
+            new_payload["categories"] = [self.berita_category_id()]
             # Upload first, then publish. Do not publish a new live post without its map.
             if status == "publish" and event:
                 new_payload["featured_media"] = self.cover_image(event)
@@ -460,8 +616,7 @@ def main():
     parser.add_argument("--task", choices=("events", "daily"), default="events")
     args = parser.parse_args()
     wp = None if args.mode == "dry-run" else WordPress(
-        os.getenv("WP_USERNAME"), os.getenv("WP_APP_PASSWORD"),
-        os.getenv("WP_CATEGORY_ID"))
+        os.getenv("WP_USERNAME"), os.getenv("WP_APP_PASSWORD"))
     now = dt.datetime.now(UTC)
     if args.task == "events":
         events_task(args.mode, wp, now)
