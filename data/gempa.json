@@ -2,7 +2,7 @@
   "schema_version": 2,
   "status": "live",
   "data_origin": "realtime_table",
-  "checked_at": "2026-11-17T02:56:55.504575Z",
+  "checked_at": "2026-11-17T04:34:52.391753Z",
   "source": "Badan Meteorologi, Klimatologi, dan Geofisika (BMKG)",
   "coverage_note": "200 gempa terbaru pada tabel real-time BMKG (jumlah aktual dapat kurang dari 200), termasuk episentrum di luar Indonesia; gempa dirasakan dilengkapi dari feed terpisah. Bukan total seluruh gempa dalam periode tersebut.",
   "sources": {
@@ -13,6 +13,121 @@
   },
   "errors": [],
   "events": [
+    {
+      "id": "8b92587274e487",
+      "datetime": "2026-11-17T04:14:30Z",
+      "magnitude": 3.7,
+      "depth_km": 17.0,
+      "lat": -3.61,
+      "lon": 135.41,
+      "region": "West Papua Region, Indonesia",
+      "felt": false,
+      "felt_info": "",
+      "tsunami": false,
+      "potential_text": "",
+      "significant": false,
+      "source_types": [
+        "realtime"
+      ],
+      "source_urls": [
+        "https://www.bmkg.go.id/gempabumi/gempabumi-realtime"
+      ],
+      "shakemap": "",
+      "first_seen_at": "2026-11-17T04:34:52.391753Z",
+      "last_updated_at": "2026-11-17T04:34:52.391753Z"
+    },
+    {
+      "id": "73a333858e1bb9",
+      "datetime": "2026-11-17T03:52:28Z",
+      "magnitude": 5.3,
+      "depth_km": 96.0,
+      "lat": -14.83,
+      "lon": 167.47,
+      "region": "Vanuatu Islands",
+      "felt": false,
+      "felt_info": "",
+      "tsunami": false,
+      "potential_text": "",
+      "significant": false,
+      "source_types": [
+        "realtime"
+      ],
+      "source_urls": [
+        "https://www.bmkg.go.id/gempabumi/gempabumi-realtime"
+      ],
+      "shakemap": "",
+      "first_seen_at": "2026-11-17T04:34:52.391753Z",
+      "last_updated_at": "2026-11-17T04:34:52.391753Z"
+    },
+    {
+      "id": "2cbac78bb5ec40",
+      "datetime": "2026-11-17T03:06:47Z",
+      "magnitude": 3.2,
+      "depth_km": 21.0,
+      "lat": -7.15,
+      "lon": 115.11,
+      "region": "Bali Sea",
+      "felt": false,
+      "felt_info": "",
+      "tsunami": false,
+      "potential_text": "",
+      "significant": false,
+      "source_types": [
+        "realtime"
+      ],
+      "source_urls": [
+        "https://www.bmkg.go.id/gempabumi/gempabumi-realtime"
+      ],
+      "shakemap": "",
+      "first_seen_at": "2026-11-17T04:34:52.391753Z",
+      "last_updated_at": "2026-11-17T04:34:52.391753Z"
+    },
+    {
+      "id": "a74d4a0c6aa633",
+      "datetime": "2026-11-17T03:03:20Z",
+      "magnitude": 2.5,
+      "depth_km": 28.0,
+      "lat": -8.29,
+      "lon": 121.16,
+      "region": "Flores Region, Indonesia",
+      "felt": false,
+      "felt_info": "",
+      "tsunami": false,
+      "potential_text": "",
+      "significant": false,
+      "source_types": [
+        "realtime"
+      ],
+      "source_urls": [
+        "https://www.bmkg.go.id/gempabumi/gempabumi-realtime"
+      ],
+      "shakemap": "",
+      "first_seen_at": "2026-11-17T04:34:52.391753Z",
+      "last_updated_at": "2026-11-17T04:34:52.391753Z"
+    },
+    {
+      "id": "5e69b4255ec78f",
+      "datetime": "2026-11-17T03:01:37Z",
+      "magnitude": 3.0,
+      "depth_km": 10.0,
+      "lat": 1.39,
+      "lon": 126.58,
+      "region": "Northern Molucca Sea",
+      "felt": false,
+      "felt_info": "",
+      "tsunami": false,
+      "potential_text": "",
+      "significant": false,
+      "source_types": [
+        "realtime"
+      ],
+      "source_urls": [
+        "https://www.bmkg.go.id/gempabumi/gempabumi-realtime"
+      ],
+      "shakemap": "",
+      "first_seen_at": "2026-11-17T04:34:52.391753Z",
+      "last_updated_at": "2026-11-17T04:34:52.391753Z"
+    },
     {
       "id": "81bc447c3dfacd",
       "datetime": "2026-11-17T02:24:16Z",
@@ -205,11 +320,11 @@
     },
     {
       "id": "609bbf92a07151",
-      "datetime": "2026-11-16T21:11:21Z",
+      "datetime": "2026-11-16T21:11:20Z",
       "magnitude": 6.8,
-      "depth_km": 97.0,
-      "lat": -6.12,
-      "lon": 131.63,
+      "depth_km": 101.0,
+      "lat": -6.11,
+      "lon": 131.61,
       "region": "Tanimbar Islands Region, Indonesia",
       "felt": true,
       "felt_info": "III Saumlaki, III Tiakur, III Dobo, III Sorong, III Manokwari, III Manokwari Selatan, III Bintuni, III Tual, III Fakfak, III Kaimana, II Nabire, II Serui",
@@ -228,7 +343,7 @@
       ],
       "shakemap": "",
       "first_seen_at": "2026-11-17T00:13:48.505650Z",
-      "last_updated_at": "2026-11-17T00:13:48.505650Z"
+      "last_updated_at": "2026-11-17T04:34:52.391753Z"
     },
     {
       "id": "cbd8d70837ba39",
@@ -4527,125 +4642,6 @@
       "shakemap": "",
       "first_seen_at": "2026-11-10T18:36:19.206296Z",
       "last_updated_at": "2026-11-10T18:36:19.206296Z"
-    },
-    {
-      "id": "fde21e4b137fa7",
-      "datetime": "2026-11-10T16:27:12Z",
-      "magnitude": 4.7,
-      "depth_km": 10.0,
-      "lat": 5.43,
-      "lon": 125.06,
-      "region": "Mindanao, Philippines",
-      "felt": false,
-      "felt_info": "",
-      "tsunami": false,
-      "potential_text": "",
-      "significant": false,
-      "source_types": [
-        "realtime"
-      ],
-      "source_urls": [
-        "https://www.bmkg.go.id/gempabumi/gempabumi-realtime"
-      ],
-      "shakemap": "",
-      "first_seen_at": "2026-11-10T23:43:45.480577Z",
-      "last_updated_at": "2026-11-10T23:43:45.480577Z"
-    },
-    {
-      "id": "90faf6b98b6108",
-      "datetime": "2026-11-10T16:04:16Z",
-      "magnitude": 4.2,
-      "depth_km": 10.0,
-      "lat": -4.28,
-      "lon": 122.44,
-      "region": "Sulawesi, Indonesia",
-      "felt": true,
-      "felt_info": "IV Konawe Selatan, III Kendari",
-      "tsunami": false,
-      "potential_text": "",
-      "significant": false,
-      "source_types": [
-        "felt",
-        "realtime"
-      ],
-      "source_urls": [
-        "https://data.bmkg.go.id/DataMKG/TEWS/gempadirasakan.json",
-        "https://www.bmkg.go.id/gempabumi/gempabumi-realtime"
-      ],
-      "shakemap": "",
-      "first_seen_at": "2026-11-10T16:49:14.071260Z",
-      "last_updated_at": "2026-11-10T23:43:45.480577Z"
-    },
-    {
-      "id": "d7c64dc8d4dd4f",
-      "datetime": "2026-11-10T15:51:37Z",
-      "magnitude": 5.1,
-      "depth_km": 10.0,
-      "lat": -0.9,
-      "lon": 128.64,
-      "region": "Halmahera, Indonesia",
-      "felt": false,
-      "felt_info": "",
-      "tsunami": false,
-      "potential_text": "Tidak berpotensi tsunami",
-      "significant": false,
-      "source_types": [
-        "m5",
-        "realtime"
-      ],
-      "source_urls": [
-        "https://data.bmkg.go.id/DataMKG/TEWS/gempaterkini.json",
-        "https://www.bmkg.go.id/gempabumi/gempabumi-realtime"
-      ],
-      "shakemap": "",
-      "first_seen_at": "2026-11-10T16:49:14.071260Z",
-      "last_updated_at": "2026-11-10T16:49:14.071260Z"
-    },
-    {
-      "id": "cb016b2729e1e3",
-      "datetime": "2026-11-10T15:38:09Z",
-      "magnitude": 1.8,
-      "depth_km": 21.0,
-      "lat": -8.22,
-      "lon": 121.65,
-      "region": "Flores Region, Indonesia",
-      "felt": false,
-      "felt_info": "",
-      "tsunami": false,
-      "potential_text": "",
-      "significant": false,
-      "source_types": [
-        "realtime"
-      ],
-      "source_urls": [
-        "https://www.bmkg.go.id/gempabumi/gempabumi-realtime"
-      ],
-      "shakemap": "",
-      "first_seen_at": "2026-11-10T16:49:14.071260Z",
-      "last_updated_at": "2026-11-10T16:49:14.071260Z"
-    },
-    {
-      "id": "c0dc8e18eb1159",
-      "datetime": "2026-11-10T14:54:15Z",
-      "magnitude": 5.6,
-      "depth_km": 10.0,
-      "lat": 13.71,
-      "lon": -91.03,
-      "region": "Near Coast of Guatemala",
-      "felt": false,
-      "felt_info": "",
-      "tsunami": false,
-      "potential_text": "",
-      "significant": false,
-      "source_types": [
-        "realtime"
-      ],
-      "source_urls": [
-        "https://www.bmkg.go.id/gempabumi/gempabumi-realtime"
-      ],
-      "shakemap": "",
-      "first_seen_at": "2026-11-10T23:43:45.480577Z",
-      "last_updated_at": "2026-11-10T23:43:45.480577Z"
     }
   ]
 }
