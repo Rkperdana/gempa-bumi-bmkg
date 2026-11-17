@@ -11,7 +11,7 @@
         "lat": -7.0,
         "lon": 106.95,
         "region": "Pusat gempa berada di darat 10 km selatan Kota Sukabumi",
-        "potential": "Gempa ini dirasakan untuk diteruskan pada masyarakat",
+        "potential": "",
         "felt_info": "III Nyalindung",
         "felt": true,
         "sources": [
@@ -348,6 +348,25 @@
         "felt": false,
         "sources": [
           "gempaterkini.json"
+        ]
+      }
+    },
+    {
+      "key": "2cba3dde5800ca",
+      "data": {
+        "key": "2cba3dde5800ca",
+        "datetime": "2026-11-17T00:49:17Z",
+        "magnitude": 4.8,
+        "depth_km": 2.0,
+        "lat": -8.22,
+        "lon": 120.66,
+        "region": "Pusat gempa berada di laut 49 km timur laut Ruteng, Manggarai",
+        "potential": "Gempa ini dirasakan untuk diteruskan pada masyarakat",
+        "felt_info": "III Kab. Manggarai",
+        "felt": true,
+        "sources": [
+          "autogempa.json",
+          "gempadirasakan.json"
         ]
       }
     }
