@@ -598,6 +598,11 @@ class WordPress:
             post = self.call("POST", "posts", payload=new_payload)
             confirmed = self.by_id(post["id"])
             self._verified_yoast(confirmed, desired_yoast)
+            if confirmed.get("slug") != payload["slug"]:
+                raise RuntimeError(
+                    f"WordPress changed the requested SEO slug for draft {post['id']}; "
+                    "new article is not being published"
+                )
             if status == "publish":
                 post = self.call("POST", "posts/" + str(post["id"]), payload={
                     "status": "publish",
