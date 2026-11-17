@@ -4,10 +4,10 @@ Integrasi ini **hanya** mengakses REST API Posts dan Media Dataloka di https://d
 
 ## Aturan redaksi
 - Dipantau sekitar setiap 10 menit (GitHub Actions schedule bersifat *best effort*, tidak dijamin tepat waktu).
-- **M5,5+**: otomatis **publish** jika BMKG menyatakan secara eksplisit **tidak berpotensi tsunami**, sumber utama gempa tersedia, dan kejadian berumur maksimal 120 menit saat pertama dideteksi.
-- Jika BMKG belum memberi keterangan tsunami atau menyebut berpotensi tsunami: hanya **draft**, perlu pemeriksaan redaksi. Tidak pernah mengarang peringatan atau klaim dampak.
+- **M5,5+**: dalam mode `live`, semua kejadian dari feed resmi BMKG diproses untuk **publish**, termasuk yang belum memiliki keterangan tsunami atau dinyatakan berpotensi tsunami. Kejadian baru harus berumur maksimal 120 menit saat pertama dideteksi; pembaruan artikel lama tetap dapat dilakukan.
+- **Keterangan tsunami tidak menentukan kelayakan publikasi M5,5+**. Artikel menyampaikan status yang tercantum dalam data resmi BMKG secara apa adanya. Jika belum tersedia, artikel menuliskan bahwa keterangannya belum tercantum. Jangan menyimpulkan aman, mengarang peringatan tsunami, korban, ataupun kerusakan.
 - Gempa M5,0–5,4 dan gempa dirasakan: **draft**; draf ringkasan hari sebelumnya dibuat pukul **00.15 WIB** jika tersedia kejadian yang terpantau.
-- Revisi BMKG memperbarui artikel bot yang sama selama belum diedit manusia dan sidik kejadian masih cocok. Tidak mengubah artikel di luar bot.
+- Revisi BMKG memperbarui artikel bot yang sama selama belum diedit manusia dan sidik kejadian masih cocok. Artikel yang sudah terbit tidak otomatis diturunkan menjadi draf apabila magnitudo dikoreksi lebih kecil. Tidak mengubah artikel di luar bot.
 - Kejadian yang sudah berumur lebih dari 120 menit ketika pertama kali terlihat tidak dipublikasikan ulang.
 - Ledger publikasi terpisah: `data/dataloka-wp-state.json`.
 - **Kategori WordPress: Berita** untuk seluruh artikel dan draf bot. Skrip mencari ID kategori yang sudah ada lewat REST API `/wp/v2/categories?search=Berita`, mencocokkan nama/slug persis, lalu mengirim hanya kategori tersebut. Bila kategori tidak ditemukan, otomatisasi gagal tertutup dan **tidak menerbitkan ke Uncategorized**.

@@ -25,14 +25,27 @@ class PublisherTests(unittest.TestCase):
     def event(self, feed="gempaterkini.json", **changes):
         return p.normalize(dict(RAW, **changes), feed)
 
-    def test_live_only_m55_with_clear_confirmation(self):
+    def test_every_m55_publishes_regardless_of_tsunami_status(self):
         self.assertEqual(p.status_for(self.event(), "live"), "publish")
         self.assertEqual(p.status_for(self.event(), "drafts"), "draft")
         self.assertEqual(p.status_for(self.event(Magnitude="5.4"), "live"), "draft")
-        self.assertEqual(p.status_for(self.event(Potensi=""), "live"), "draft")
-        self.assertEqual(p.status_for(self.event(Potensi="Berpotensi tsunami"), "live"), "draft")
-        self.assertEqual(p.status_for(self.event(Potensi="Tidak berpotensi tsunami; berpotensi tsunami"), "live"), "draft")
-        self.assertEqual(p.status_for(self.event(feed="gempadirasakan.json"), "live"), "draft")
+        for potential in ("", "Tidak berpotensi tsunami",
+                          "Berpotensi tsunami", "Peringatan dini tsunami",
+                          "Tidak berpotensi tsunami; berpotensi tsunami"):
+            with self.subTest(potential=potential):
+                event = self.event(Potensi=potential)
+                self.assertEqual(p.status_for(event, "live"), "publish")
+                body = p.article(event)["content"]
+                self.assertEqual(body.count("<p>"), 4)
+                self.assertRegex(body, r" \(RK/D-1\)</p><!-- dataloka-bmkg:")
+                if potential:
+                    self.assertIn(p.escape(potential), body)
+                else:
+                    self.assertIn("belum tercantum", body)
+        self.assertEqual(
+            p.status_for(self.event(feed="gempadirasakan.json"), "live"),
+            "publish"
+        )
 
     def test_fuzzy_match_and_stable_key(self):
         old = self.event()
