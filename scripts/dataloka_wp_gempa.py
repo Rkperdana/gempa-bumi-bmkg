@@ -29,6 +29,7 @@ ROOT = Path(__file__).resolve().parents[1]
 STATE = ROOT / "data" / "dataloka-wp-state.json"
 WP_URL = "https://dataloka.id"
 MARKER = "dataloka-bmkg:"
+YOAST_KEYS = ("_yoast_wpseo_focuskw", "_yoast_wpseo_title", "_yoast_wpseo_metadesc")
 
 
 def timestamp(value):
@@ -264,10 +265,10 @@ def article(e):
 
     # Exactly four editorial paragraphs; never infer damage, casualties or shaking intensity.
     paragraphs = [
-        (f"Badan Meteorologi, Klimatologi, dan Geofisika (BMKG) melaporkan "
-         f"gempa bumi magnitudo {mag} di {region} pada {day}, {date}, pukul "
-         f"{time} WIB. Informasi kejadian tersebut dipublikasikan melalui "
-         f"data gempa resmi BMKG."),
+        (f"Gempa M{mag} di {region} terjadi pada {day}, {date}, pukul "
+         f"{time} WIB, menurut Badan Meteorologi, Klimatologi, dan Geofisika "
+         f"(BMKG). Informasi kejadian tersebut dipublikasikan melalui data "
+         f"gempa resmi BMKG."),
         (f"Menurut parameter BMKG, koordinat episentrum berada di "
          f"{escape(coordinate(e['lat'], 'LU', 'LS'))} dan "
          f"{escape(coordinate(e['lon'], 'BT', 'BB'))}. "
@@ -293,12 +294,18 @@ def article(e):
     body = "".join(f"<p>{paragraph}</p>" for paragraph in paragraphs)
     # Hidden provenance marker is adjacent to the final closing tag, with no newline.
     body += f"<!-- {MARKER}{e['key']} -->"
+    yoast_meta = {
+        "_yoast_wpseo_focuskw": f"gempa M{mag} di {readable_region(e['region'])}",
+        "_yoast_wpseo_title": seo_title(e, date),
+        "_yoast_wpseo_metadesc": seo_excerpt(e, date, time, depth),
+    }
     return {
         "title": escape(seo_title(e, date)),
         "content": body,
         "excerpt": escape(seo_excerpt(e, date, time, depth)),
         "slug": seo_slug(e, local.strftime("%Y-%m-%d")),
         "tag_names": editorial_tags(e),
+        "yoast_meta": yoast_meta,
         "comment_status": "closed",
     }
 
@@ -337,11 +344,17 @@ def daily_article(records, day):
     body = "<p>" + paragraphs[0] + "</p><p>" + paragraphs[1] + "</p>" + table
     body += "<p>" + paragraphs[2] + "</p><p>" + paragraphs[3] + "</p>"
     body += f"<!-- dataloka-bmkg-daily:{day.isoformat()} -->"
+    description = (f"Daftar gempa M5,0–5,4 pada {readable_day} berdasarkan data "
+                   f"BMKG yang dipantau Dataloka. Lihat waktu, wilayah, dan kedalaman.")
     return {"title": title, "content": body,
-            "excerpt": (f"Daftar gempa M5,0–5,4 pada {readable_day} berdasarkan data "
-                        f"BMKG yang dipantau Dataloka. Lihat waktu, wilayah, dan kedalaman."),
+            "excerpt": description,
             "slug": f"daftar-gempa-m50-m54-{day.isoformat()}",
             "tag_names": ["Gempa", "BMKG", "Seismik"],
+            "yoast_meta": {
+                "_yoast_wpseo_focuskw": f"gempa M5,0–5,4 {readable_day}",
+                "_yoast_wpseo_title": title,
+                "_yoast_wpseo_metadesc": description,
+            },
             "comment_status": "closed"}
 
 
