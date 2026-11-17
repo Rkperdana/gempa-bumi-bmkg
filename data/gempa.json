@@ -2,7 +2,7 @@
   "schema_version": 2,
   "status": "live",
   "data_origin": "realtime_table",
-  "checked_at": "2026-11-17T04:34:52.391753Z",
+  "checked_at": "2026-11-17T07:37:13.225699Z",
   "source": "Badan Meteorologi, Klimatologi, dan Geofisika (BMKG)",
   "coverage_note": "200 gempa terbaru pada tabel real-time BMKG (jumlah aktual dapat kurang dari 200), termasuk episentrum di luar Indonesia; gempa dirasakan dilengkapi dari feed terpisah. Bukan total seluruh gempa dalam periode tersebut.",
   "sources": {
@@ -13,6 +13,52 @@
   },
   "errors": [],
   "events": [
+    {
+      "id": "ab1ef5f7d32bc9",
+      "datetime": "2026-11-17T05:53:45Z",
+      "magnitude": 2.7,
+      "depth_km": 14.0,
+      "lat": -1.62,
+      "lon": 101.1,
+      "region": "Southern Sumatra, Indonesia",
+      "felt": false,
+      "felt_info": "",
+      "tsunami": false,
+      "potential_text": "",
+      "significant": false,
+      "source_types": [
+        "realtime"
+      ],
+      "source_urls": [
+        "https://www.bmkg.go.id/gempabumi/gempabumi-realtime"
+      ],
+      "shakemap": "",
+      "first_seen_at": "2026-11-17T07:37:13.225699Z",
+      "last_updated_at": "2026-11-17T07:37:13.225699Z"
+    },
+    {
+      "id": "cd26033a6f6510",
+      "datetime": "2026-11-17T05:03:02Z",
+      "magnitude": 3.2,
+      "depth_km": 10.0,
+      "lat": 0.8,
+      "lon": 125.6,
+      "region": "Northern Molucca Sea",
+      "felt": false,
+      "felt_info": "",
+      "tsunami": false,
+      "potential_text": "",
+      "significant": false,
+      "source_types": [
+        "realtime"
+      ],
+      "source_urls": [
+        "https://www.bmkg.go.id/gempabumi/gempabumi-realtime"
+      ],
+      "shakemap": "",
+      "first_seen_at": "2026-11-17T07:37:13.225699Z",
+      "last_updated_at": "2026-11-17T07:37:13.225699Z"
+    },
     {
       "id": "8b92587274e487",
       "datetime": "2026-11-17T04:14:30Z",
@@ -323,7 +369,7 @@
       "datetime": "2026-11-16T21:11:20Z",
       "magnitude": 6.8,
       "depth_km": 101.0,
-      "lat": -6.11,
+      "lat": -6.1,
       "lon": 131.61,
       "region": "Tanimbar Islands Region, Indonesia",
       "felt": true,
@@ -343,7 +389,7 @@
       ],
       "shakemap": "",
       "first_seen_at": "2026-11-17T00:13:48.505650Z",
-      "last_updated_at": "2026-11-17T04:34:52.391753Z"
+      "last_updated_at": "2026-11-17T07:37:13.225699Z"
     },
     {
       "id": "cbd8d70837ba39",
@@ -4596,52 +4642,6 @@
       "shakemap": "",
       "first_seen_at": "2026-11-10T22:03:13.301163Z",
       "last_updated_at": "2026-11-10T22:03:13.301163Z"
-    },
-    {
-      "id": "26b4f38c622d05",
-      "datetime": "2026-11-10T18:30:04Z",
-      "magnitude": 3.7,
-      "depth_km": 10.0,
-      "lat": -9.21,
-      "lon": 109.28,
-      "region": "South of Java, Indonesia",
-      "felt": false,
-      "felt_info": "",
-      "tsunami": false,
-      "potential_text": "",
-      "significant": false,
-      "source_types": [
-        "realtime"
-      ],
-      "source_urls": [
-        "https://www.bmkg.go.id/gempabumi/gempabumi-realtime"
-      ],
-      "shakemap": "",
-      "first_seen_at": "2026-11-10T18:36:19.206296Z",
-      "last_updated_at": "2026-11-10T18:36:19.206296Z"
-    },
-    {
-      "id": "5d22f61a9c2f81",
-      "datetime": "2026-11-10T17:36:34Z",
-      "magnitude": 5.0,
-      "depth_km": 91.0,
-      "lat": -8.71,
-      "lon": 149.35,
-      "region": "Papua New Guinea Region",
-      "felt": false,
-      "felt_info": "",
-      "tsunami": false,
-      "potential_text": "",
-      "significant": false,
-      "source_types": [
-        "realtime"
-      ],
-      "source_urls": [
-        "https://www.bmkg.go.id/gempabumi/gempabumi-realtime"
-      ],
-      "shakemap": "",
-      "first_seen_at": "2026-11-10T18:36:19.206296Z",
-      "last_updated_at": "2026-11-10T18:36:19.206296Z"
     }
   ]
 }
