@@ -1,4 +1,6 @@
 import importlib.util
+import contextlib
+import io
 import json
 from pathlib import Path
 import subprocess
@@ -106,7 +108,8 @@ class PublisherTests(unittest.TestCase):
                     "meta": req["meta"],
                 }
         wp = WP()
-        self.assertEqual(p.publish_one(wp, req), 9050)
+        with contextlib.redirect_stdout(io.StringIO()):
+            self.assertEqual(p.publish_one(wp, req), 9050)
         self.assertEqual(wp.payload["status"], "draft")
         self.assertEqual(wp.payload["categories"], [43])
         self.assertEqual(wp.payload["tags"], [10, 11])
