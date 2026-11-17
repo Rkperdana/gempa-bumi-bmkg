@@ -22,6 +22,14 @@ on:
         type: choice
         default: events
         options: [events, daily]
+  # Backup trigger: BMKG dashboard/backup workflows run independently and
+  # already emit completed events. No changes to either workflow are required.
+  workflow_run:
+    workflows:
+      - 'Sinkronisasi dan publikasi BMKG'
+      - 'Cadangan otomatis sinkronisasi BMKG'
+    types: [completed]
+    branches: [main]
   schedule:
     - cron: '7,17,27,37,47,57 * * * *'
     - cron: '15 17 * * *'
@@ -52,7 +60,10 @@ jobs:
         run: python -m unittest discover -s tests -p test_dataloka_wp_gempa.py -v
 
   send-to-dataloka:
-    if: github.event_name != 'pull_request'
+    # Never send articles if the upstream data synchronization failed.
+    if: >-
+      github.event_name != 'pull_request' &&
+      (github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success')
     runs-on: ubuntu-latest
     timeout-minutes: 8
     env:
