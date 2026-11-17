@@ -44,5 +44,8 @@ jobs:
           python -m py_compile scripts/dataloka_editorial_publisher.py
           python -m unittest discover -s tests -p test_dataloka_editorial_publisher.py -v
 
+      - name: Verify WordPress API access without publishing anything
+        run: python scripts/dataloka_editorial_publisher.py --health-check
+
       - name: Publish only NEW explicitly approved editorial requests
         run: python scripts/dataloka_editorial_publisher.py --before "$BEFORE_SHA" --after "$AFTER_SHA"
