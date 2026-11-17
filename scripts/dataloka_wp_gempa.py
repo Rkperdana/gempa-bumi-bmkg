@@ -426,10 +426,13 @@ class WordPress:
         })
         # GET is safely retryable. POST must never be blindly retried: a
         # server may have committed a post before the client timed out.
-        tries = 3 if method == "GET" else 1
+        # WordPress can take 20-40s to respond on authenticated slug lookups.
+        # Two longer reads are safer than three short read timeouts.
+        tries = 2 if method == "GET" else 1
+        timeout = 45 if method == "GET" else 35
         for attempt in range(tries):
             try:
-                with urllib.request.urlopen(req, timeout=18) as response:
+                with urllib.request.urlopen(req, timeout=timeout) as response:
                     return json.loads(response.read(1_000_000).decode("utf-8"))
             except urllib.error.HTTPError as err:
                 if method != "GET" or err.code not in TRANSIENT_HTTP or attempt == tries - 1:
@@ -698,6 +701,7 @@ class WordPress:
 def events_task(mode, wp, now):
     events = get_events()
     state = read_state()
+    failures = []
     for event in events:
         age = (now - timestamp(event["datetime"])).total_seconds() / 60
         if age < -5 or age > 14 * 1440:
@@ -742,6 +746,11 @@ def events_task(mode, wp, now):
             except EditorialConflict as exc:
                 # A human-edited draft must not block all other earthquakes.
                 print(f"SKIP editorial conflict on event {record['key']}: {exc}", file=sys.stderr)
+            except (RuntimeError, urllib.error.URLError, TimeoutError, OSError) as exc:
+                # A slow WordPress post must not block a separate M5.5+ alert.
+                # Keep the missing post in the ledger for another scheduled try.
+                print(f"ERROR: could not send event {record['key']}: {exc}", file=sys.stderr)
+                failures.append(record['key'])
     if mode != "dry-run":
         state["events"] = [
             x for x in state["events"] if x.get("post_id") or
@@ -749,6 +758,10 @@ def events_task(mode, wp, now):
         STATE.parent.mkdir(parents=True, exist_ok=True)
         STATE.write_text(json.dumps(state, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     print(f"Processed {len(events)} official BMKG entries; mode={mode}")
+    if failures:
+        raise RuntimeError(
+            f"{len(failures)} BMKG events still need WordPress retry: "
+            + ", ".join(failures))
 
 
 def daily_task(mode, wp, now):
