@@ -89,6 +89,16 @@ class PublisherTests(unittest.TestCase):
 
         def fake_call(method, route, params=None, payload=None):
             seen.append((method, route, payload))
+            if route == "categories":
+                return [{"id": 43, "name": "Berita", "slug": "berita"}]
+            if route == "tags":
+                return [
+                    {"id": 10, "name": "Gempa"},
+                    {"id": 11, "name": "BMKG"},
+                    {"id": 12, "name": "Episentrum"},
+                    {"id": 13, "name": "Seismik"},
+                    {"id": 14, "name": "Jawa"},
+                ]
             return {"id": 77}
         wp.call = fake_call
         wp.by_id = lambda post_id: {
@@ -97,9 +107,61 @@ class PublisherTests(unittest.TestCase):
         result = wp.save(article, {}, "publish",
                          f"<!-- {p.MARKER}{self.event()['key']} -->",
                          event=self.event())
-        self.assertEqual(seen[0][2]["featured_media"], 1234)
-        self.assertEqual(seen[0][2]["status"], "publish")
+        creation = next(item[2] for item in seen if item[0] == "POST" and item[1] == "posts")
+        self.assertEqual(creation["featured_media"], 1234)
+        self.assertEqual(creation["status"], "publish")
+        self.assertEqual(creation["categories"], [43])
+        self.assertEqual(creation["tags"], [10, 11, 12, 13, 14])
         self.assertEqual(result["media_id"], 1234)
+
+    def test_seo_headline_slug_excerpt_and_tags(self):
+        event = self.event()
+        fields = p.article(event)
+        self.assertIn("Gempa M5,6 di Selatan Jawa", fields["title"])
+        self.assertIn("BMKG", fields["title"])
+        self.assertRegex(
+            fields["slug"],
+            r"^gempa-selatan-jawa-2026-11-17-[0-9a-f]{8}$",
+        )
+        self.assertLessEqual(len(fields["excerpt"]), 160)
+        self.assertIn("pukul 08.10 WIB", fields["excerpt"])
+        self.assertIn("tidak berpotensi tsunami", fields["excerpt"])
+        self.assertIn("Jawa", fields["tag_names"])
+        self.assertTrue(all(" " not in tag for tag in fields["tag_names"]))
+        self.assertEqual(fields["content"].count("<p>"), 4)
+        self.assertRegex(fields["content"], r" \\(RK/D-1\\)</p><!-- dataloka-bmkg:")
+
+    def test_berita_id_lookup_and_cache(self):
+        wp = p.WordPress("test", "fake")
+        observed = []
+
+        def fake_call(method, route, params=None, payload=None):
+            observed.append((method, route))
+            if route == "categories":
+                return [
+                    {"id": 1, "name": "Uncategorized", "slug": "uncategorized"},
+                    {"id": 43, "name": "Berita", "slug": "berita"},
+                ]
+            return []
+
+        wp.call = fake_call
+        self.assertEqual(wp.berita_category_id(), 43)
+        self.assertEqual(wp.berita_category_id(), 43)
+        self.assertEqual(observed, [("GET", "categories")])
+
+    def test_berita_missing_fails_closed(self):
+        wp = p.WordPress("test", "fake")
+        wp.call = lambda method, route, params=None, payload=None: []
+        with self.assertRaisesRegex(RuntimeError, "Berita"):
+            wp.berita_category_id()
+
+    def test_daily_seo_metadata(self):
+        record = self.event(Magnitude="5.2")
+        fields = p.daily_article([{"data": record}], dt.date(2026, 11, 17))
+        self.assertIn("Daftar Gempa M5,0", fields["title"])
+        self.assertIn("daftar-gempa-m50-m54-2026-11-17", fields["slug"])
+        self.assertLessEqual(len(fields["excerpt"]), 160)
+        self.assertIn("BMKG", fields["tag_names"])
 
     def test_site_is_dataloka_only(self):
         self.assertEqual(p.WP_URL, "https://dataloka.id")
