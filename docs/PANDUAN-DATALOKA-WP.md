@@ -1,6 +1,6 @@
 # Integrasi gempa BMKG → WordPress Dataloka.id
 
-Integrasi ini **hanya** mengakses https://dataloka.id/wp-json/wp/v2/posts. Tidak menggunakan API, database, atau credentials Pirsadata. Workflow dashboard BMKG yang sudah ada tidak diubah.
+Integrasi ini **hanya** mengakses REST API Posts dan Media Dataloka di https://dataloka.id/wp-json/wp/v2/. Tidak menggunakan API, database, atau credentials Pirsadata. Workflow dashboard BMKG yang sudah ada tidak diubah.
 
 ## Aturan redaksi
 - Dipantau sekitar setiap 10 menit (GitHub Actions schedule bersifat *best effort*, tidak dijamin tepat waktu).
@@ -11,7 +11,11 @@ Integrasi ini **hanya** mengakses https://dataloka.id/wp-json/wp/v2/posts. Tidak
 - Kejadian yang sudah berumur lebih dari 120 menit ketika pertama kali terlihat tidak dipublikasikan ulang.
 - Ledger publikasi terpisah: `data/dataloka-wp-state.json`.
 - Sumber resmi: https://data.bmkg.go.id/gempabumi/
-- Script tidak menambahkan kode editorial RKP/LD1.
+- Semua artikel (termasuk draf ringkasan) mempunyai minimal **empat paragraf**. Pada akhir kalimat di paragraf terakhir tertulis **(RK/D-1)** tanpa pindah baris atau paragraf baru.
+- Artikel yang diterbitkan otomatis mendapatkan **featured image JPEG 1200×675 (16:9), di bawah 500 KB**, berupa peta posisi episentrum dari koordinat BMKG.
+- Batas daratan peta berasal dari Natural Earth (domain publik), terbundel lokal dalam `assets/natural-earth-110m-land.json`. Tidak ada API peta pihak ketiga saat runtime.
+- Gambar diunggah ke WordPress Media Library dengan teks alternatif dan ditetapkan sebagai `featured_media` sebelum artikel dipublikasikan. Jika proses gambar gagal, artikel baru tidak dipublikasikan otomatis.
+- Pembaruan artikel bot mempertahankan gambar sebelumnya; perubahan manual pada artikel/gambar tidak ditimpa oleh bot.
 
 ## Pengaktifan (hanya setelah peninjauan PR)
 
@@ -29,11 +33,15 @@ Integrasi ini **hanya** mengakses https://dataloka.id/wp-json/wp/v2/posts. Tidak
 ## Pembatasan penting
 
 - Kunci deduplikasi berbasis waktu/koordinat adalah heuristik karena feed JSON BMKG yang digunakan tidak menyertakan ID kejadian permanen. Perubahan waktu/koordinat besar dapat memerlukan rekonsiliasi manual.
-- REST API bisa diblokir konfigurasi hosting Dataloka; integrasi belum membuktikan kemampuan menerbitkan hingga diuji dengan Secrets asli.
+- REST API (khususnya `/media`) bisa diblokir konfigurasi hosting Dataloka; integrasi belum membuktikan kemampuan mengunggah gambar dan menerbitkan hingga diuji dengan Secrets asli.
+- Untuk publikasi otomatis dengan gambar, akun WordPress memerlukan kapabilitas `upload_files` dan `publish_posts`.
+- Peta menunjukkan lokasi secara ilustratif; bukan peta intensitas guncangan, dampak, atau bahaya tsunami.
 - Draf ringkasan bukan angka total resmi harian; datanya hanya kejadian terpantau.
 - Tidak memodifikasi kode CMS, dashboard, ataupun konten Pirsadata.
 - **Jangan pernah** menyimpan password dalam source code, PR, issue, log, maupun file ZIP.
 
 ## Referensi
 https://developer.wordpress.org/rest-api/reference/posts/
+https://developer.wordpress.org/rest-api/reference/media/
+https://www.naturalearthdata.com/downloads/110m-cultural-vectors/
 https://developer.wordpress.org/advanced-administration/security/application-passwords/
