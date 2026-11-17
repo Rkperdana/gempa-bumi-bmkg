@@ -162,6 +162,7 @@ assert str(root) in sys.path
                     {"id": 12, "name": "Episentrum"},
                     {"id": 13, "name": "Seismik"},
                     {"id": 14, "name": "Jawa"},
+                    {"id": 15, "name": "Featured"},
                 ]
             if route in ("posts", "posts/77"):
                 if payload:
@@ -177,6 +178,7 @@ assert str(root) in sys.path
             "status": current_status["value"],
             "featured_media": 1234,
             "slug": article["slug"],
+            "tags": [10, 11, 12, 13, 14, 15],
             "meta": dict(article["yoast_meta"]),
         }
 
@@ -188,7 +190,7 @@ assert str(root) in sys.path
                         if method == "POST" and path == "posts")
         self.assertEqual(creation["featured_media"], 1234)
         self.assertEqual(creation["categories"], [43])
-        self.assertEqual(creation["tags"], [10, 11, 12, 13, 14])
+        self.assertEqual(creation["tags"], [10, 11, 12, 13, 14, 15])
         self.assertEqual(creation["meta"], article["yoast_meta"])
         self.assertEqual(creation["status"], "draft")
         self.assertNotIn("yoast_meta", creation)
@@ -199,13 +201,57 @@ assert str(root) in sys.path
         self.assertEqual(result["status"], "publish")
         self.assertIn("yoast_meta_digest", result)
 
+    def test_existing_major_quake_adds_featured_without_removing_tags(self):
+        wp = p.WordPress("test", "fake")
+        event = self.event()
+        payload = p.article(event)
+        existing_tags = [81, 82]
+        writes = []
+        wp.resolve_tags = lambda names: [15] if "Featured" in names else []
+        wp.berita_category_id = lambda: 43
+        wp.by_id = lambda post_id: {
+            "id": 77,
+            "status": "publish",
+            "featured_media": 1234,
+            "slug": payload["slug"],
+            "content": {"raw": payload["content"]},
+            "meta": dict(payload["yoast_meta"]),
+            "tags": [81, 82, 15] if writes else existing_tags,
+        }
+        wp.call = lambda method, route, params=None, payload=None: (
+            writes.append((method, route, payload)) or {"id": 77})
+        ledger = {
+            "post_id": 77,
+            "status": "publish",
+            "media_id": 1234,
+            "last_wp_digest": p.hash_value(payload["content"]),
+        }
+        response = wp.save(
+            payload, ledger, "publish",
+            f"<!-- {p.MARKER}{event['key']} -->", event=event,
+        )
+        self.assertEqual(writes[0][1], "posts/77")
+        self.assertEqual(writes[0][2]["tags"], [81, 82, 15])
+        self.assertEqual(response["status"], "publish")
+
+    def test_missing_featured_tag_prevents_new_major_quake_publication(self):
+        wp = p.WordPress("test", "fake")
+        event = self.event()
+        payload = p.article(event)
+        wp.by_slug = lambda slug: None
+        wp.resolve_tags = lambda names: []
+        wp.call = lambda *args, **kwargs: self.fail("Must not create a new post")
+        with self.assertRaisesRegex(RuntimeError, "Featured"):
+            wp.save(payload, {}, "publish",
+                    f"<!-- {p.MARKER}{event['key']} -->", event=event)
+
     def test_no_publication_if_yoast_fields_not_exposed(self):
         wp = p.WordPress("test", "fake")
         event = self.event()
         article = p.article(event)
         calls = []
         wp.by_slug = lambda slug: None
-        wp.resolve_tags = lambda names: []
+        wp.resolve_tags = lambda names: [15] if "Featured" in names else []
         wp.berita_category_id = lambda: 43
         wp.cover_image = lambda quake: 123
 
@@ -232,7 +278,7 @@ assert str(root) in sys.path
         payload = p.article(event)
         calls = []
         wp.by_slug = lambda slug: None
-        wp.resolve_tags = lambda names: []
+        wp.resolve_tags = lambda names: [15] if "Featured" in names else []
         wp.berita_category_id = lambda: 43
         wp.cover_image = lambda quake: 123
 
@@ -284,6 +330,8 @@ assert str(root) in sys.path
         self.assertIn("pukul 08.10 WIB", fields["excerpt"])
         self.assertIn("Simak informasi resmi BMKG.", fields["excerpt"])
         self.assertIn("Jawa", fields["tag_names"])
+        self.assertIn("Featured", fields["tag_names"])
+        self.assertNotIn("Featured", p.article(self.event(Magnitude="5.4"))["tag_names"])
         self.assertTrue(all(" " not in tag for tag in fields["tag_names"]))
         self.assertEqual(fields["content"].count("<p>"), 4)
         self.assertEqual(
