@@ -355,8 +355,11 @@ class PublisherTests(unittest.TestCase):
                 raise RuntimeError("WordPress returned HTTP 403")
 
         now = dt.datetime(2026, 11, 17, 1, 55, tzinfo=dt.timezone.utc)
-        with mock.patch.object(p, "get_events", return_value=[event]), (
-            mock.patch.object(p, "read_state", return_value=state)
+        # Never let a unit test overwrite the real publisher state file.
+        with tempfile.TemporaryDirectory() as temp, (
+            mock.patch.object(p, "get_events", return_value=[event])
+        ), mock.patch.object(p, "read_state", return_value=state), (
+            mock.patch.object(p, "STATE", Path(temp) / "isolated-test-state.json")
         ):
             with mock.patch("sys.stderr", new_callable=io.StringIO) as errors:
                 with self.assertRaisesRegex(RuntimeError, "1 BMKG events still need WordPress retry"):
