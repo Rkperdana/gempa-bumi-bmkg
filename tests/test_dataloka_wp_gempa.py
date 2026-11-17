@@ -115,6 +115,7 @@ class PublisherTests(unittest.TestCase):
             "content": {"raw": article["content"]},
             "status": current_status["value"],
             "featured_media": 1234,
+            "slug": article["slug"],
             "meta": dict(article["yoast_meta"]),
         }
 
@@ -163,6 +164,32 @@ class PublisherTests(unittest.TestCase):
                        and item[1].startswith("posts")]
         self.assertEqual(len(post_writes), 1)
         self.assertEqual(post_writes[0]["status"], "draft")
+
+    def test_post_stays_draft_if_wordpress_rewrites_slug(self):
+        wp = p.WordPress("test", "fake")
+        event = self.event()
+        payload = p.article(event)
+        calls = []
+        wp.by_slug = lambda slug: None
+        wp.resolve_tags = lambda names: []
+        wp.berita_category_id = lambda: 43
+        wp.cover_image = lambda quake: 123
+
+        def fake_call(method, route, params=None, payload=None):
+            calls.append((method, route, payload))
+            return {"id": 99}
+        wp.call = fake_call
+        wp.by_id = lambda post_id: {
+            "id": post_id, "status": "draft", "featured_media": 123,
+            "content": {"raw": payload["content"]},
+            "slug": "unexpected-slug",
+            "meta": payload["yoast_meta"],
+        }
+        with self.assertRaisesRegex(RuntimeError, "SEO slug"):
+            wp.save(payload, {}, "publish",
+                    f"<!-- {p.MARKER}{event['key']} -->", event=event)
+        self.assertEqual([call[1] for call in calls if call[1].startswith("posts")],
+                         ["posts"])
 
     def test_prior_human_yoast_edits_are_preserved(self):
         wp = p.WordPress("test", "fake")
