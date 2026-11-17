@@ -3,9 +3,9 @@
 
 Modify only Yoast focus keyphrase and meta description. Do NOT rewrite
 the editor's title, article body, image, excerpt, permalink, or tags.
-Refuse the change if its current SEO differs from the last bot-owned digest.
+The site owner explicitly requested these two SEO values even for a draft
+previously edited manually. Do not change any other Yoast or editorial field.
 """
-import json
 import os
 import sys
 from pathlib import Path
@@ -15,7 +15,7 @@ if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
 from scripts.dataloka_wp_gempa import (
-    WordPress, YOAST_KEYS, article, hash_value, read_state,
+    WordPress, YOAST_KEYS, article, read_state,
 )
 
 POST_ID = 9057
@@ -54,11 +54,8 @@ def reconcile(wp, state):
         print(f"Dataloka post {POST_ID}: focus and meta description already correct; no update")
         return
 
-    stored_digest = record.get("yoast_meta_digest")
-    current_digest = hash_value(json.dumps(before, sort_keys=True, ensure_ascii=False))
-    if not stored_digest or stored_digest != current_digest:
-        raise RuntimeError("Yoast fields have been edited since last bot write; refusing override")
-
+    # Owner-approved correction is limited to two exact SEO fields.
+    # Other Yoast fields, including an editor-customized SEO title, are retained.
     original = {
         "raw": raw,
         "slug": post.get("slug"),
