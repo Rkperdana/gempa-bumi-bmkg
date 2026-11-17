@@ -1,0 +1,54 @@
+name: Dataloka | Pulihkan Draf Duplikat 9058 (sekali)
+
+on:
+  pull_request:
+    paths:
+      - 'scripts/cleanup_dataloka_duplicate_9058.py'
+      - 'tests/test_cleanup_dataloka_duplicate_9058.py'
+      - '.github/workflows/cleanup-dataloka-9058.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/cleanup_dataloka_duplicate_9058.py'
+      - 'tests/test_cleanup_dataloka_duplicate_9058.py'
+      - '.github/workflows/cleanup-dataloka-9058.yml'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: dataloka-wp-earthquake-only
+  cancel-in-progress: false
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+      - name: Verify targeted reversible cleanup, without WordPress writes
+        run: |
+          python -m py_compile scripts/cleanup_dataloka_duplicate_9058.py
+          python -m unittest discover -s tests -p test_cleanup_dataloka_duplicate_9058.py -v
+
+  cleanup-one-draft:
+    if: github.event_name == 'push'
+    needs: validate
+    runs-on: ubuntu-latest
+    timeout-minutes: 6
+    env:
+      WP_USERNAME: ${{ secrets.DATALOKA_WP_USERNAME }}
+      WP_APP_PASSWORD: ${{ secrets.DATALOKA_WP_APP_PASSWORD }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+      - name: Trash only unchanged accidental WordPress draft 9058
+        run: python scripts/cleanup_dataloka_duplicate_9058.py
