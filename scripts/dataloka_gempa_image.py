@@ -82,6 +82,8 @@ def render(event):
 
     # An equirectangular local map with gridlines around the measured epicenter.
     left, top, right, bottom = 488, 100, 1158, 596
+    map_surface = Image.new("RGB", SIZE, OCEAN)
+    md = ImageDraw.Draw(map_surface)
     lat_span = 30.0
     lon_span = 41.0 / max(0.55, math.cos(math.radians(lat)))
     lon_span = min(lon_span, 85.0)
@@ -93,11 +95,11 @@ def render(event):
     for i in range(-90, 91, step):
         if abs(i - lat) <= lat_span / 2:
             y = xy(lon, i)[1]
-            d.line((left, y, right, y), fill=(38, 64, 105), width=1)
+            md.line((left, y, right, y), fill=(38, 64, 105), width=1)
     for k in range(-180, 181, step):
         if abs(((k - lon + 180) % 360) - 180) <= lon_span / 2:
             x = xy(k, lat)[0]
-            d.line((x, top, x, bottom), fill=(38, 64, 105), width=1)
+            md.line((x, top, x, bottom), fill=(38, 64, 105), width=1)
 
     for poly in data["polygons"]:
         for ring in poly:
@@ -112,14 +114,15 @@ def render(event):
                 continue
             if max(p[1] for p in pts) < top or min(p[1] for p in pts) > bottom:
                 continue
-            d.polygon(pts, fill=LAND_COLOR)
-            d.line(pts, fill=BORDER, width=2, joint="curve")
+            md.polygon(pts, fill=LAND_COLOR)
+            md.line(pts, fill=BORDER, width=2, joint="curve")
 
     px, py = xy(lon, lat)
     for r, w, color in [(65, 2, (129, 111, 105)), (40, 3, (221, 128, 89)),
                         (20, 3, ORANGE)]:
-        d.ellipse((px - r, py - r, px + r, py + r), outline=color, width=w)
-    d.ellipse((px - 8, py - 8, px + 8, py + 8), fill=ORANGE, outline=LIGHT, width=2)
+        md.ellipse((px - r, py - r, px + r, py + r), outline=color, width=w)
+    md.ellipse((px - 8, py - 8, px + 8, py + 8), fill=ORANGE, outline=LIGHT, width=2)
+    im.paste(map_surface.crop((left, top, right, bottom)), (left, top))
     d.rectangle((left, top, right, bottom), outline=(55, 90, 136), width=2)
 
     d.text((55, 44), "DATALOKA", font=font(25, True), fill=PALE)
