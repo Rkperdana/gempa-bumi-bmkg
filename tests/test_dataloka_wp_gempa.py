@@ -896,7 +896,7 @@ assert str(root) in sys.path
             return {"Infogempa": {"gempa": [RAW]}}
         with mock.patch.object(p, "fetch_feed", side_effect=fake_fetch), (
             mock.patch.object(p, "get_realtime_snapshot_events", return_value=[])
-        ):
+        ), mock.patch.object(p, "get_live_realtime_events", return_value=[]):
             events = p.get_events()
         self.assertEqual(len(events), 1)
         self.assertEqual(events[0]["magnitude"], 5.6)
@@ -932,7 +932,9 @@ assert str(root) in sys.path
             snap.write_text(json.dumps(snapshot), encoding="utf-8")
             with mock.patch.object(p, "REALTIME_SNAPSHOT", snap), (
                 mock.patch.object(p, "fetch_feed", side_effect=TimeoutError("unavailable"))
-            ), mock.patch.object(p, "STATE", root / "wp-state.json"):
+            ), mock.patch.object(p, "get_live_realtime_events", return_value=[]), (
+                mock.patch.object(p, "STATE", root / "wp-state.json")
+            ):
                 p.events_task("live", WP(), now)
                 state = json.loads((root / "wp-state.json").read_text(encoding="utf-8"))
         self.assertEqual(len(saved), 1)
@@ -968,6 +970,55 @@ assert str(root) in sys.path
                 path.write_text(json.dumps(document), encoding="utf-8")
                 self.assertEqual(p.get_realtime_snapshot_events(now), [])
 
+    def test_nov19_pacific_antarctic_m58_direct_realtime_and_featured(self):
+        from scripts.update_data import parse_realtime_row
+
+        raw = parse_realtime_row([
+            "1", "19 Nov 2026 02.14.25 WIB", "5,8", "10 Km",
+            "57,72 LS-147,24 BB", "Pacific-Antarctic Ridge", "–",
+        ])
+        self.assertEqual(raw["datetime"], "2026-11-18T19:14:25Z")
+        self.assertEqual((raw["lat"], raw["lon"]), (-57.72, -147.24))
+        with mock.patch("scripts.update_data.fetch_realtime_html", return_value="fixture"), (
+            mock.patch("scripts.update_data.parse_realtime_html", return_value=[raw])
+        ):
+            events = p.get_live_realtime_events()
+        self.assertEqual(len(events), 1)
+        event = events[0]
+        self.assertEqual(event["region"], "Pacific-Antarctic Ridge")
+        self.assertEqual(event["magnitude"], 5.8)
+        self.assertEqual(event["sources"], ["realtime"])
+        self.assertEqual(p.status_for(event, "live"), "publish")
+        content = p.article(event)["content"]
+        self.assertIn("Ridge", content)
+        self.assertIn("02.14 WIB", content)
+        self.assertIn("Featured", p.article(event)["tag_names"])
+        self.assertIn("bersumber dari data BMKG.", content)
+
+    def test_direct_realtime_is_preferred_over_old_snapshot(self):
+        event = self.event(
+            DateTime="2026-11-18T19:14:25Z",
+            Coordinates="-57.72,-147.24", Magnitude="5.8",
+            Wilayah="Pacific-Antarctic Ridge")
+        event["sources"] = ["realtime"]
+        with mock.patch.object(p, "get_live_realtime_events", return_value=[event]), (
+            mock.patch.object(p, "get_realtime_snapshot_events",
+                              side_effect=AssertionError("Stale snapshot should not be read"))
+        ), mock.patch.object(p, "fetch_feed", side_effect=TimeoutError("unavailable")):
+            events = p.get_events()
+        self.assertEqual(len(events), 1)
+        self.assertEqual(events[0]["region"], "Pacific-Antarctic Ridge")
+
+    def test_failed_direct_realtime_falls_back_to_trusted_snapshot(self):
+        event = self.event(Magnitude="5.8")
+        with mock.patch.object(p, "get_live_realtime_events",
+                               side_effect=RuntimeError("BMKG temporarily unavailable")), (
+            mock.patch.object(p, "get_realtime_snapshot_events", return_value=[event])
+        ), mock.patch.object(p, "fetch_feed", side_effect=TimeoutError("unavailable")):
+            events = p.get_events()
+        self.assertEqual(len(events), 1)
+        self.assertEqual(events[0]["magnitude"], 5.8)
+
     def test_realtime_and_alert_json_merge_without_duplicate(self):
         now = dt.datetime.now(dt.timezone.utc)
         event_date = (now - dt.timedelta(minutes=40)).isoformat()
@@ -988,7 +1039,7 @@ assert str(root) in sys.path
             with mock.patch.object(p, "REALTIME_SNAPSHOT", path), (
                 mock.patch.object(p, "fetch_feed", return_value={
                     "Infogempa": {"gempa": [raw]}})
-            ):
+            ), mock.patch.object(p, "get_live_realtime_events", return_value=[]):
                 events = p.get_events()
         self.assertEqual(len(events), 1)
         self.assertIn("realtime", events[0]["sources"])

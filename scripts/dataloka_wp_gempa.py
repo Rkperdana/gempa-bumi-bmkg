@@ -196,6 +196,34 @@ def get_realtime_snapshot_events(now=None):
     return events
 
 
+def get_live_realtime_events():
+    """Fetch BMKG's current global table directly, not the dashboard heartbeat.
+
+    Reuse the dashboard's strict, tested HTML parser instead of independently
+    guessing BMKG table markup. Its parser rejects incomplete data.
+    """
+    if str(ROOT) not in sys.path:
+        sys.path.insert(0, str(ROOT))
+    from scripts.update_data import fetch_realtime_html, parse_realtime_html
+
+    records = parse_realtime_html(fetch_realtime_html())
+    events = []
+    for record in records:
+        if float(record["magnitude"]) < 5.5:
+            continue
+        event = normalize({
+            "DateTime": record["datetime"],
+            "Coordinates": f'{record["lat"]},{record["lon"]}',
+            "Magnitude": record["magnitude"],
+            "Kedalaman": f'{record["depth_km"]} km',
+            "Wilayah": record["region"],
+            "Potensi": record.get("potential_text") or "",
+            "Dirasakan": record.get("felt_info") or "",
+        }, "realtime")
+        events.append(event)
+    return events
+
+
 def get_events():
     """Combine recent official BMKG global realtime events with JSON feeds.
 
@@ -203,11 +231,22 @@ def get_events():
     writes. JSON feed failures must not hide independently monitored Romania,
     Japan, etc. earthquakes from BMKG's realtime table.
     """
+    # Query the live official table first: the dashboard snapshot may be
+    # hours old when GitHub skips or delays its separate scheduled workflow.
     try:
-        results = get_realtime_snapshot_events()
-    except (OSError, ValueError, KeyError, TypeError, json.JSONDecodeError) as exc:
-        print(f"WARNING: realtime BMKG snapshot unavailable: {exc}", file=sys.stderr)
+        results = get_live_realtime_events()
+        if results:
+            print(f"BMKG realtime direct: {len(results)} major earthquakes")
+    except (OSError, RuntimeError, ValueError, KeyError, TypeError,
+            urllib.error.URLError, TimeoutError) as exc:
+        print(f"WARNING: BMKG realtime direct fetch failed: {exc}", file=sys.stderr)
         results = []
+    if not results:
+        try:
+            results = get_realtime_snapshot_events()
+        except (OSError, ValueError, KeyError, TypeError, json.JSONDecodeError) as exc:
+            print(f"WARNING: realtime BMKG snapshot unavailable: {exc}", file=sys.stderr)
+            results = []
     completed = ["realtime"] if results else []
     failures = []
     for feed in FEEDS:
