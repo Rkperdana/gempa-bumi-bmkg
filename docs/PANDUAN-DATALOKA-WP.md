@@ -4,11 +4,11 @@ Integrasi ini **hanya** mengakses REST API Posts dan Media Dataloka di https://d
 
 ## Aturan redaksi
 - Dipantau sekitar setiap 10 menit (GitHub Actions schedule bersifat *best effort*, tidak dijamin tepat waktu).
-- **M5,5+**: dalam mode `live`, semua kejadian dari feed resmi BMKG diproses untuk **publish**, termasuk yang belum memiliki keterangan tsunami atau dinyatakan berpotensi tsunami. Untuk memulihkan kejadian besar yang terlewat saat GitHub Actions tertunda, kejadian M5,5+ yang pertama kali dideteksi masih diproses hingga 48 jam dari waktu gempa menurut BMKG; tanggal dan waktu kejadian aslinya tetap dicantumkan. Pembaruan artikel lama tetap dapat dilakukan.
+- **M5,5+**: dalam mode `live`, semua kejadian dari feed resmi BMKG diproses untuk **publish**, termasuk yang belum memiliki keterangan tsunami atau dinyatakan berpotensi tsunami. Kejadian baru harus berumur maksimal 120 menit saat pertama dideteksi; pembaruan artikel lama tetap dapat dilakukan.
 - **Keterangan tsunami tidak menentukan kelayakan publikasi M5,5+**. Artikel menyampaikan status yang tercantum dalam data resmi BMKG secara apa adanya. Jika belum tersedia, artikel menuliskan bahwa keterangannya belum tercantum. Jangan menyimpulkan aman, mengarang peringatan tsunami, korban, ataupun kerusakan.
 - Gempa M5,0–5,4 dan gempa dirasakan: **draft**; draf ringkasan hari sebelumnya dibuat pukul **00.15 WIB** jika tersedia kejadian yang terpantau.
 - Revisi BMKG memperbarui artikel bot yang sama selama belum diedit manusia dan sidik kejadian masih cocok. Artikel yang sudah terbit tidak otomatis diturunkan menjadi draf apabila magnitudo dikoreksi lebih kecil. Tidak mengubah artikel di luar bot.
-- Kejadian M5,5+ berumur lebih dari 48 jam tidak dipublikasikan sebagai artikel baru secara otomatis. Publikasi yang sudah ada tetap bisa diperbarui jika data BMKG direvisi dan artikel belum diubah redaksi.
+- Kejadian yang sudah berumur lebih dari 120 menit ketika pertama kali terlihat tidak dipublikasikan ulang.
 - Ledger publikasi terpisah: `data/dataloka-wp-state.json`.
 - **Kategori WordPress: Berita** untuk seluruh artikel dan draf bot. Skrip mencari ID kategori yang sudah ada lewat REST API `/wp/v2/categories?search=Berita`, mencocokkan nama/slug persis, lalu mengirim hanya kategori tersebut. Bila kategori tidak ditemukan, otomatisasi gagal tertutup dan **tidak menerbitkan ke Uncategorized**.
 - **Judul SEO**: `Gempa M5,6 di Selatan Jawa, 17 November 2026 - BMKG` (contoh simulasi). Angka, wilayah, dan tanggal berasal dari BMKG.
