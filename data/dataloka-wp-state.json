@@ -67,7 +67,13 @@
           "gempadirasakan.json",
           "gempaterkini.json"
         ]
-      }
+      },
+      "post_id": 9066,
+      "media_id": 9065,
+      "last_wp_digest": "2a8a31e899971d50b7d438af33423340bf5a968725ee6edca224493c7768b303",
+      "yoast_meta_digest": "7c958e23140c5da9cfb436f0d0a82e3131f976ef80434d36305a7a87697618de",
+      "status": "publish",
+      "last_payload_digest": "2f892d187dee01ef0258dfb8463f6415899c98920db5e34aa259d65322291837"
     },
     {
       "key": "5a2735a61ee0a8",
