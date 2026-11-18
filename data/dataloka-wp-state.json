@@ -12,7 +12,7 @@
         "lat": -8.22,
         "lon": 120.66,
         "region": "Pusat gempa berada di laut 49 km timur laut Ruteng, Manggarai",
-        "potential": "Gempa ini dirasakan untuk diteruskan pada masyarakat",
+        "potential": "",
         "felt_info": "III Kab. Manggarai",
         "felt": true,
         "sources": [
@@ -397,11 +397,11 @@
       "key": "9e768c8c7873b3",
       "data": {
         "key": "9e768c8c7873b3",
-        "datetime": "2026-11-18T02:23:02Z",
-        "magnitude": 5.9,
-        "depth_km": 44.0,
-        "lat": 12.1,
-        "lon": 144.03,
+        "datetime": "2026-11-18T02:23:03Z",
+        "magnitude": 5.8,
+        "depth_km": 63.0,
+        "lat": 12.13,
+        "lon": 144.04,
         "region": "South of Mariana Islands",
         "felt": false,
         "felt_info": "",
@@ -425,7 +425,7 @@
         "magnitude": 5.8,
         "depth_km": 10.0,
         "lat": 45.75,
-        "lon": 26.68,
+        "lon": 26.67,
         "region": "Romania",
         "felt": false,
         "felt_info": "",
@@ -722,6 +722,33 @@
           "realtime"
         ]
       }
+    },
+    {
+      "key": "86bf2242952643",
+      "data": {
+        "key": "86bf2242952643",
+        "datetime": "2026-11-18T03:24:03Z",
+        "magnitude": 5.3,
+        "depth_km": 56.0,
+        "lat": -2.83,
+        "lon": 136.73,
+        "region": "Pusat gempa berada di darat 75 kmk Barat Laut Intan Jaya",
+        "felt": true,
+        "felt_info": "II-III Nabire",
+        "potential": "Gempa ini dirasakan untuk diteruskan pada masyarakat",
+        "sources": [
+          "autogempa.json",
+          "gempadirasakan.json",
+          "gempaterkini.json",
+          "realtime"
+        ]
+      },
+      "post_id": 9077,
+      "media_id": 9076,
+      "last_wp_digest": "d7922fba8798242731103268fb31acde9fb7e6872ad851cac89661b38e4e0b87",
+      "yoast_meta_digest": "18426c5c2979168a37dc1976e5bba25aab8aeea2ee294771075f40fec721a488",
+      "status": "draft",
+      "last_payload_digest": "daf8d1eacab547e0264a2810ea9c547f0fc6b87ee99645ce70b3ed757fa15931"
     }
   ]
 }
