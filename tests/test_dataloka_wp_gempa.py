@@ -789,7 +789,8 @@ assert str(root) in sys.path
         self.assertEqual(event["magnitude"], 5.8)
         self.assertEqual((event["lat"], event["lon"]), (45.75, 26.68))
         self.assertIn("Featured", article["tag_names"])
-        self.assertIn(p.REALTIME_URL, article["content"])
+        self.assertIn("bersumber dari data BMKG.", article["content"])
+        self.assertNotIn(p.REALTIME_URL, article["content"])
         self.assertNotIn("https://data.bmkg.go.id/DataMKG/TEWS/realtime", article["content"])
         self.assertEqual(state["events"][0]["status"], "publish")
 
