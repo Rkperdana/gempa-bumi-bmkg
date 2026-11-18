@@ -732,10 +732,10 @@
         "depth_km": 56.0,
         "lat": -2.83,
         "lon": 136.73,
-        "region": "Pusat gempa berada di darat 75 kmk Barat Laut Intan Jaya",
+        "region": "75 km BaratLaut INTANJAYA-PAPUATENGAH",
         "felt": true,
         "felt_info": "II-III Nabire",
-        "potential": "Gempa ini dirasakan untuk diteruskan pada masyarakat",
+        "potential": "Tidak berpotensi tsunami",
         "sources": [
           "autogempa.json",
           "gempadirasakan.json",
@@ -749,6 +749,143 @@
       "yoast_meta_digest": "18426c5c2979168a37dc1976e5bba25aab8aeea2ee294771075f40fec721a488",
       "status": "draft",
       "last_payload_digest": "daf8d1eacab547e0264a2810ea9c547f0fc6b87ee99645ce70b3ed757fa15931"
+    },
+    {
+      "key": "b1729c631abd84",
+      "data": {
+        "key": "b1729c631abd84",
+        "datetime": "2026-11-18T04:41:32Z",
+        "magnitude": 5.8,
+        "depth_km": 10.0,
+        "lat": -8.17,
+        "lon": 120.54,
+        "region": "49 km TimurLaut RUTENG-MANGGARAI-NTT",
+        "felt": true,
+        "felt_info": "IV-V Kab. Manggarai, II-III Kab. Ngada, III-IV Kab. Sumba Timur , III-IV Kab. Sumba Barat Daya, III-IV Kab. Manggarai Barat",
+        "potential": "Tidak berpotensi tsunami",
+        "sources": [
+          "gempadirasakan.json",
+          "gempaterkini.json",
+          "realtime"
+        ]
+      }
+    },
+    {
+      "key": "cdf48f41847a6f",
+      "data": {
+        "key": "cdf48f41847a6f",
+        "datetime": "2026-11-18T04:21:37Z",
+        "magnitude": 4.9,
+        "depth_km": 10.0,
+        "lat": -8.16,
+        "lon": 120.58,
+        "region": "Pusat gempa berada di laut 52 km utara Ruteng-Manggarai",
+        "felt": true,
+        "felt_info": "III-IV Kab. Manggarai",
+        "potential": "",
+        "sources": [
+          "gempadirasakan.json",
+          "realtime"
+        ]
+      },
+      "post_id": 9080,
+      "media_id": 9079,
+      "last_wp_digest": "4b195d6211e543b9f87f715e40d0a6f565cf987511abd9f35e22fcfc62a2733a",
+      "yoast_meta_digest": "7b2a296cecde9d0f9a638f5d8888a27d0e22de7e27d406d15edd510f16eae466",
+      "status": "draft",
+      "last_payload_digest": "ed4955394519e85ec16d7d02bb28b8948d4f53f1dc6f73661c5982670bbbba91"
+    },
+    {
+      "key": "7736616a086de7",
+      "data": {
+        "key": "7736616a086de7",
+        "datetime": "2026-11-18T04:11:52Z",
+        "magnitude": 4.3,
+        "depth_km": 3.0,
+        "lat": -8.08,
+        "lon": 120.54,
+        "region": "Pusat gempa berada di laut 60 km utara Ruteng, Manggarai",
+        "felt": true,
+        "felt_info": "II - III Kab. Manggarai",
+        "potential": "",
+        "sources": [
+          "gempadirasakan.json",
+          "realtime"
+        ]
+      },
+      "post_id": 9082,
+      "media_id": 9081,
+      "last_wp_digest": "feea14d229e0ce9104f653a6e94e871a309ae3ef3ec7eb12f2ee1e62c8b36540",
+      "yoast_meta_digest": "0974ee49725d295a7575f0737d103eadd02b1fa203c3050c2f323bfbd4d86548",
+      "status": "draft",
+      "last_payload_digest": "19cae84c537dd995b01b89950fd84af8d64b52e1cc8b2ffc6943a4817d65c3a5"
+    },
+    {
+      "key": "504235953f960a",
+      "data": {
+        "key": "504235953f960a",
+        "datetime": "2026-11-18T03:42:38Z",
+        "magnitude": 5.8,
+        "depth_km": 78.0,
+        "lat": -5.76,
+        "lon": 146.6,
+        "region": "Papua New Guinea Region",
+        "felt": false,
+        "felt_info": "",
+        "potential": "",
+        "sources": [
+          "realtime"
+        ]
+      }
+    },
+    {
+      "key": "33c173ed78f18b",
+      "data": {
+        "key": "33c173ed78f18b",
+        "datetime": "2026-11-18T00:48:57Z",
+        "magnitude": 5.4,
+        "depth_km": 150.0,
+        "lat": 45.64,
+        "lon": 26.39,
+        "region": "Romania",
+        "felt": false,
+        "felt_info": "",
+        "potential": "",
+        "sources": [
+          "realtime"
+        ]
+      },
+      "post_id": 9084,
+      "media_id": 9083,
+      "last_wp_digest": "9c355cd876f24762503c8c52102043904c2c284cbcb94185d0a1085ddb738b50",
+      "yoast_meta_digest": "ed084781237f1aeb10eb7793fa4ef8b66833b95e8ea35c5cd9d80fd9551759a5",
+      "status": "draft",
+      "last_payload_digest": "d8d611ecf37196041304f8b4f0d3c5616c4cd272323dfbcec9ed0933bf3f6cd6"
+    },
+    {
+      "key": "abb5111687108f",
+      "data": {
+        "key": "abb5111687108f",
+        "datetime": "2026-11-18T04:43:31Z",
+        "magnitude": 4.8,
+        "depth_km": 7.0,
+        "lat": -8.19,
+        "lon": 120.55,
+        "region": "Pusat gempa berada di laut 48 km utara Ruteng, Manggarai",
+        "potential": "Gempa ini dirasakan untuk diteruskan pada masyarakat",
+        "felt_info": "III-IV Kab. Manggarai",
+        "felt": true,
+        "sources": [
+          "autogempa.json",
+          "gempadirasakan.json"
+        ]
+      },
+      "post_id": 9086,
+      "media_id": 9085,
+      "last_wp_digest": "5fa84a4b7942009fe05146c5d343372b701841c450a9b4995a3e097187654e16",
+      "yoast_meta_digest": "14bd656008a14458757687ecf52992248415f4e7c677e76fb3ebdc17b2e057bf",
+      "status": "draft",
+      "last_payload_digest": "773f40b200827eb9382f96ae8108bfefa1b29cb62d314bb7659e94a55e70f8f1"
     }
   ]
 }
