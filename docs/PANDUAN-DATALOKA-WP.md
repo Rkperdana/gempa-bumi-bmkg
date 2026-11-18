@@ -4,6 +4,7 @@ Integrasi ini **hanya** mengakses REST API Posts dan Media Dataloka di https://d
 
 ## Aturan redaksi
 - Dipantau sekitar setiap 10 menit (GitHub Actions schedule bersifat *best effort*, tidak dijamin tepat waktu).
+- **Cakupan global termasuk luar Indonesia**: penerbit menggunakan salinan resmi terbaru tabel real-time BMKG dari `data/gempa.json` yang dihasilkan workflow dashboard independen, ditambah tiga feed JSON BMKG. Salinan real-time harus berstatus `live`, beridentitas sumber `https://www.bmkg.go.id/gempabumi/gempabumi-realtime`, dan diperiksa maksimum 180 menit lalu; data simulasi atau snapshot lama tidak boleh menghasilkan artikel. Gempa M5,8 di Romania pada 18 November 2026 pukul 07.48.42 WIB menjadi contoh kejadian yang sebelumnya terlewat karena tidak ada di feed JSON nasional.
 - **M5,5+**: dalam mode `live`, semua kejadian dari feed resmi BMKG diproses untuk **publish**, termasuk yang belum memiliki keterangan tsunami atau dinyatakan berpotensi tsunami. Kejadian baru harus berumur maksimal 120 menit saat pertama dideteksi; pembaruan artikel lama tetap dapat dilakukan.
 - **Keterangan tsunami tidak menentukan kelayakan publikasi M5,5+**. Artikel menyampaikan status yang tercantum dalam data resmi BMKG secara apa adanya. Jika belum tersedia, artikel menuliskan bahwa keterangannya belum tercantum. Jangan menyimpulkan aman, mengarang peringatan tsunami, korban, ataupun kerusakan.
 - Gempa M5,0–5,4 dan gempa dirasakan: **draft**; draf ringkasan hari sebelumnya dibuat pukul **00.15 WIB** jika tersedia kejadian yang terpantau.
