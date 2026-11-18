@@ -32,11 +32,9 @@ WP_URL = "https://dataloka.id"
 MARKER = "dataloka-bmkg:"
 YOAST_KEYS = ("_yoast_wpseo_focuskw", "_yoast_wpseo_title", "_yoast_wpseo_metadesc")
 
-# BMKG feed entries can arrive before the WordPress publisher was activated or
-# while GitHub scheduled runs are delayed. A bounded recovery window ensures
-# verified M5.5+ events are not silently lost, without publishing older archives.
-LIVE_NEW_EVENT_MINUTES = 120  # Temporary safeguard against duplicate already published reports.
-DRAFT_NEW_EVENT_MINUTES = 720  # 12 hours for draft-only events.
+# Short live-news window, longer catch-up for drafts when GitHub schedules lag.
+LIVE_NEW_EVENT_MINUTES = 120
+DRAFT_NEW_EVENT_MINUTES = 720  # 12 hours, not historical bulk backfill.
 TRANSIENT_HTTP = frozenset((429, 500, 502, 503, 504))
 
 
@@ -837,16 +835,13 @@ def events_task(mode, wp, now):
         if not (event["magnitude"] >= 5 or event["felt"]):
             continue
         if not record.get("post_id"):
-            # Recover major events missed due to GitHub delays/deployment. The
-            # article's event timestamp is always the original BMKG timestamp.
-            # Minor and felt earthquakes keep a shorter draft-only window.
+            # Never retroactively publish an old M5.5+ event. A separate
+            # 12-hour recovery window is safe for draft-only earthquakes,
+            # including felt M4.x after delayed GitHub schedules.
             freshness = (LIVE_NEW_EVENT_MINUTES if event["magnitude"] >= 5.5
                          else DRAFT_NEW_EVENT_MINUTES)
             if age > freshness:
                 continue
-            if event["magnitude"] >= 5.5 and age > 120:
-                print(f"RECOVERY: M{event['magnitude']:.1f} from "
-                      f"{event['datetime']} ({age/60:.1f}h old)")
         status = status_for(event, mode)
         # A corrected magnitude does not automatically unpublish an existing
         # article; update its facts in place while retaining the public URL.
