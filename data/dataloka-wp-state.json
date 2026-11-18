@@ -422,7 +422,14 @@
       "last_wp_digest": "e5a576877fb32c6c297b2285cddec3d120434b53d0f38c5a8796745386bf1fe2",
       "yoast_meta_digest": "c841ad9c442a9c27ff0e636f53232af340a512c8e47e7471e0a0a3c5807a952d",
       "status": "publish",
-      "last_payload_digest": "09d4f7dbfcdebe44704d31cdff001c79ca8869568fe9c72a8c191679390032e1"
+      "last_payload_digest": "09d4f7dbfcdebe44704d31cdff001c79ca8869568fe9c72a8c191679390032e1",
+      "published_versions": {
+        "0763de17fac4cb6e:publish": {
+          "post_id": 9071,
+          "status": "publish",
+          "media_id": 9070
+        }
+      }
     },
     {
       "key": "b85e18d778bf5e",
@@ -893,6 +900,37 @@
       "yoast_meta_digest": "14bd656008a14458757687ecf52992248415f4e7c677e76fb3ebdc17b2e057bf",
       "status": "draft",
       "last_payload_digest": "773f40b200827eb9382f96ae8108bfefa1b29cb62d314bb7659e94a55e70f8f1"
+    },
+    {
+      "key": "d1afa1536d8b66",
+      "data": {
+        "key": "d1afa1536d8b66",
+        "datetime": "2026-11-18T19:14:25Z",
+        "magnitude": 5.8,
+        "depth_km": 10.0,
+        "lat": -57.72,
+        "lon": -147.24,
+        "region": "Pacific-Antarctic Ridge",
+        "potential": "",
+        "felt_info": "",
+        "felt": false,
+        "sources": [
+          "realtime"
+        ]
+      },
+      "published_versions": {
+        "548c4ae1f9f193c8:publish": {
+          "post_id": 9105,
+          "status": "publish",
+          "media_id": 9104
+        }
+      },
+      "post_id": 9105,
+      "media_id": 9104,
+      "last_wp_digest": "51f06e193c9619e65b1b94e0a677a7fbbe413013cdbe7d3e0a5e3e21503200ce",
+      "yoast_meta_digest": "6af5969ab360dbdceb32472a44d712d5fd871b3ecc1efebd5b5c1aa21a0d949c",
+      "status": "publish",
+      "last_payload_digest": "3e8cf1f3337431fae1040184ad086aea4249bdeece2b46b0e0b973db5968b5b6"
     }
   ]
 }
