@@ -113,14 +113,10 @@ def confirmed_no_tsunami(event):
 
 
 def status_for(event, mode):
-    """M5.5+ always qualifies for live publication, regardless of tsunami status.
-
-    Tsunami potential is a factual field in the article; it must never be
-    interpreted as a reason to suppress the official earthquake report.
-    """
-    if mode == "live" and event["magnitude"] >= 5.5:
-        return "publish"
-    return "draft"
+    """Only M5.5+ is eligible for automatic publication; never produce drafts."""
+    if mode not in ("live", "dry-run"):
+        raise ValueError("Only live and dry-run modes are supported")
+    return "publish" if event["magnitude"] >= 5.5 else None
 
 
 def fetch_feed(feed):
@@ -922,10 +918,16 @@ class WordPress:
 
 
 def events_task(mode, wp, now):
+    if mode not in ("live", "dry-run"):
+        raise ValueError("Only live and dry-run modes are supported")
     events = get_events()
     state = read_state()
     failures = []
     for incoming in events:
+        # Filter BEFORE touching the ledger or WordPress. Felt M4.x and M5.0-5.4
+        # are ignored completely, including corrections below the threshold.
+        if float(incoming["magnitude"]) < 5.5:
+            continue
         age = (now - timestamp(incoming["datetime"])).total_seconds() / 60
         if age < -5 or age > 14 * 1440:
             continue
@@ -940,14 +942,11 @@ def events_task(mode, wp, now):
             updated["key"] = record["key"]
             record["data"] = updated
         event = record["data"]
-        if not (event["magnitude"] >= 5 or event["felt"]):
+        if event["magnitude"] < 5.5:
             continue
         if not record.get("post_id"):
-            # Never backfill stale earthquakes. Failed new posts may be retried
-            # within the same original freshness window.
-            freshness = (LIVE_NEW_EVENT_MINUTES if event["magnitude"] >= 5.5
-                         else DRAFT_NEW_EVENT_MINUTES)
-            if age > freshness:
+            # No historical backfill: only new M5.5+ within the live window.
+            if age > LIVE_NEW_EVENT_MINUTES:
                 continue
 
         versions = record.setdefault("published_versions", {})
@@ -1040,16 +1039,13 @@ def daily_task(mode, wp, now):
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--mode", choices=("live", "drafts", "dry-run"), default="dry-run")
-    parser.add_argument("--task", choices=("events", "daily"), default="events")
+    parser.add_argument("--mode", choices=("live", "dry-run"), default="dry-run")
+    parser.add_argument("--task", choices=("events",), default="events")
     args = parser.parse_args()
     wp = None if args.mode == "dry-run" else WordPress(
         os.getenv("WP_USERNAME"), os.getenv("WP_APP_PASSWORD"))
     now = dt.datetime.now(UTC)
-    if args.task == "events":
-        events_task(args.mode, wp, now)
-    else:
-        daily_task(args.mode, wp, now)
+    events_task(args.mode, wp, now)
 
 
 if __name__ == "__main__":

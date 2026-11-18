@@ -32,8 +32,12 @@ class PublisherTests(unittest.TestCase):
 
     def test_every_m55_publishes_regardless_of_tsunami_status(self):
         self.assertEqual(p.status_for(self.event(), "live"), "publish")
-        self.assertEqual(p.status_for(self.event(), "drafts"), "draft")
-        self.assertEqual(p.status_for(self.event(Magnitude="5.4"), "live"), "draft")
+        self.assertEqual(p.status_for(self.event(Magnitude="5.5"), "live"), "publish")
+        self.assertEqual(p.status_for(self.event(Magnitude="5.4"), "live"), None)
+        self.assertEqual(p.status_for(self.event(Magnitude="4.8", Dirasakan="III"), "live"), None)
+        self.assertEqual(p.status_for(self.event(), "dry-run"), "publish")
+        with self.assertRaises(ValueError):
+            p.status_for(self.event(), "drafts")
         for potential in ("", "Tidak berpotensi tsunami",
                           "Berpotensi tsunami", "Peringatan dini tsunami",
                           "Tidak berpotensi tsunami; berpotensi tsunami"):
@@ -51,6 +55,55 @@ class PublisherTests(unittest.TestCase):
             p.status_for(self.event(feed="gempadirasakan.json"), "live"),
             "publish"
         )
+
+    def test_below_m55_never_creates_posts_or_ledger_entries(self):
+        ignored = [
+            self.event(Magnitude="5.4"),
+            self.event(Magnitude="5.0", Dirasakan="IV"),
+            self.event(Magnitude="4.8", Dirasakan="III"),
+        ]
+        state = {"version": 1, "events": [], "daily": {}}
+        class NoWP:
+            def save(self, *args, **kwargs):
+                raise AssertionError("M<5.5 must never contact WordPress")
+        now = dt.datetime(2026, 11, 17, 1, 55, tzinfo=dt.timezone.utc)
+        with tempfile.TemporaryDirectory() as temp, (
+            mock.patch.object(p, "get_events", return_value=ignored)
+        ), mock.patch.object(p, "read_state", return_value=state), (
+            mock.patch.object(p, "STATE", Path(temp) / "state.json")
+        ):
+            p.events_task("live", NoWP(), now)
+        self.assertEqual(state["events"], [])
+
+    def test_existing_m56_corrected_below_threshold_never_contacts_wp(self):
+        old = self.event(Magnitude="5.6")
+        corrected = self.event(Magnitude="5.4")
+        state = {"version": 1, "events": [
+            {"key": old["key"], "data": old, "post_id": 9111,
+             "status": "publish", "media_id": 900}
+        ], "daily": {}}
+        class NoWP:
+            def save(self, *args, **kwargs):
+                raise AssertionError("Correction to M5.4 must not touch WordPress")
+        now = dt.datetime(2026, 11, 17, 1, 55, tzinfo=dt.timezone.utc)
+        with tempfile.TemporaryDirectory() as temp, (
+            mock.patch.object(p, "get_events", return_value=[corrected])
+        ), mock.patch.object(p, "read_state", return_value=state), (
+            mock.patch.object(p, "STATE", Path(temp) / "state.json")
+        ):
+            p.events_task("live", NoWP(), now)
+        self.assertEqual(state["events"][0]["post_id"], 9111)
+
+    def test_daily_task_and_drafts_mode_disallowed_at_cli(self):
+        for args in (["--mode", "drafts"], ["--task", "daily"]):
+            with self.subTest(args=args):
+                result = subprocess.run(
+                    [sys.executable, str(ROOT / "scripts" / "dataloka_wp_gempa.py"),
+                     *args],
+                    capture_output=True, text=True, timeout=10
+                )
+                self.assertEqual(result.returncode, 2)
+                self.assertIn("invalid choice", result.stderr)
 
     def test_fuzzy_match_and_stable_key(self):
         old = self.event()
@@ -757,9 +810,9 @@ assert str(root) in sys.path
                     p.events_task("live", BrokenWP(), now)
                 self.assertIn("HTTP 403", errors.getvalue())
 
-    def test_delayed_felt_m48_becomes_draft_without_backfilling_old_m71(self):
-        # At 15.45 WIB, Ruteng M4.8 is nearly eight hours old, so it must
-        # enter drafts; the earlier M7.1 is not retroactively published.
+    def test_below_threshold_ignored_without_backfilling_old_m71(self):
+        # At 15.45 WIB, M4.8 is ignored completely and stale M7.1 is not
+        # retroactively published. Only the fresh M5.6 goes live.
         felt = self.event(
             feed="gempadirasakan.json",
             DateTime="2026-11-17T00:49:17+00:00",
@@ -801,20 +854,21 @@ assert str(root) in sys.path
         ):
             p.events_task("live", WP(), now)
             persisted = json.loads((Path(temp) / "state.json").read_text())
-        self.assertEqual(creates, [(4.8, "draft"), (5.6, "publish")])
-        self.assertEqual(len([x for x in persisted["events"] if x.get("post_id")]), 2)
+        self.assertEqual(creates, [(5.6, "publish")])
+        self.assertEqual(len([x for x in persisted["events"] if x.get("post_id")]), 1)
+        self.assertTrue(all(x["data"]["magnitude"] >= 5.5 for x in persisted["events"]))
         self.assertFalse(any(x.get("post_id") and x["data"]["magnitude"] == 7.1
                              for x in persisted["events"]))
 
-    def test_draft_window_expires_after_twelve_hours(self):
+    def test_m55_old_event_is_not_backfilled(self):
         felt = self.event(
             DateTime="2026-11-16T18:00:00+00:00",
-            Magnitude="4.8", Dirasakan="III")
+            Magnitude="5.5", Dirasakan="III")
         now = dt.datetime(2026, 11, 17, 8, 45, tzinfo=dt.timezone.utc)
         state = {"events": [], "daily": {}}
         class WP:
             def save(self, *args, **kwargs):
-                self.fail("Stale draft should not be created")
+                raise AssertionError("Stale M5.5 must not be created")
         with tempfile.TemporaryDirectory() as temp, (
             mock.patch.object(p, "get_events", return_value=[felt])
         ), mock.patch.object(p, "read_state", return_value=state), (
@@ -960,9 +1014,9 @@ assert str(root) in sys.path
 
     def test_single_wordpress_failure_does_not_block_other_events(self):
         felt = self.event(
-            feed="gempadirasakan.json",
-            DateTime="2026-11-17T00:49:17+00:00",
-            Coordinates="-8.22,120.66", Magnitude="4.8",
+            feed="gempaterkini.json",
+            DateTime="2026-11-17T08:00:17+00:00",
+            Coordinates="-8.22,120.66", Magnitude="5.7",
             Dirasakan="III Kab. Manggarai")
         fresh = self.event(
             DateTime="2026-11-17T07:50:00+00:00",
@@ -972,7 +1026,7 @@ assert str(root) in sys.path
         class WP:
             def save(self, payload, record, status, marker, event=None):
                 calls.append((event["magnitude"], status))
-                if event["magnitude"] == 4.8:
+                if event["magnitude"] == 5.7:
                     raise RuntimeError("WordPress network error on GET posts: TimeoutError")
                 return {"post_id": 9501, "status": "publish", "media_id": 101,
                         "last_payload_digest": p.hash_value(json.dumps(
@@ -987,7 +1041,7 @@ assert str(root) in sys.path
             with self.assertRaisesRegex(RuntimeError, "1 BMKG events"):
                 p.events_task("live", WP(), now)
             saved = json.loads((Path(temp) / "state.json").read_text())
-        self.assertEqual(calls, [(4.8, "draft"), (5.6, "publish")])
+        self.assertEqual(calls, [(5.7, "publish"), (5.6, "publish")])
         self.assertEqual([x["post_id"] for x in saved["events"] if x.get("post_id")],
                          [9501])
 
