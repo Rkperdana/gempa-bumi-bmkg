@@ -35,7 +35,7 @@ YOAST_KEYS = ("_yoast_wpseo_focuskw", "_yoast_wpseo_title", "_yoast_wpseo_metade
 # BMKG feed entries can arrive before the WordPress publisher was activated or
 # while GitHub scheduled runs are delayed. A bounded recovery window ensures
 # verified M5.5+ events are not silently lost, without publishing older archives.
-LIVE_NEW_EVENT_MINUTES = 48 * 60  # 48 hours; original occurrence date stays intact.
+LIVE_NEW_EVENT_MINUTES = 120  # Temporary safeguard against duplicate already published reports.
 DRAFT_NEW_EVENT_MINUTES = 720  # 12 hours for draft-only events.
 TRANSIENT_HTTP = frozenset((429, 500, 502, 503, 504))
 
