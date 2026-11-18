@@ -2,7 +2,7 @@
   "schema_version": 2,
   "status": "live",
   "data_origin": "realtime_table",
-  "checked_at": "2026-11-18T01:45:16.676061Z",
+  "checked_at": "2026-11-18T02:30:35.956102Z",
   "source": "Badan Meteorologi, Klimatologi, dan Geofisika (BMKG)",
   "coverage_note": "200 gempa terbaru pada tabel real-time BMKG (jumlah aktual dapat kurang dari 200), termasuk episentrum di luar Indonesia; gempa dirasakan dilengkapi dari feed terpisah. Bukan total seluruh gempa dalam periode tersebut.",
   "sources": {
@@ -13,6 +13,52 @@
   },
   "errors": [],
   "events": [
+    {
+      "id": "6a4c027426951e",
+      "datetime": "2026-11-18T02:24:55Z",
+      "magnitude": 2.7,
+      "depth_km": 10.0,
+      "lat": -8.44,
+      "lon": 121.46,
+      "region": "Flores Region, Indonesia",
+      "felt": false,
+      "felt_info": "",
+      "tsunami": false,
+      "potential_text": "",
+      "significant": false,
+      "source_types": [
+        "realtime"
+      ],
+      "source_urls": [
+        "https://www.bmkg.go.id/gempabumi/gempabumi-realtime"
+      ],
+      "shakemap": "",
+      "first_seen_at": "2026-11-18T02:30:35.956102Z",
+      "last_updated_at": "2026-11-18T02:30:35.956102Z"
+    },
+    {
+      "id": "9e768c8c7873b3",
+      "datetime": "2026-11-18T02:23:02Z",
+      "magnitude": 5.9,
+      "depth_km": 44.0,
+      "lat": 12.1,
+      "lon": 144.03,
+      "region": "South of Mariana Islands",
+      "felt": false,
+      "felt_info": "",
+      "tsunami": false,
+      "potential_text": "",
+      "significant": false,
+      "source_types": [
+        "realtime"
+      ],
+      "source_urls": [
+        "https://www.bmkg.go.id/gempabumi/gempabumi-realtime"
+      ],
+      "shakemap": "",
+      "first_seen_at": "2026-11-18T02:30:35.956102Z",
+      "last_updated_at": "2026-11-18T02:30:35.956102Z"
+    },
     {
       "id": "b85e18d778bf5e",
       "datetime": "2026-11-18T00:48:42Z",
@@ -246,7 +292,7 @@
     {
       "id": "102310eb19ee60",
       "datetime": "2026-11-17T20:12:19Z",
-      "magnitude": 4.8,
+      "magnitude": 4.9,
       "depth_km": 10.0,
       "lat": 16.81,
       "lon": 119.44,
@@ -264,7 +310,7 @@
       ],
       "shakemap": "",
       "first_seen_at": "2026-11-17T23:56:32.831383Z",
-      "last_updated_at": "2026-11-17T23:56:32.831383Z"
+      "last_updated_at": "2026-11-18T02:30:35.956102Z"
     },
     {
       "id": "65d365a9ac4526",
@@ -4592,52 +4638,6 @@
       "shakemap": "",
       "first_seen_at": "2026-11-11T18:35:09.908094Z",
       "last_updated_at": "2026-11-11T18:35:09.908094Z"
-    },
-    {
-      "id": "27f5382cdbbeb2",
-      "datetime": "2026-11-11T17:00:14Z",
-      "magnitude": 2.9,
-      "depth_km": 10.0,
-      "lat": -8.19,
-      "lon": 116.75,
-      "region": "Sumbawa Region, Indonesia",
-      "felt": false,
-      "felt_info": "",
-      "tsunami": false,
-      "potential_text": "",
-      "significant": false,
-      "source_types": [
-        "realtime"
-      ],
-      "source_urls": [
-        "https://www.bmkg.go.id/gempabumi/gempabumi-realtime"
-      ],
-      "shakemap": "",
-      "first_seen_at": "2026-11-11T18:35:09.908094Z",
-      "last_updated_at": "2026-11-11T18:35:09.908094Z"
-    },
-    {
-      "id": "375025b2ca61df",
-      "datetime": "2026-11-11T13:26:17Z",
-      "magnitude": 3.3,
-      "depth_km": 13.0,
-      "lat": -8.2,
-      "lon": 120.75,
-      "region": "Flores Region, Indonesia",
-      "felt": false,
-      "felt_info": "",
-      "tsunami": false,
-      "potential_text": "",
-      "significant": false,
-      "source_types": [
-        "realtime"
-      ],
-      "source_urls": [
-        "https://www.bmkg.go.id/gempabumi/gempabumi-realtime"
-      ],
-      "shakemap": "",
-      "first_seen_at": "2026-11-11T16:35:45.094317Z",
-      "last_updated_at": "2026-11-11T16:35:45.094317Z"
     }
   ]
 }
