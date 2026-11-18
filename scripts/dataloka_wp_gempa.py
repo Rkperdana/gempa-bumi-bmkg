@@ -442,10 +442,11 @@ def article(e):
 
     # Exactly four editorial paragraphs; never infer damage, casualties or shaking intensity.
     paragraphs = [
-        (f"Dataloka.id - Gempa M{mag} di {region} terjadi pada {day}, {date}, pukul "
-         f"{time} WIB, menurut Badan Meteorologi, Klimatologi, dan Geofisika "
-         f"(BMKG). Informasi kejadian tersebut dipublikasikan melalui data "
-         f"gempa resmi BMKG."),
+        (f'<strong>Dataloka.id</strong> - '
+         f'<a href="https://dataloka.id/tag/gempa/">Gempa</a> M{mag} di '
+         f"{region} terjadi pada {day}, {date}, pukul {time} WIB, menurut "
+         f"Badan Meteorologi, Klimatologi, dan Geofisika (BMKG). "
+         f"Informasi kejadian tersebut dipublikasikan melalui data gempa resmi BMKG."),
         (f"Menurut parameter BMKG, koordinat episentrum berada di "
          f"{escape(coordinate(e['lat'], 'LU', 'LS'))} dan "
          f"{escape(coordinate(e['lon'], 'BT', 'BB'))}. "
@@ -461,13 +462,10 @@ def article(e):
            "Rincian wilayah yang merasakan guncangan belum tercantum dalam data yang digunakan.")
     paragraphs.append(p3a + " " + p3b)
 
-    sources = sorted({REALTIME_URL if name == "realtime" else BASE + name
-                      for name in e["sources"]})
-    links = ", ".join(f'<a href="{escape(url)}">data BMKG</a>' for url in sources)
     paragraphs.append(
-        f"Informasi magnitudo, waktu, koordinat, dan kedalaman dalam artikel "
-        f"ini bersumber dari {links}. Parameter kejadian dapat berubah "
-        f"apabila BMKG merilis pembaruan. (RK/D-1)"
+        "Informasi magnitudo, waktu, koordinat, dan kedalaman dalam artikel "
+        "ini bersumber dari data BMKG. Parameter kejadian dapat berubah "
+        "apabila BMKG merilis pembaruan. (RK/D-1)"
     )
     body = "".join(f"<p>{paragraph}</p>" for paragraph in paragraphs)
     # Hidden provenance marker is adjacent to the final closing tag, with no newline.
@@ -504,14 +502,14 @@ def daily_article(records, day):
     readable_day = f"{day.day} {('Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember')[day.month - 1]} {day.year}"
     title = f"Daftar Gempa M5,0–5,4 pada {readable_day} Menurut BMKG"
     paragraphs = [
-        (f"Dataloka.id - Berdasarkan kejadian yang berhasil dipantau Dataloka dari BMKG, "
-         f"terdapat {len(selected)} gempa bermagnitudo 5,0 hingga kurang dari "
-         f"5,5 pada {day:%d-%m-%Y}. Angka tersebut bukan total resmi seluruh gempa "
-         f"pada tanggal itu."),
+        (f'<strong>Dataloka.id</strong> - Berdasarkan kejadian yang berhasil '
+         f'dipantau Dataloka dari BMKG, terdapat {len(selected)} '
+         f'<a href="https://dataloka.id/tag/gempa/">gempa</a> '
+         f'bermagnitudo 5,0 hingga kurang dari 5,5 pada {day:%d-%m-%Y}. '
+         f'Angka tersebut bukan total resmi seluruh gempa pada tanggal itu.'),
         ("Rincian kejadian yang terpantau ditampilkan dalam tabel berikut. "
          "Waktu kejadian telah dinyatakan dalam Waktu Indonesia Barat (WIB)."),
-        ('Data diperoleh dari <a href="https://data.bmkg.go.id/gempabumi/">BMKG</a>. '
-         "Rangkuman menggunakan kejadian yang tersimpan dalam pemantauan Dataloka, "
+        ("Rangkuman ini menggunakan data BMKG yang dipantau Dataloka, "
          "sehingga cakupannya dapat berbeda dari rekap lengkap instansi."),
         ("Ringkasan ini bersifat pendahuluan dan memerlukan pemeriksaan redaksi "
          "sebelum diterbitkan. Parameter kejadian dapat berubah apabila BMKG "

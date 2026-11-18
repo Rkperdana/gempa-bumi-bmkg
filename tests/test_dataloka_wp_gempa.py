@@ -69,10 +69,38 @@ class PublisherTests(unittest.TestCase):
         self.assertNotIn("RKP", body)
         self.assertNotIn("LD1", body)
         self.assertEqual(body.count("<p>"), 4)
-        self.assertTrue(body.startswith("<p>Dataloka.id - "))
+        self.assertTrue(body.startswith("<p><strong>Dataloka.id</strong> - "))
         self.assertRegex(body, r" \(RK/D-1\)</p><!-- dataloka-bmkg:")
         self.assertNotIn("\n", body)
         self.assertIn("6,20° LS", body)
+
+    def test_article_lead_internal_tag_and_plain_bmkg_source(self):
+        event = self.event()
+        body = p.article(event)["content"]
+        paragraphs = body.split("</p>")
+        self.assertEqual(body.count("<p>"), 4)
+        self.assertTrue(paragraphs[0].startswith(
+            '<p><strong>Dataloka.id</strong> - '
+            '<a href="https://dataloka.id/tag/gempa/">Gempa</a> M5,6'))
+        self.assertEqual(body.count('<a href="https://dataloka.id/tag/gempa/">'), 1)
+        self.assertNotIn("<a ", "".join(paragraphs[1:]))
+        self.assertIn("bersumber dari data BMKG.", paragraphs[3])
+        self.assertNotIn("href=", paragraphs[3])
+        self.assertTrue(body.endswith(
+            f" (RK/D-1)</p><!-- {p.MARKER}{event['key']} -->"))
+        self.assertNotIn("<strong>", p.article(event)["excerpt"])
+        self.assertNotIn("<a ", p.article(event)["title"])
+
+    def test_daily_summary_uses_same_editorial_link_style(self):
+        quake = self.event(Magnitude="5.2")
+        body = p.daily_article([{"data": quake}], dt.date(2026, 11, 17))["content"]
+        lead = body.split("</p>", 1)[0]
+        self.assertTrue(lead.startswith("<p><strong>Dataloka.id</strong> - "))
+        self.assertIn(
+            '<a href="https://dataloka.id/tag/gempa/">gempa</a>', lead)
+        self.assertEqual(body.count('href='), 1)
+        self.assertIn("menggunakan data BMKG", body)
+        self.assertNotIn('href="https://data.bmkg.go.id', body)
 
     def test_daily_summary_only_m5_to_m54(self):
         a = self.event(Magnitude="5.2")
@@ -87,7 +115,7 @@ class PublisherTests(unittest.TestCase):
         a = self.event(Magnitude="5.2")
         result = p.daily_article([{"data": a}], dt.date(2026, 11, 17))
         self.assertEqual(result["content"].count("<p>"), 4)
-        self.assertTrue(result["content"].startswith("<p>Dataloka.id - "))
+        self.assertTrue(result["content"].startswith("<p><strong>Dataloka.id</strong> - "))
         self.assertRegex(result["content"],
                          r" \(RK/D-1\)</p><!-- dataloka-bmkg-daily:")
 
@@ -353,8 +381,9 @@ assert str(root) in sys.path
         self.assertLessEqual(
             len(fields["yoast_meta"]["_yoast_wpseo_metadesc"]), 160
         )
-        self.assertIn("gempa m5,6 di selatan jawa", fields["content"].casefold())
-        self.assertTrue(fields["content"].startswith("<p>Dataloka.id - "))
+        visible_body = re.sub(r"<[^>]*>", "", fields["content"])
+        self.assertIn("gempa m5,6 di selatan jawa", visible_body.casefold())
+        self.assertTrue(fields["content"].startswith("<p><strong>Dataloka.id</strong> - "))
         self.assertRegex(fields["content"], r" \(RK/D-1\)</p><!-- dataloka-bmkg:")
 
     def test_seo_description_exact_bmkg_example_and_dot_keyphrase(self):
@@ -427,7 +456,7 @@ assert str(root) in sys.path
         self.assertEqual(
             result["title"],
             "Gempa M4,8 di Ruteng, Manggarai, Terasa hingga III MMI")
-        self.assertTrue(result["content"].startswith("<p>Dataloka.id - "))
+        self.assertTrue(result["content"].startswith("<p><strong>Dataloka.id</strong> - "))
         self.assertNotIn("Pusat gempa berada", result["title"])
         self.assertIn("Pusat gempa berada", result["content"])
         self.assertNotEqual(result["title"], result["yoast_meta"]["_yoast_wpseo_title"])
@@ -442,7 +471,7 @@ assert str(root) in sys.path
         updated = p.article(event)
         previous = dict(updated)
         previous["content"] = updated["content"].replace(
-            "<p>Dataloka.id - ", "<p>", 1)
+            "<p><strong>Dataloka.id</strong> - ", "<p>", 1)
         previous["title"] = p.seo_title(
             event, "17 November 2026")
         ledger = {
@@ -760,7 +789,8 @@ assert str(root) in sys.path
         self.assertEqual(event["magnitude"], 5.8)
         self.assertEqual((event["lat"], event["lon"]), (45.75, 26.68))
         self.assertIn("Featured", article["tag_names"])
-        self.assertIn(p.REALTIME_URL, article["content"])
+        self.assertIn("bersumber dari data BMKG.", article["content"])
+        self.assertNotIn(p.REALTIME_URL, article["content"])
         self.assertNotIn("https://data.bmkg.go.id/DataMKG/TEWS/realtime", article["content"])
         self.assertEqual(state["events"][0]["status"], "publish")
 
