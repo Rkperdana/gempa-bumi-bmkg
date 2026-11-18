@@ -629,9 +629,9 @@ assert str(root) in sys.path
                     p.events_task("live", BrokenWP(), now)
                 self.assertIn("HTTP 403", errors.getvalue())
 
-    def test_delayed_felt_m48_draft_and_m71_recovered_within_48_hours(self):
-        # At 15.45 WIB, Ruteng M4.8 is nearly eight hours old and goes
-        # to drafts; M7.1 is still within 48h and must be recovered.
+    def test_delayed_felt_m48_becomes_draft_without_backfilling_old_m71(self):
+        # At 15.45 WIB, Ruteng M4.8 is nearly eight hours old, so it must
+        # enter drafts; the earlier M7.1 is not retroactively published.
         felt = self.event(
             feed="gempadirasakan.json",
             DateTime="2026-11-17T00:49:17+00:00",
@@ -673,27 +673,10 @@ assert str(root) in sys.path
         ):
             p.events_task("live", WP(), now)
             persisted = json.loads((Path(temp) / "state.json").read_text())
-        self.assertEqual(creates, [(4.8, "draft"), (7.1, "publish"), (5.6, "publish")])
-        self.assertEqual(len([x for x in persisted["events"] if x.get("post_id")]), 3)
-        self.assertTrue(any(x.get("post_id") and x["data"]["magnitude"] == 7.1
-                            for x in persisted["events"]))
-
-    def test_m55_recovery_window_expires_after_48_hours(self):
-        old = self.event(
-            DateTime="2026-11-15T08:00:00+00:00", Magnitude="7.1",
-            Wilayah="Maluku Tenggara")
-        now = dt.datetime(2026, 11, 18, 8, 45, tzinfo=dt.timezone.utc)
-        state = {"events": [], "daily": {}}
-        class NoWrites:
-            def save(self, *args, **kwargs):
-                raise AssertionError("Expired earthquake must not be published")
-        with tempfile.TemporaryDirectory() as temp, (
-            mock.patch.object(p, "get_events", return_value=[old])
-        ), mock.patch.object(p, "read_state", return_value=state), (
-            mock.patch.object(p, "STATE", Path(temp) / "state.json")
-        ):
-            p.events_task("live", NoWrites(), now)
-        self.assertIsNone(state["events"][0].get("post_id"))
+        self.assertEqual(creates, [(4.8, "draft"), (5.6, "publish")])
+        self.assertEqual(len([x for x in persisted["events"] if x.get("post_id")]), 2)
+        self.assertFalse(any(x.get("post_id") and x["data"]["magnitude"] == 7.1
+                             for x in persisted["events"]))
 
     def test_draft_window_expires_after_twelve_hours(self):
         felt = self.event(
