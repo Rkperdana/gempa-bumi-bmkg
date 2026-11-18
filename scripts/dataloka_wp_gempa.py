@@ -948,24 +948,27 @@ def events_task(mode, wp, now):
         if record.get("post_id") and not versions:
             # Migrate legacy ledger in-place; no API request to WordPress.
             original = previous_data or event
-            versions[publication_fingerprint(original)] = {
+            original_status = record.get("status", "draft")
+            original_version = publication_fingerprint(original) + ":" + original_status
+            versions[original_version] = {
                 "post_id": record["post_id"],
-                "status": record.get("status", "draft"),
+                "status": original_status,
                 "media_id": record.get("media_id", 0),
             }
-
-        fingerprint = publication_fingerprint(event)
-        if fingerprint in versions:
-            # Even if an old draft has no media_id, never touch WordPress just
-            # to inspect or re-save unchanged content.
-            continue
 
         status = status_for(event, mode)
         if any(v.get("status") == "publish" for v in versions.values()):
             status = "publish"  # A published earthquake never gets downgraded.
+        fingerprint = publication_fingerprint(event)
+        version_key = fingerprint + ":" + status
+        if version_key in versions:
+            # Even if an old draft has no media_id, never touch WordPress just
+            # to inspect or re-save unchanged content.
+            continue
+
         is_revision = bool(record.get("post_id"))
         if is_revision:
-            payload, marker = revised_article(event, fingerprint)
+            payload, marker = revised_article(event, hash_value(version_key))
             save_ledger = {}  # New WordPress article; original post untouched.
         else:
             payload = article(event)
@@ -979,7 +982,7 @@ def events_task(mode, wp, now):
             result = wp.save(payload, save_ledger, status, marker, event=event)
             if not is_revision:
                 record.update(result)
-            versions[fingerprint] = {
+            versions[version_key] = {
                 "post_id": result["post_id"],
                 "status": result["status"],
                 "media_id": result.get("media_id", 0),
