@@ -3,12 +3,12 @@
 Integrasi ini **hanya** mengakses REST API Posts dan Media Dataloka di https://dataloka.id/wp-json/wp/v2/. Tidak menggunakan API, database, atau credentials Pirsadata. Workflow dashboard BMKG yang sudah ada tidak diubah.
 
 ## Aturan redaksi
-- Dipantau sekitar setiap 10 menit (GitHub Actions schedule bersifat *best effort*, tidak dijamin tepat waktu).
+- BMKG dipantau sekitar setiap 10 menit lewat satu pemicu terjadwal (GitHub Actions schedule bersifat *best effort*). Pemantauan berlangsung di GitHub; permintaan ke WordPress hanya saat ada artikel baru/pembaruan fakta yang belum diterbitkan atau percobaan terbit yang sebelumnya gagal.
 - **Cakupan global termasuk luar Indonesia**: penerbit menggunakan salinan resmi terbaru tabel real-time BMKG dari `data/gempa.json` yang dihasilkan workflow dashboard independen, ditambah tiga feed JSON BMKG. Salinan real-time harus berstatus `live`, beridentitas sumber `https://www.bmkg.go.id/gempabumi/gempabumi-realtime`, dan diperiksa maksimum 180 menit lalu; data simulasi atau snapshot lama tidak boleh menghasilkan artikel. Gempa M5,8 di Romania pada 18 November 2026 pukul 07.48.42 WIB menjadi contoh kejadian yang sebelumnya terlewat karena tidak ada di feed JSON nasional.
 - **M5,5+**: dalam mode `live`, semua kejadian dari feed resmi BMKG diproses untuk **publish**, termasuk yang belum memiliki keterangan tsunami atau dinyatakan berpotensi tsunami. Kejadian baru harus berumur maksimal 120 menit saat pertama dideteksi; pembaruan artikel lama tetap dapat dilakukan.
 - **Keterangan tsunami tidak menentukan kelayakan publikasi M5,5+**. Artikel menyampaikan status yang tercantum dalam data resmi BMKG secara apa adanya. Jika belum tersedia, artikel menuliskan bahwa keterangannya belum tercantum. Jangan menyimpulkan aman, mengarang peringatan tsunami, korban, ataupun kerusakan.
 - Gempa M5,0–5,4 dan gempa dirasakan: **draft**; draf ringkasan hari sebelumnya dibuat pukul **00.15 WIB** jika tersedia kejadian yang terpantau.
-- Revisi BMKG memperbarui artikel bot yang sama selama belum diedit manusia dan sidik kejadian masih cocok. Artikel yang sudah terbit tidak otomatis diturunkan menjadi draf apabila magnitudo dikoreksi lebih kecil. Tidak mengubah artikel di luar bot.
+- Setiap kejadian baru dibuat sebagai artikel baru; perubahan parameter BMKG yang substantif (magnitudo, kedalaman, lokasi, waktu, status tsunami/guncangan) menghasilkan **artikel pembaruan baru dengan slug tersendiri**, bukan menyunting artikel lama. Perubahan sumber feed atau pengecekan berkala tanpa perubahan fakta **tidak** mengakses REST API WordPress. Untuk kejadian yang pernah terbit, versi pembaruannya tidak otomatis diturunkan menjadi draf meskipun magnitudo dikoreksi lebih kecil. Tidak mengubah artikel di luar bot.
 - Kejadian yang sudah berumur lebih dari 120 menit ketika pertama kali terlihat tidak dipublikasikan ulang.
 - Ledger publikasi terpisah: `data/dataloka-wp-state.json`.
 - **Kategori WordPress: Berita** untuk seluruh artikel dan draf bot. Skrip mencari ID kategori yang sudah ada lewat REST API `/wp/v2/categories?search=Berita`, mencocokkan nama/slug persis, lalu mengirim hanya kategori tersebut. Bila kategori tidak ditemukan, otomatisasi gagal tertutup dan **tidak menerbitkan ke Uncategorized**.
@@ -17,7 +17,7 @@ Integrasi ini **hanya** mengakses REST API Posts dan Media Dataloka di https://d
 - **Excerpt**: ringkasan faktual maksimal sekitar 160 karakter, mencakup lokasi, magnitudo, waktu WIB, kedalaman, serta status tsunami hanya bila diverifikasi. Field WordPress `excerpt` bukan otomatis meta description milik Yoast/Rank Math.
 - **Yoast SEO (otomatis dan diverifikasi)**: `Focus keyphrase` → `_yoast_wpseo_focuskw`; `SEO title` → `_yoast_wpseo_title`; `Meta description` → `_yoast_wpseo_metadesc`; `Slug` → field `slug` bawaan WordPress. Seluruh nilai berasal dari data kejadian BMKG; Yoast meta description disimpan secara terpisah dari excerpt, meskipun teks dasarnya sama.
 - **Verifikasi Yoast sebelum terbit**: post baru dibuat sebagai draf terlebih dahulu. Skrip melakukan pembacaan kembali tiga meta Yoast dari `/wp-json/wp/v2/posts/{id}?context=edit`. Hanya jika semuanya persis tersimpan, status diganti menjadi `publish`. Jika belum, post tetap draf untuk pemeriksaan (workflow menunjukkan error yang jelas).
-- **Mempertahankan suntingan manusia**: jika editor mengubah isi artikel, permalink, gambar, atau field Yoast secara manual, bot tidak akan menimpanya. Artikel lama tidak diubah slug-nya.
+- **Mempertahankan suntingan manusia**: artikel yang pernah dibuat tetap tidak disunting lagi oleh bot, termasuk judul, isi, permalink, gambar, dan Yoast. Bila BMKG menerbitkan koreksi substantif, bot membuat artikel pembaruan baru dengan permalink unik. Ledger menyimpan sidik fakta dan setiap versi untuk mencegah penerbitan ganda.
 
 - **Tag WordPress**: tag satu kata yang relevan, seperti `Gempa`, `BMKG`, `Episentrum`, `Seismik`, dan wilayah bila bisa dipetakan dari nama BMKG. Skrip mencari tag berdasarkan nama dan mencoba membuatnya bila belum tersedia. Bila hak akun tidak cukup, artikel tetap diproses dan log memberi peringatan; editor dapat memasang tag secara manual.
 - Sumber resmi: https://data.bmkg.go.id/gempabumi/
@@ -26,7 +26,7 @@ Integrasi ini **hanya** mengakses REST API Posts dan Media Dataloka di https://d
 - Artikel yang diterbitkan otomatis mendapatkan **featured image JPEG 1200×675 (16:9), di bawah 500 KB**, berupa peta posisi episentrum dari koordinat BMKG.
 - Batas daratan peta berasal dari Natural Earth (domain publik), terbundel lokal dalam `assets/natural-earth-110m-land.json`. Tidak ada API peta pihak ketiga saat runtime.
 - Gambar diunggah ke WordPress Media Library dengan teks alternatif dan ditetapkan sebagai `featured_media` sebelum artikel dipublikasikan. Jika proses gambar gagal, artikel baru tidak dipublikasikan otomatis.
-- Pembaruan artikel bot mempertahankan gambar sebelumnya; perubahan manual pada artikel/gambar tidak ditimpa oleh bot.
+- Artikel pembaruan baru mendapat gambar episentrum sendiri. Artikel dan gambar lama tidak disentuh oleh bot.
 
 ## Pengaktifan (hanya setelah peninjauan PR)
 
