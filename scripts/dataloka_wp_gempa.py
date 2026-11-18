@@ -263,6 +263,22 @@ def read_state():
 def hash_value(s):
     return hashlib.sha256(str(s).encode("utf-8")).hexdigest()
 
+def publication_fingerprint(event):
+    """Ignore feed bookkeeping; only material BMKG facts create new articles."""
+    facts = {
+        "datetime": timestamp(event["datetime"]).isoformat(),
+        "magnitude": float(event["magnitude"]),
+        "depth_km": float(event["depth_km"]),
+        "lat": round(float(event["lat"]), 3),
+        "lon": round(float(event["lon"]), 3),
+        "region": " ".join(str(event.get("region") or "").split()).casefold(),
+        "potential": " ".join(str(event.get("potential") or "").split()).casefold(),
+        "felt_info": " ".join(str(event.get("felt_info") or "").split()).casefold(),
+        "felt": bool(event.get("felt")),
+    }
+    return hash_value(json.dumps(facts, ensure_ascii=False, sort_keys=True))[:16]
+
+
 
 def escape(s):
     return html.escape(str(s), quote=True)
@@ -484,6 +500,25 @@ def article(e):
         "yoast_meta": yoast_meta,
         "comment_status": "closed",
     }
+
+
+def revised_article(event, fingerprint):
+    """Publish a separate article on substantive corrections; do not edit the old."""
+    payload = article(event)
+    payload["title"] = "Pembaruan BMKG: " + payload["title"]
+    payload["slug"] += "-pembaruan-" + fingerprint[:10]
+    payload["yoast_meta"]["_yoast_wpseo_title"] = (
+        "Pembaruan BMKG: " + payload["yoast_meta"]["_yoast_wpseo_title"]
+    )
+    previous_marker = f"<!-- {MARKER}{event['key']} -->"
+    marker = f"<!-- {MARKER}{event['key']}:revision:{fingerprint[:10]} -->"
+    payload["content"] = payload["content"].replace(previous_marker, marker, 1)
+    payload["content"] = payload["content"].replace(
+        '<p><strong>Dataloka.id</strong> - ',
+        '<p><strong>Dataloka.id</strong> - BMKG memperbarui parameter kejadian ini. ',
+        1,
+    )
+    return payload, marker
 
 
 def daily_article(records, day):
@@ -728,6 +763,20 @@ class WordPress:
             raw = found.get("content", {}).get("raw", "")
             if marker not in raw:
                 raise EditorialConflict(f"Post {found['id']} has no Dataloka ownership marker")
+            # Recover a previously-created post if its ledger commit failed.
+            # Identical content/status/SEO/image needs NO repeat WordPress write.
+            if (not ledger.get("post_id") and
+                    found.get("status") == status and
+                    raw == payload["content"] and
+                    int(found.get("featured_media") or 0) > 0):
+                try:
+                    self._verified_yoast(found, desired_yoast)
+                except RuntimeError:
+                    # Do not silently accept human SEO edits. Fall through to
+                    # the existing EditorialConflict protection below.
+                    pass
+                else:
+                    return self._mapping(found, payload)
             previous_digest = ledger.get("last_wp_digest")
             if not previous_digest:
                 if (hash_value(raw) != hash_value(payload["content"]) or
@@ -876,61 +925,88 @@ def events_task(mode, wp, now):
     events = get_events()
     state = read_state()
     failures = []
-    for event in events:
-        age = (now - timestamp(event["datetime"])).total_seconds() / 60
+    for incoming in events:
+        age = (now - timestamp(incoming["datetime"])).total_seconds() / 60
         if age < -5 or age > 14 * 1440:
             continue
-        record = next((r for r in state["events"] if same_event(r["data"], event)), None)
+        record = next((r for r in state["events"] if same_event(r["data"], incoming)), None)
+        previous_data = dict(record["data"]) if record else None
         if record is None:
-            record = {"key": event["key"], "data": event}
+            record = {"key": incoming["key"], "data": incoming}
             state["events"].append(record)
         else:
-            updated = merge(record["data"], event)
-            # A missing tsunami status must never inherit a previous clearance.
-            updated["potential"] = event.get("potential", "")
+            updated = merge(record["data"], incoming)
+            updated["potential"] = incoming.get("potential", "")
             updated["key"] = record["key"]
             record["data"] = updated
         event = record["data"]
         if not (event["magnitude"] >= 5 or event["felt"]):
             continue
         if not record.get("post_id"):
-            # Never retroactively publish an old M5.5+ event. A separate
-            # 12-hour recovery window is safe for draft-only earthquakes,
-            # including felt M4.x after delayed GitHub schedules.
+            # Never backfill stale earthquakes. Failed new posts may be retried
+            # within the same original freshness window.
             freshness = (LIVE_NEW_EVENT_MINUTES if event["magnitude"] >= 5.5
                          else DRAFT_NEW_EVENT_MINUTES)
             if age > freshness:
                 continue
+
+        versions = record.setdefault("published_versions", {})
+        if record.get("post_id") and not versions:
+            # Migrate legacy ledger in-place; no API request to WordPress.
+            original = previous_data or event
+            original_status = record.get("status", "draft")
+            original_version = publication_fingerprint(original) + ":" + original_status
+            versions[original_version] = {
+                "post_id": record["post_id"],
+                "status": original_status,
+                "media_id": record.get("media_id", 0),
+            }
+
         status = status_for(event, mode)
-        # A corrected magnitude does not automatically unpublish an existing
-        # article; update its facts in place while retaining the public URL.
-        if record.get("status") == "publish":
-            status = "publish"
-        payload = article(event)
-        payload_digest = hash_value(json.dumps(payload, ensure_ascii=False, sort_keys=True))
-        if (record.get("last_payload_digest") == payload_digest and
-                record.get("status") == status and
-                record.get("media_id")):
+        if any(v.get("status") == "publish" for v in versions.values()):
+            status = "publish"  # A published earthquake never gets downgraded.
+        fingerprint = publication_fingerprint(event)
+        version_key = fingerprint + ":" + status
+        if version_key in versions:
+            # Even if an old draft has no media_id, never touch WordPress just
+            # to inspect or re-save unchanged content.
             continue
-        print(f"{mode}: {status} M{event['magnitude']:.1f} {event['region']}")
-        if mode != "dry-run":
-            try:
-                record.update(wp.save(
-                    payload, record, status, f"<!-- {MARKER}{record['key']} -->", event=event))
-            except EditorialConflict as exc:
-                # A human-edited draft must not block all other earthquakes.
-                print(f"SKIP editorial conflict on event {record['key']}: {exc}", file=sys.stderr)
-            except (RuntimeError, urllib.error.URLError, TimeoutError, OSError) as exc:
-                # A slow WordPress post must not block a separate M5.5+ alert.
-                # Keep the missing post in the ledger for another scheduled try.
-                print(f"ERROR: could not send event {record['key']}: {exc}", file=sys.stderr)
-                failures.append(record['key'])
+
+        is_revision = bool(record.get("post_id"))
+        if is_revision:
+            payload, marker = revised_article(event, hash_value(version_key))
+            save_ledger = {}  # New WordPress article; original post untouched.
+        else:
+            payload = article(event)
+            marker = f"<!-- {MARKER}{record['key']} -->"
+            save_ledger = record
+        print(f"{mode}: {'new revision' if is_revision else 'new event'} "
+              f"{status} M{event['magnitude']:.1f} {event['region']}")
+        if mode == "dry-run":
+            continue
+        try:
+            result = wp.save(payload, save_ledger, status, marker, event=event)
+            if not is_revision:
+                record.update(result)
+            versions[version_key] = {
+                "post_id": result["post_id"],
+                "status": result["status"],
+                "media_id": result.get("media_id", 0),
+            }
+        except EditorialConflict as exc:
+            print(f"SKIP editorial conflict on event {record['key']}: {exc}",
+                  file=sys.stderr)
+        except (RuntimeError, urllib.error.URLError, TimeoutError, OSError) as exc:
+            print(f"ERROR: could not send event {record['key']}: {exc}",
+                  file=sys.stderr)
+            failures.append(record["key"])
     if mode != "dry-run":
         state["events"] = [
             x for x in state["events"] if x.get("post_id") or
             (now - timestamp(x["data"]["datetime"])).days < 15]
         STATE.parent.mkdir(parents=True, exist_ok=True)
-        STATE.write_text(json.dumps(state, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+        STATE.write_text(json.dumps(state, ensure_ascii=False, indent=2) + "\n",
+                         encoding="utf-8")
     print(f"Processed {len(events)} official BMKG entries; mode={mode}")
     if failures:
         raise RuntimeError(
@@ -949,6 +1025,9 @@ def daily_task(mode, wp, now):
     if mode == "dry-run":
         return
     old = state.setdefault("daily", {}).get(day.isoformat(), {})
+    if old.get("post_id"):
+        print(f"SKIP daily draft {day}: already created, no WordPress request")
+        return
     try:
         result = wp.save(payload, old, "draft",
                          f"<!-- dataloka-bmkg-daily:{day.isoformat()} -->")

@@ -22,14 +22,8 @@ on:
         type: choice
         default: events
         options: [events, daily]
-  # Backup trigger: BMKG dashboard/backup workflows run independently and
-  # already emit completed events. No changes to either workflow are required.
-  workflow_run:
-    workflows:
-      - 'Sinkronisasi dan publikasi BMKG'
-      - 'Cadangan otomatis sinkronisasi BMKG'
-    types: [completed]
-    branches: [main]
+  # One ten-minute polling trigger, not overlapping workflow_run triggers.
+  # Unchanged facts are filtered locally before any WordPress REST API request.
   schedule:
     - cron: '7,17,27,37,47,57 * * * *'
     - cron: '15 17 * * *'
@@ -62,10 +56,8 @@ jobs:
         run: git diff --exit-code -- data/dataloka-wp-state.json
 
   send-to-dataloka:
-    # Never send articles if the upstream data synchronization failed.
-    if: >-
-      github.event_name != 'pull_request' &&
-      (github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success')
+    # Scheduled/manual only; no duplicate sends from upstream workflow completion.
+    if: github.event_name != 'pull_request'
     runs-on: ubuntu-latest
     timeout-minutes: 8
     env:

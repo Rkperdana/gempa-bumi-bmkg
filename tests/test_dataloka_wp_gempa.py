@@ -631,12 +631,111 @@ assert str(root) in sys.path
         ):
             p.events_task("live", FakeWP(), now)
             saved = json.loads((Path(temp) / "ledger.json").read_text())
-        self.assertEqual(len(calls), 2)
-        self.assertEqual(calls[1][1], "publish")
+        # The previously created draft is NEVER queried or rewritten.
+        self.assertEqual(len(calls), 1)
+        self.assertEqual(calls[0][1], "publish")
         self.assertEqual(next(item for item in saved["events"]
                               if item.get("post_id") == 9041)["status"], "draft")
         self.assertEqual(next(item for item in saved["events"]
                               if item.get("post_id") == 9200)["status"], "publish")
+
+    def test_unchanged_existing_article_without_media_never_contacts_wordpress(self):
+        event = self.event()
+        state = {"version": 1, "daily": {}, "events": [
+            {"key": event["key"], "data": event, "post_id": 9041,
+             "status": "publish", "media_id": 0, "last_payload_digest": "old"}
+        ]}
+
+        class NoWP:
+            def save(self, *args, **kwargs):
+                raise AssertionError("Unchanged event must not touch WordPress")
+
+        now = dt.datetime(2026, 11, 17, 1, 55, tzinfo=dt.timezone.utc)
+        with tempfile.TemporaryDirectory() as temp, (
+            mock.patch.object(p, "get_events", return_value=[event])
+        ), mock.patch.object(p, "read_state", return_value=state), (
+            mock.patch.object(p, "STATE", Path(temp) / "ledger.json")
+        ):
+            p.events_task("live", NoWP(), now)
+        self.assertEqual(state["events"][0]["post_id"], 9041)
+        self.assertEqual(len(state["events"][0]["published_versions"]), 1)
+
+    def test_revised_parameters_create_one_new_post_without_editing_original(self):
+        event = self.event()
+        revised = self.event(Kedalaman="12 km", Magnitude="5.7")
+        state = {"version": 1, "daily": {}, "events": [
+            {"key": event["key"], "data": event, "post_id": 9500,
+             "status": "publish", "media_id": 120}
+        ]}
+        calls = []
+
+        class RecorderWP:
+            def save(self, payload, ledger, status, marker, event=None):
+                calls.append((payload, ledger, status, marker))
+                return {"post_id": 9501, "status": status, "media_id": 121}
+
+        now = dt.datetime(2026, 11, 17, 1, 55, tzinfo=dt.timezone.utc)
+        with tempfile.TemporaryDirectory() as temp:
+            dest = Path(temp) / "ledger.json"
+            dest.write_text(json.dumps(state), encoding="utf-8")
+            with mock.patch.object(p, "get_events", return_value=[revised]), (
+                mock.patch.object(p, "STATE", dest)
+            ):
+                p.events_task("live", RecorderWP(), now)
+                p.events_task("live", RecorderWP(), now)
+            saved = json.loads(dest.read_text(encoding="utf-8"))
+        self.assertEqual(len(calls), 1)
+        self.assertEqual(calls[0][1], {})  # Create new, never update post 9500
+        self.assertIn("-pembaruan-", calls[0][0]["slug"])
+        self.assertIn("Pembaruan BMKG:", calls[0][0]["title"])
+        self.assertIn(":revision:", calls[0][3])
+        self.assertEqual(saved["events"][0]["post_id"], 9500)
+        self.assertEqual(len(saved["events"][0]["published_versions"]), 2)
+
+    def test_feed_source_bookkeeping_does_not_create_duplicate_articles(self):
+        old = self.event()
+        incoming = dict(old, sources=["realtime", "gempaterkini.json"])
+        state = {"version": 1, "daily": {}, "events": [
+            {"key": old["key"], "data": old, "post_id": 9500,
+             "status": "publish", "media_id": 120}
+        ]}
+
+        class NoWP:
+            def save(self, *args, **kwargs):
+                raise AssertionError("Feed bookkeeping is not a factual revision")
+
+        now = dt.datetime(2026, 11, 17, 1, 55, tzinfo=dt.timezone.utc)
+        with tempfile.TemporaryDirectory() as temp, (
+            mock.patch.object(p, "get_events", return_value=[incoming])
+        ), mock.patch.object(p, "read_state", return_value=state), (
+            mock.patch.object(p, "STATE", Path(temp) / "ledger.json")
+        ):
+            p.events_task("live", NoWP(), now)
+
+    def test_draft_major_earthquake_becomes_separate_live_article(self):
+        event = self.event()
+        state = {"version": 1, "daily": {}, "events": [
+            {"key": event["key"], "data": event, "post_id": 9500,
+             "status": "draft", "media_id": 120}
+        ]}
+        writes = []
+
+        class RecorderWP:
+            def save(self, payload, ledger, status, marker, event=None):
+                writes.append((payload["slug"], ledger, status))
+                return {"post_id": 9501, "status": status, "media_id": 121}
+
+        now = dt.datetime(2026, 11, 17, 1, 55, tzinfo=dt.timezone.utc)
+        with tempfile.TemporaryDirectory() as temp, (
+            mock.patch.object(p, "get_events", return_value=[event])
+        ), mock.patch.object(p, "read_state", return_value=state), (
+            mock.patch.object(p, "STATE", Path(temp) / "ledger.json")
+        ):
+            p.events_task("live", RecorderWP(), now)
+        self.assertEqual(len(writes), 1)
+        self.assertEqual(writes[0][1], {})
+        self.assertEqual(writes[0][2], "publish")
+        self.assertIn("-pembaruan-", writes[0][0])
 
     def test_api_failure_still_fails_workflow(self):
         event = self.event()
