@@ -17,7 +17,8 @@
         "felt": true,
         "sources": [
           "autogempa.json",
-          "gempadirasakan.json"
+          "gempadirasakan.json",
+          "realtime"
         ]
       },
       "post_id": 9057,
@@ -42,7 +43,8 @@
         "felt": true,
         "sources": [
           "autogempa.json",
-          "gempadirasakan.json"
+          "gempadirasakan.json",
+          "realtime"
         ]
       },
       "post_id": 9041,
@@ -65,7 +67,8 @@
         "felt": true,
         "sources": [
           "gempadirasakan.json",
-          "gempaterkini.json"
+          "gempaterkini.json",
+          "realtime"
         ]
       },
       "post_id": 9066,
@@ -89,7 +92,8 @@
         "felt_info": "III Tanggamus",
         "felt": true,
         "sources": [
-          "gempadirasakan.json"
+          "gempadirasakan.json",
+          "realtime"
         ]
       }
     },
@@ -107,7 +111,8 @@
         "felt_info": "II Manggarai",
         "felt": true,
         "sources": [
-          "gempadirasakan.json"
+          "gempadirasakan.json",
+          "realtime"
         ]
       }
     },
@@ -125,7 +130,8 @@
         "felt_info": "II - III Enggano",
         "felt": true,
         "sources": [
-          "gempadirasakan.json"
+          "gempadirasakan.json",
+          "realtime"
         ]
       }
     },
@@ -143,7 +149,8 @@
         "felt_info": "IV Kab. Lombok Timur, III Kab. Lombok Tengah, III Kab. Lombok Barat, II-III Kota Mataram, II Kab. Sumbawa",
         "felt": true,
         "sources": [
-          "gempadirasakan.json"
+          "gempadirasakan.json",
+          "realtime"
         ]
       }
     },
@@ -161,7 +168,8 @@
         "felt_info": "III Kab. Sumbawa, III Kab. Sumbawa Barat, III Kab. Lombok Utara, III Kab. Lombok Timur, II Kota Mataram",
         "felt": true,
         "sources": [
-          "gempadirasakan.json"
+          "gempadirasakan.json",
+          "realtime"
         ]
       }
     },
@@ -197,7 +205,8 @@
         "felt_info": "II Kab. Manggarai",
         "felt": true,
         "sources": [
-          "gempadirasakan.json"
+          "gempadirasakan.json",
+          "realtime"
         ]
       }
     },
@@ -306,7 +315,8 @@
         "felt_info": "",
         "felt": false,
         "sources": [
-          "gempaterkini.json"
+          "gempaterkini.json",
+          "realtime"
         ]
       }
     },
@@ -324,7 +334,8 @@
         "felt_info": "",
         "felt": false,
         "sources": [
-          "gempaterkini.json"
+          "gempaterkini.json",
+          "realtime"
         ]
       }
     },
@@ -379,6 +390,336 @@
         "felt": false,
         "sources": [
           "gempaterkini.json"
+        ]
+      }
+    },
+    {
+      "key": "9e768c8c7873b3",
+      "data": {
+        "key": "9e768c8c7873b3",
+        "datetime": "2026-11-18T02:23:02Z",
+        "magnitude": 5.9,
+        "depth_km": 44.0,
+        "lat": 12.1,
+        "lon": 144.03,
+        "region": "South of Mariana Islands",
+        "felt": false,
+        "felt_info": "",
+        "potential": "",
+        "sources": [
+          "realtime"
+        ]
+      },
+      "post_id": 9071,
+      "media_id": 9070,
+      "last_wp_digest": "e5a576877fb32c6c297b2285cddec3d120434b53d0f38c5a8796745386bf1fe2",
+      "yoast_meta_digest": "c841ad9c442a9c27ff0e636f53232af340a512c8e47e7471e0a0a3c5807a952d",
+      "status": "publish",
+      "last_payload_digest": "09d4f7dbfcdebe44704d31cdff001c79ca8869568fe9c72a8c191679390032e1"
+    },
+    {
+      "key": "b85e18d778bf5e",
+      "data": {
+        "key": "b85e18d778bf5e",
+        "datetime": "2026-11-18T00:48:42Z",
+        "magnitude": 5.8,
+        "depth_km": 10.0,
+        "lat": 45.75,
+        "lon": 26.68,
+        "region": "Romania",
+        "felt": false,
+        "felt_info": "",
+        "potential": "",
+        "sources": [
+          "realtime"
+        ]
+      }
+    },
+    {
+      "key": "3edc25eb9643e8",
+      "data": {
+        "key": "3edc25eb9643e8",
+        "datetime": "2026-11-17T14:20:38Z",
+        "magnitude": 5.0,
+        "depth_km": 355.0,
+        "lat": -32.25,
+        "lon": 179.87,
+        "region": "South of Kermadec Islands",
+        "felt": false,
+        "felt_info": "",
+        "potential": "",
+        "sources": [
+          "realtime"
+        ]
+      }
+    },
+    {
+      "key": "83cea788ee146f",
+      "data": {
+        "key": "83cea788ee146f",
+        "datetime": "2026-11-17T03:52:27Z",
+        "magnitude": 5.1,
+        "depth_km": 96.0,
+        "lat": -14.84,
+        "lon": 167.48,
+        "region": "Vanuatu Islands",
+        "felt": false,
+        "felt_info": "",
+        "potential": "",
+        "sources": [
+          "realtime"
+        ]
+      }
+    },
+    {
+      "key": "de9ed603af9b59",
+      "data": {
+        "key": "de9ed603af9b59",
+        "datetime": "2026-11-16T04:24:13Z",
+        "magnitude": 5.3,
+        "depth_km": 280.0,
+        "lat": 37.33,
+        "lon": 136.51,
+        "region": "Near West Coast of Honshu, Japan",
+        "felt": false,
+        "felt_info": "",
+        "potential": "",
+        "sources": [
+          "realtime"
+        ]
+      }
+    },
+    {
+      "key": "e19c6ac0efb413",
+      "data": {
+        "key": "e19c6ac0efb413",
+        "datetime": "2026-11-15T21:37:23Z",
+        "magnitude": 5.0,
+        "depth_km": 206.0,
+        "lat": 36.4,
+        "lon": 70.99,
+        "region": "Hindu Kush Region, Afghanistan",
+        "felt": false,
+        "felt_info": "",
+        "potential": "",
+        "sources": [
+          "realtime"
+        ]
+      }
+    },
+    {
+      "key": "8fc50a180ba728",
+      "data": {
+        "key": "8fc50a180ba728",
+        "datetime": "2026-11-15T17:48:35Z",
+        "magnitude": 5.3,
+        "depth_km": 76.0,
+        "lat": 35.94,
+        "lon": 70.98,
+        "region": "Hindu Kush Region, Afghanistan",
+        "felt": false,
+        "felt_info": "",
+        "potential": "",
+        "sources": [
+          "realtime"
+        ]
+      }
+    },
+    {
+      "key": "eaa9009f0c81ef",
+      "data": {
+        "key": "eaa9009f0c81ef",
+        "datetime": "2026-11-15T13:41:35Z",
+        "magnitude": 5.5,
+        "depth_km": 10.0,
+        "lat": 10.06,
+        "lon": 126.53,
+        "region": "Philippine Islands Region",
+        "felt": false,
+        "felt_info": "",
+        "potential": "",
+        "sources": [
+          "realtime"
+        ]
+      }
+    },
+    {
+      "key": "8f5afdb1c2181e",
+      "data": {
+        "key": "8f5afdb1c2181e",
+        "datetime": "2026-11-15T05:15:02Z",
+        "magnitude": 5.2,
+        "depth_km": 462.0,
+        "lat": -19.49,
+        "lon": -177.87,
+        "region": "Fiji Islands Region",
+        "felt": false,
+        "felt_info": "",
+        "potential": "",
+        "sources": [
+          "realtime"
+        ]
+      }
+    },
+    {
+      "key": "8dcee736994bdd",
+      "data": {
+        "key": "8dcee736994bdd",
+        "datetime": "2026-11-14T06:52:29Z",
+        "magnitude": 5.5,
+        "depth_km": 35.0,
+        "lat": 9.83,
+        "lon": 147.32,
+        "region": "Eastern Caroline Islands, Micronesia",
+        "felt": false,
+        "felt_info": "",
+        "potential": "",
+        "sources": [
+          "realtime"
+        ]
+      }
+    },
+    {
+      "key": "e68ddc644e934e",
+      "data": {
+        "key": "e68ddc644e934e",
+        "datetime": "2026-11-13T23:30:42Z",
+        "magnitude": 5.1,
+        "depth_km": 43.0,
+        "lat": -1.61,
+        "lon": 150.04,
+        "region": "New Ireland Region, Papua New Guinea",
+        "felt": false,
+        "felt_info": "",
+        "potential": "",
+        "sources": [
+          "realtime"
+        ]
+      }
+    },
+    {
+      "key": "94080df9ac5701",
+      "data": {
+        "key": "94080df9ac5701",
+        "datetime": "2026-11-13T19:49:19Z",
+        "magnitude": 5.0,
+        "depth_km": 26.0,
+        "lat": -1.2,
+        "lon": 150.57,
+        "region": "New Ireland Region, Papua New Guinea",
+        "felt": false,
+        "felt_info": "",
+        "potential": "",
+        "sources": [
+          "realtime"
+        ]
+      }
+    },
+    {
+      "key": "2bd49930686391",
+      "data": {
+        "key": "2bd49930686391",
+        "datetime": "2026-11-13T16:17:51Z",
+        "magnitude": 5.4,
+        "depth_km": 10.0,
+        "lat": 42.2,
+        "lon": 83.51,
+        "region": "Northern Xinjiang, China",
+        "felt": false,
+        "felt_info": "",
+        "potential": "",
+        "sources": [
+          "realtime"
+        ]
+      }
+    },
+    {
+      "key": "a3ac1fd38a31ab",
+      "data": {
+        "key": "a3ac1fd38a31ab",
+        "datetime": "2026-11-13T02:55:14Z",
+        "magnitude": 5.0,
+        "depth_km": 313.0,
+        "lat": 18.57,
+        "lon": 145.4,
+        "region": "Mariana Islands",
+        "felt": false,
+        "felt_info": "",
+        "potential": "",
+        "sources": [
+          "realtime"
+        ]
+      }
+    },
+    {
+      "key": "3f20bc9e5842f9",
+      "data": {
+        "key": "3f20bc9e5842f9",
+        "datetime": "2026-11-13T00:05:10Z",
+        "magnitude": 5.5,
+        "depth_km": 91.0,
+        "lat": 34.75,
+        "lon": 24.97,
+        "region": "Crete, Greece",
+        "felt": false,
+        "felt_info": "",
+        "potential": "",
+        "sources": [
+          "realtime"
+        ]
+      }
+    },
+    {
+      "key": "67ac7ef5506cd6",
+      "data": {
+        "key": "67ac7ef5506cd6",
+        "datetime": "2026-11-12T22:04:14Z",
+        "magnitude": 6.0,
+        "depth_km": 67.0,
+        "lat": -1.61,
+        "lon": 149.85,
+        "region": "New Ireland Region, Papua New Guinea",
+        "felt": false,
+        "felt_info": "",
+        "potential": "",
+        "sources": [
+          "realtime"
+        ]
+      }
+    },
+    {
+      "key": "5312b248f809c3",
+      "data": {
+        "key": "5312b248f809c3",
+        "datetime": "2026-11-12T03:45:53Z",
+        "magnitude": 5.4,
+        "depth_km": 89.0,
+        "lat": -58.95,
+        "lon": -25.72,
+        "region": "South Sandwich Islands Region",
+        "felt": false,
+        "felt_info": "",
+        "potential": "",
+        "sources": [
+          "realtime"
+        ]
+      }
+    },
+    {
+      "key": "e68e3a097690b7",
+      "data": {
+        "key": "e68e3a097690b7",
+        "datetime": "2026-11-11T17:38:25Z",
+        "magnitude": 5.0,
+        "depth_km": 80.0,
+        "lat": -6.36,
+        "lon": 154.73,
+        "region": "Solomon Islands",
+        "felt": false,
+        "felt_info": "",
+        "potential": "",
+        "sources": [
+          "realtime"
         ]
       }
     }
