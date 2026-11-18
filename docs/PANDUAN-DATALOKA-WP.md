@@ -5,13 +5,13 @@ Integrasi ini **hanya** mengakses REST API Posts dan Media Dataloka di https://d
 ## Aturan redaksi
 - BMKG dipantau sekitar setiap 10 menit lewat satu pemicu terjadwal (GitHub Actions schedule bersifat *best effort*). Pemantauan berlangsung di GitHub; permintaan ke WordPress hanya saat ada artikel baru/pembaruan fakta yang belum diterbitkan atau percobaan terbit yang sebelumnya gagal.
 - **Cakupan global termasuk luar Indonesia**: penerbit menggunakan salinan resmi terbaru tabel real-time BMKG dari `data/gempa.json` yang dihasilkan workflow dashboard independen, ditambah tiga feed JSON BMKG. Salinan real-time harus berstatus `live`, beridentitas sumber `https://www.bmkg.go.id/gempabumi/gempabumi-realtime`, dan diperiksa maksimum 180 menit lalu; data simulasi atau snapshot lama tidak boleh menghasilkan artikel. Gempa M5,8 di Romania pada 18 November 2026 pukul 07.48.42 WIB menjadi contoh kejadian yang sebelumnya terlewat karena tidak ada di feed JSON nasional.
-- **M5,5+**: dalam mode `live`, semua kejadian dari feed resmi BMKG diproses untuk **publish**, termasuk yang belum memiliki keterangan tsunami atau dinyatakan berpotensi tsunami. Kejadian baru harus berumur maksimal 120 menit saat pertama dideteksi; pembaruan artikel lama tetap dapat dilakukan.
+- **Hanya gempa M5,5 ke atas**: dalam mode `live`, setiap kejadian terverifikasi dari BMKG dengan magnitudo minimal 5,5 langsung diproses untuk **publish** (termasuk luar Indonesia, status tsunami belum tersedia atau berpotensi tsunami). Kejadian baru harus berumur maksimal 120 menit saat pertama dideteksi. Revisi parameter yang tetap M5,5+ dapat menghasilkan **artikel pembaruan baru**.
 - **Keterangan tsunami tidak menentukan kelayakan publikasi M5,5+**. Artikel menyampaikan status yang tercantum dalam data resmi BMKG secara apa adanya. Jika belum tersedia, artikel menuliskan bahwa keterangannya belum tercantum. Jangan menyimpulkan aman, mengarang peringatan tsunami, korban, ataupun kerusakan.
-- Gempa M5,0–5,4 dan gempa dirasakan: **draft**; draf ringkasan hari sebelumnya dibuat pukul **00.15 WIB** jika tersedia kejadian yang terpantau.
-- Setiap kejadian baru dibuat sebagai artikel baru; perubahan parameter BMKG yang substantif (magnitudo, kedalaman, lokasi, waktu, status tsunami/guncangan) menghasilkan **artikel pembaruan baru dengan slug tersendiri**, bukan menyunting artikel lama. Perubahan sumber feed atau pengecekan berkala tanpa perubahan fakta **tidak** mengakses REST API WordPress. Untuk kejadian yang pernah terbit, versi pembaruannya tidak otomatis diturunkan menjadi draf meskipun magnitudo dikoreksi lebih kecil. Tidak mengubah artikel di luar bot.
+- **Semua gempa M5,4 ke bawah diabaikan** tanpa membuat artikel/draf, meskipun dilaporkan dirasakan. Ringkasan harian otomatis, mode `drafts`, dan tugas `daily` dinonaktifkan; jadwal otomatis hanya setiap 10 menit untuk M5,5+.
+- Setiap gempa baru M5,5+ dibuat sebagai artikel baru; perubahan parameter BMKG yang substantif dan **tetap M5,5+** menghasilkan **artikel pembaruan baru dengan slug tersendiri**, bukan menyunting artikel lama. Bila magnitudo direvisi menjadi di bawah 5,5, bot mengabaikan revisinya dan tidak menyentuh artikel lama. Perubahan feed atau pengecekan tanpa perubahan fakta **tidak** mengakses REST API WordPress.
 - Kejadian yang sudah berumur lebih dari 120 menit ketika pertama kali terlihat tidak dipublikasikan ulang.
 - Ledger publikasi terpisah: `data/dataloka-wp-state.json`.
-- **Kategori WordPress: Berita** untuk seluruh artikel dan draf bot. Skrip mencari ID kategori yang sudah ada lewat REST API `/wp/v2/categories?search=Berita`, mencocokkan nama/slug persis, lalu mengirim hanya kategori tersebut. Bila kategori tidak ditemukan, otomatisasi gagal tertutup dan **tidak menerbitkan ke Uncategorized**.
+- **Kategori WordPress: Berita** untuk seluruh artikel bot. Skrip mencari ID kategori yang sudah ada lewat REST API `/wp/v2/categories?search=Berita`, mencocokkan nama/slug persis, lalu mengirim hanya kategori tersebut. Bila kategori tidak ditemukan, otomatisasi gagal tertutup dan **tidak menerbitkan ke Uncategorized**.
 - **Judul SEO**: `Gempa M5,6 di Selatan Jawa, 17 November 2026 - BMKG` (contoh simulasi). Angka, wilayah, dan tanggal berasal dari BMKG.
 - **Slug SEO**: `gempa-selatan-jawa-2026-11-17-xxxxxxxx`. Akhiran ID ringkas mencegah tabrakan URL jika terjadi beberapa gempa berlokasi dan bertanggal sama. Slug artikel yang sudah terbit **tidak diubah** untuk menghindari kerusakan URL/SEO.
 - **Excerpt**: ringkasan faktual maksimal sekitar 160 karakter, mencakup lokasi, magnitudo, waktu WIB, kedalaman, serta status tsunami hanya bila diverifikasi. Field WordPress `excerpt` bukan otomatis meta description milik Yoast/Rank Math.
@@ -21,8 +21,8 @@ Integrasi ini **hanya** mengakses REST API Posts dan Media Dataloka di https://d
 
 - **Tag WordPress**: tag satu kata yang relevan, seperti `Gempa`, `BMKG`, `Episentrum`, `Seismik`, dan wilayah bila bisa dipetakan dari nama BMKG. Skrip mencari tag berdasarkan nama dan mencoba membuatnya bila belum tersedia. Bila hak akun tidak cukup, artikel tetap diproses dan log memberi peringatan; editor dapat memasang tag secara manual.
 - Sumber resmi: https://data.bmkg.go.id/gempabumi/
-- Semua artikel (termasuk draf ringkasan) mempunyai minimal **empat paragraf**. Pada akhir kalimat di paragraf terakhir tertulis **(RK/D-1)** tanpa pindah baris atau paragraf baru.
-- **Gaya naskah**: awal paragraf pertama menggunakan `<strong>Dataloka.id</strong>`; kata `Gempa` (atau `gempa` pada ringkasan) ditautkan satu kali ke `https://dataloka.id/tag/gempa/`. Informasi sumber pada paragraf terakhir artikel kejadian menjadi teks biasa `bersumber dari data BMKG` tanpa tautan eksternal. Ringkasan harian juga tidak lagi menampilkan tautan sumber eksternal. Metadata SEO tidak berisi HTML.
+- Semua artikel gempa M5,5+ mempunyai minimal **empat paragraf**. Pada akhir kalimat di paragraf terakhir tertulis **(RK/D-1)** tanpa pindah baris atau paragraf baru.
+- **Gaya naskah**: awal paragraf pertama menggunakan `<strong>Dataloka.id</strong>`; kata `Gempa` ditautkan satu kali ke `https://dataloka.id/tag/gempa/`. Informasi sumber pada paragraf terakhir artikel menjadi teks biasa `bersumber dari data BMKG` tanpa tautan eksternal. Metadata SEO tidak berisi HTML.
 - Artikel yang diterbitkan otomatis mendapatkan **featured image JPEG 1200×675 (16:9), di bawah 500 KB**, berupa peta posisi episentrum dari koordinat BMKG.
 - Batas daratan peta berasal dari Natural Earth (domain publik), terbundel lokal dalam `assets/natural-earth-110m-land.json`. Tidak ada API peta pihak ketiga saat runtime.
 - Gambar diunggah ke WordPress Media Library dengan teks alternatif dan ditetapkan sebagai `featured_media` sebelum artikel dipublikasikan. Jika proses gambar gagal, artikel baru tidak dipublikasikan otomatis.
@@ -37,7 +37,7 @@ Integrasi ini **hanya** mengakses REST API Posts dan Media Dataloka di https://d
    - `DATALOKA_WP_APP_PASSWORD`: Application Password untuk bot.
 4. Pastikan di WordPress → **Posts → Categories** sudah ada kategori bernama **Berita**. Tidak perlu mengisi ID kategori di GitHub; skrip akan menemukannya otomatis.
 5. Gabungkan PR ke `main`. Scheduled workflow akan menjalankan mode **live**; sebelum Secrets terisi, workflow gagal tertutup tanpa menulis ke WordPress.
-6. Untuk uji manual: GitHub → **Actions** → **Dataloka | Gempa BMKG ke WordPress** → **Run workflow** → mode `dry-run`, task `events`.
+6. Untuk uji manual: GitHub → **Actions** → **Dataloka | Gempa BMKG ke WordPress** → **Run workflow** → mode `dry-run`.
 7. Tinjau log Actions, halaman Posts di WordPress, dan status penerbitan. Jika terdapat 401/403, cek hak akses pengguna, Application Password, dan firewall.
 8. Untuk menghentikan penerbitan segera, **disable workflow** di GitHub Actions (atau cabut Application Password di WordPress).
 
@@ -60,7 +60,7 @@ Jika log Actions menyatakan *Yoast metadata belum tersedia pada REST API WordPre
 - REST API (khususnya `/media`) bisa diblokir konfigurasi hosting Dataloka; integrasi belum membuktikan kemampuan mengunggah gambar dan menerbitkan hingga diuji dengan Secrets asli.
 - Untuk publikasi otomatis dengan gambar, akun WordPress memerlukan kapabilitas `upload_files` dan `publish_posts`.
 - Peta menunjukkan lokasi secara ilustratif; bukan peta intensitas guncangan, dampak, atau bahaya tsunami.
-- Draf ringkasan bukan angka total resmi harian; datanya hanya kejadian terpantau.
+- Bot tidak lagi membuat draf atau ringkasan harian gempa di bawah M5,5. Draf sementara di WordPress hanya digunakan untuk verifikasi metadata sebelum artikel M5,5+ dipublikasikan.
 - Jangan mengubah slug artikel yang sudah terbit tanpa strategi redirect 301. Bot secara sengaja mempertahankan slug lama pada pembaruan artikel bot.
 - Tidak memodifikasi kode CMS, dashboard, ataupun konten Pirsadata.
 - **Jangan pernah** menyimpan password dalam source code, PR, issue, log, maupun file ZIP.
