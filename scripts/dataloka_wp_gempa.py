@@ -769,8 +769,14 @@ class WordPress:
                     found.get("status") == status and
                     raw == payload["content"] and
                     int(found.get("featured_media") or 0) > 0):
-                self._verified_yoast(found, desired_yoast)
-                return self._mapping(found, payload)
+                try:
+                    self._verified_yoast(found, desired_yoast)
+                except RuntimeError:
+                    # Do not silently accept human SEO edits. Fall through to
+                    # the existing EditorialConflict protection below.
+                    pass
+                else:
+                    return self._mapping(found, payload)
             previous_digest = ledger.get("last_wp_digest")
             if not previous_digest:
                 if (hash_value(raw) != hash_value(payload["content"]) or
