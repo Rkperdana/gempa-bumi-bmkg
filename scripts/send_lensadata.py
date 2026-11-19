@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Send validated dashboard events to Lensadata using GitHub Actions secrets."""
+"""Send validated dashboard events to Pirsadata using GitHub Actions secrets."""
 import argparse
 import datetime as dt
 import hashlib
@@ -12,10 +12,10 @@ import time
 import urllib.error
 import urllib.request
 
-ENDPOINT = 'https://lensadata.perdanark.chatgpt.site/api/integrations/bmkg/earthquakes'
-# Ingestion start: publication thresholds and Indonesia scope are enforced by the CMS.
+ENDPOINT = 'https://pirsadata.perdanark.chatgpt.site/api/integrations/bmkg/earthquakes'
+# Ingestion start: publication thresholds are enforced by the CMS.
 START_AT = '2026-11-12T11:11:48Z'
-EXPECTED_POLICY = 'indonesia-5.5-daily-5.0-v1'
+EXPECTED_POLICY = 'pirsadata-5.5-strict-v2'
 MAX_BATCH = 50
 MAX_BYTES = 256 * 1024
 
@@ -91,6 +91,8 @@ def send_events(events, config, dry_run=False, opener=None, sleeper=time.sleep, 
         payload_hash = hashlib.sha256(body).hexdigest()[:16]
         run_id = str(config.get('run_id') or 'manual')
         batch_id = f'{batch_index}-{payload_hash}'
+        if dry_run:
+            batch_id = f'dry-{batch_id}'
         headers = {
             'Content-Type': 'application/json',
             'Authorization': f'Bearer {token}',
@@ -113,7 +115,7 @@ def send_events(events, config, dry_run=False, opener=None, sleeper=time.sleep, 
                 if not receipt.get('ok') or receipt.get('result', {}).get('rejected', 0):
                     raise ValueError('Lensadata rejected one or more events')
                 if receipt.get('policy', {}).get('version') != EXPECTED_POLICY:
-                    raise ValueError('Lensadata editorial policy does not match the configured Indonesia thresholds')
+                    raise ValueError('Pirsadata CMS returned an unexpected earthquake publication policy')
                 receipts.append(receipt)
                 break
             except urllib.error.HTTPError as error:
@@ -146,6 +148,9 @@ def main():
     if args.payload_only:
         print(json.dumps({'events': events, 'history': history}, ensure_ascii=False))
         return
+    if os.environ.get('GITHUB_EVENT_NAME') == 'push' and not args.dry_run:
+        send_events(events, config, dry_run=True, history=history)
+        print('Pirsadata dry-run accepted; sending the live batch.')
     receipts = send_events(events, config, args.dry_run, history=history)
     print(json.dumps({'selected': len(events), 'dryRun': args.dry_run, 'receipts': receipts}, ensure_ascii=False))
 
