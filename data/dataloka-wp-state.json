@@ -905,11 +905,11 @@
       "key": "d1afa1536d8b66",
       "data": {
         "key": "d1afa1536d8b66",
-        "datetime": "2026-11-18T19:14:25Z",
+        "datetime": "2026-11-18T19:14:24Z",
         "magnitude": 5.8,
         "depth_km": 10.0,
-        "lat": -57.72,
-        "lon": -147.24,
+        "lat": -57.76,
+        "lon": -147.23,
         "region": "Pacific-Antarctic Ridge",
         "potential": "",
         "felt_info": "",
@@ -921,6 +921,11 @@
       "published_versions": {
         "548c4ae1f9f193c8:publish": {
           "post_id": 9105,
+          "status": "publish",
+          "media_id": 9104
+        },
+        "9a3e97f6e5267076:publish": {
+          "post_id": 9114,
           "status": "publish",
           "media_id": 9104
         }
