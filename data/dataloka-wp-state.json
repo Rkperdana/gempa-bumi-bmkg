@@ -944,8 +944,8 @@
         "datetime": "2026-11-20T00:49:12Z",
         "magnitude": 5.7,
         "depth_km": 10.0,
-        "lat": -24.67,
-        "lon": 171.49,
+        "lat": -24.66,
+        "lon": 171.52,
         "region": "Southeast of Loyalty Islands",
         "potential": "",
         "felt_info": "",
@@ -957,6 +957,11 @@
       "published_versions": {
         "d54d3dfd520cd969:publish": {
           "post_id": 9144,
+          "status": "publish",
+          "media_id": 9143
+        },
+        "12edec57f1441ab5:publish": {
+          "post_id": 9150,
           "status": "publish",
           "media_id": 9143
         }
