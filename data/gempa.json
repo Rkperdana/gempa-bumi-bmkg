@@ -2,7 +2,7 @@
   "schema_version": 2,
   "status": "live",
   "data_origin": "realtime_table",
-  "checked_at": "2026-11-20T02:31:45.892729Z",
+  "checked_at": "2026-11-20T04:00:28.212374Z",
   "source": "Badan Meteorologi, Klimatologi, dan Geofisika (BMKG)",
   "coverage_note": "200 gempa terbaru pada tabel real-time BMKG (jumlah aktual dapat kurang dari 200), termasuk episentrum di luar Indonesia; gempa dirasakan dilengkapi dari feed terpisah. Bukan total seluruh gempa dalam periode tersebut.",
   "sources": {
@@ -18,8 +18,8 @@
       "datetime": "2026-11-20T00:49:12Z",
       "magnitude": 5.7,
       "depth_km": 10.0,
-      "lat": -24.67,
-      "lon": 171.49,
+      "lat": -24.66,
+      "lon": 171.52,
       "region": "Southeast of Loyalty Islands",
       "felt": false,
       "felt_info": "",
@@ -34,7 +34,7 @@
       ],
       "shakemap": "",
       "first_seen_at": "2026-11-20T02:31:45.892729Z",
-      "last_updated_at": "2026-11-20T02:31:45.892729Z"
+      "last_updated_at": "2026-11-20T04:00:28.212374Z"
     },
     {
       "id": "0429cb9f8284b8",
@@ -245,10 +245,10 @@
     },
     {
       "id": "4a513b0a360c65",
-      "datetime": "2026-11-19T21:42:41Z",
+      "datetime": "2026-11-19T21:42:40Z",
       "magnitude": 4.0,
       "depth_km": 10.0,
-      "lat": -8.28,
+      "lat": -8.25,
       "lon": 120.52,
       "region": "Flores Region, Indonesia",
       "felt": true,
@@ -268,7 +268,7 @@
       ],
       "shakemap": "20261120044240.mmi.jpg",
       "first_seen_at": "2026-11-19T23:15:50.258567Z",
-      "last_updated_at": "2026-11-19T23:15:50.258567Z"
+      "last_updated_at": "2026-11-20T04:00:28.212374Z"
     },
     {
       "id": "70a9c35c4dc49e",
@@ -410,11 +410,11 @@
     },
     {
       "id": "81f8699695671f",
-      "datetime": "2026-11-19T19:36:09Z",
+      "datetime": "2026-11-19T19:36:08Z",
       "magnitude": 3.8,
-      "depth_km": 26.0,
-      "lat": 4.08,
-      "lon": 126.71,
+      "depth_km": 21.0,
+      "lat": 4.13,
+      "lon": 126.77,
       "region": "Talaud Islands, Indonesia",
       "felt": false,
       "felt_info": "",
@@ -429,15 +429,15 @@
       ],
       "shakemap": "",
       "first_seen_at": "2026-11-19T21:24:48.512116Z",
-      "last_updated_at": "2026-11-19T21:24:48.512116Z"
+      "last_updated_at": "2026-11-20T04:00:28.212374Z"
     },
     {
       "id": "f8efb9c5e95b56",
-      "datetime": "2026-11-19T19:23:19Z",
+      "datetime": "2026-11-19T19:23:20Z",
       "magnitude": 4.2,
-      "depth_km": 157.0,
-      "lat": -7.5,
-      "lon": 129.0,
+      "depth_km": 133.0,
+      "lat": -7.45,
+      "lon": 129.01,
       "region": "Banda Sea",
       "felt": false,
       "felt_info": "",
@@ -452,7 +452,7 @@
       ],
       "shakemap": "",
       "first_seen_at": "2026-11-19T21:24:48.512116Z",
-      "last_updated_at": "2026-11-19T21:24:48.512116Z"
+      "last_updated_at": "2026-11-20T04:00:28.212374Z"
     },
     {
       "id": "41365252274adb",
