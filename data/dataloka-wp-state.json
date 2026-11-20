@@ -936,6 +936,37 @@
       "yoast_meta_digest": "6af5969ab360dbdceb32472a44d712d5fd871b3ecc1efebd5b5c1aa21a0d949c",
       "status": "publish",
       "last_payload_digest": "3e8cf1f3337431fae1040184ad086aea4249bdeece2b46b0e0b973db5968b5b6"
+    },
+    {
+      "key": "22431e98dd59c4",
+      "data": {
+        "key": "22431e98dd59c4",
+        "datetime": "2026-11-20T00:49:12Z",
+        "magnitude": 5.7,
+        "depth_km": 10.0,
+        "lat": -24.67,
+        "lon": 171.49,
+        "region": "Southeast of Loyalty Islands",
+        "potential": "",
+        "felt_info": "",
+        "felt": false,
+        "sources": [
+          "realtime"
+        ]
+      },
+      "published_versions": {
+        "d54d3dfd520cd969:publish": {
+          "post_id": 9144,
+          "status": "publish",
+          "media_id": 9143
+        }
+      },
+      "post_id": 9144,
+      "media_id": 9143,
+      "last_wp_digest": "aadf0b8f3083f570bcec420ac2e0d58f741fc56cb38028dc91c15ef1f0366ab8",
+      "yoast_meta_digest": "c46ac9008d2cd1563994137952d0b97f22a1d929b8726a39f81d7f28f385d5ab",
+      "status": "publish",
+      "last_payload_digest": "6de14d9e6f8404a6558a7bd293f5b6b18f5d7477d8dce0b4a6965013bfb33c6e"
     }
   ]
 }
