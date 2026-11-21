@@ -1003,6 +1003,45 @@
       "yoast_meta_digest": "6d412a9c3432e30c55b02b31bd7dae91fe7ac94743a34a9e96229f19a968ac18",
       "status": "publish",
       "last_payload_digest": "d90baf818b9b93e46f275fcc585e1b2b5fb0f96ede851d1ad307f925759a57ab"
+    },
+    {
+      "key": "794945d07abb79",
+      "data": {
+        "key": "794945d07abb79",
+        "datetime": "2026-11-21T10:45:34Z",
+        "magnitude": 6.3,
+        "depth_km": 16.0,
+        "lat": 37.2,
+        "lon": 96.41,
+        "region": "Qinghai, China",
+        "potential": "",
+        "felt_info": "",
+        "felt": false,
+        "sources": [
+          "realtime"
+        ]
+      }
+    },
+    {
+      "key": "be87f9a84395b8",
+      "data": {
+        "key": "be87f9a84395b8",
+        "datetime": "2026-11-21T09:42:11Z",
+        "magnitude": 7.2,
+        "depth_km": 125.0,
+        "lat": -7.88,
+        "lon": 127.51,
+        "region": "Pusat gempa berada di laut 43 km barat laut Maluku Barat Daya",
+        "potential": "Gempa ini dirasakan untuk diteruskan pada masyarakat",
+        "felt_info": "IV Tiakur, III Saumlaki, III Waingapu, II-III Kupang, III Kab. Alor, IV Romang, IV Pulau Babar, II-III Kota Kupang, II-III Kab. Kupang, II-III Kab. Timur Tengah Utara, II-III Kab. Malaka, II-III Kab. Melu, II-III Kab. Lembata",
+        "felt": true,
+        "sources": [
+          "autogempa.json",
+          "gempadirasakan.json",
+          "gempaterkini.json",
+          "realtime"
+        ]
+      }
     }
   ]
 }
