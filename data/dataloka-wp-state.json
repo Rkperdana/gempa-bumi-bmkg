@@ -972,6 +972,37 @@
       "yoast_meta_digest": "c46ac9008d2cd1563994137952d0b97f22a1d929b8726a39f81d7f28f385d5ab",
       "status": "publish",
       "last_payload_digest": "6de14d9e6f8404a6558a7bd293f5b6b18f5d7477d8dce0b4a6965013bfb33c6e"
+    },
+    {
+      "key": "2289c2ffb5a5a3",
+      "data": {
+        "key": "2289c2ffb5a5a3",
+        "datetime": "2026-11-21T00:09:18Z",
+        "magnitude": 6.8,
+        "depth_km": 88.0,
+        "lat": -10.81,
+        "lon": -75.86,
+        "region": "Central Peru",
+        "potential": "",
+        "felt_info": "",
+        "felt": false,
+        "sources": [
+          "realtime"
+        ]
+      },
+      "published_versions": {
+        "12361805d520ae7b:publish": {
+          "post_id": 9166,
+          "status": "publish",
+          "media_id": 9165
+        }
+      },
+      "post_id": 9166,
+      "media_id": 9165,
+      "last_wp_digest": "9a1cb10951fe7a33ed36dcc451810be0a75d8711d92e6d8c5555e00ff1ff4e9b",
+      "yoast_meta_digest": "6d412a9c3432e30c55b02b31bd7dae91fe7ac94743a34a9e96229f19a968ac18",
+      "status": "publish",
+      "last_payload_digest": "d90baf818b9b93e46f275fcc585e1b2b5fb0f96ede851d1ad307f925759a57ab"
     }
   ]
 }
