@@ -2,7 +2,7 @@
   "schema_version": 2,
   "status": "live",
   "data_origin": "realtime_table",
-  "checked_at": "2026-11-21T00:22:04.005188Z",
+  "checked_at": "2026-11-21T01:47:29.584346Z",
   "source": "Badan Meteorologi, Klimatologi, dan Geofisika (BMKG)",
   "coverage_note": "200 gempa terbaru pada tabel real-time BMKG (jumlah aktual dapat kurang dari 200), termasuk episentrum di luar Indonesia; gempa dirasakan dilengkapi dari feed terpisah. Bukan total seluruh gempa dalam periode tersebut.",
   "sources": {
@@ -13,6 +13,52 @@
   },
   "errors": [],
   "events": [
+    {
+      "id": "a9fe52dedd0265",
+      "datetime": "2026-11-21T01:20:56Z",
+      "magnitude": 3.5,
+      "depth_km": 11.0,
+      "lat": 1.64,
+      "lon": 127.27,
+      "region": "Halmahera, Indonesia",
+      "felt": false,
+      "felt_info": "",
+      "tsunami": false,
+      "potential_text": "",
+      "significant": false,
+      "source_types": [
+        "realtime"
+      ],
+      "source_urls": [
+        "https://www.bmkg.go.id/gempabumi/gempabumi-realtime"
+      ],
+      "shakemap": "",
+      "first_seen_at": "2026-11-21T01:47:29.584346Z",
+      "last_updated_at": "2026-11-21T01:47:29.584346Z"
+    },
+    {
+      "id": "2289c2ffb5a5a3",
+      "datetime": "2026-11-21T00:09:18Z",
+      "magnitude": 6.8,
+      "depth_km": 88.0,
+      "lat": -10.81,
+      "lon": -75.86,
+      "region": "Central Peru",
+      "felt": false,
+      "felt_info": "",
+      "tsunami": false,
+      "potential_text": "",
+      "significant": true,
+      "source_types": [
+        "realtime"
+      ],
+      "source_urls": [
+        "https://www.bmkg.go.id/gempabumi/gempabumi-realtime"
+      ],
+      "shakemap": "",
+      "first_seen_at": "2026-11-21T01:47:29.584346Z",
+      "last_updated_at": "2026-11-21T01:47:29.584346Z"
+    },
     {
       "id": "af1e8e0056126e",
       "datetime": "2026-11-20T22:16:07Z",
@@ -4554,75 +4600,6 @@
       "shakemap": "",
       "first_seen_at": "2026-11-18T01:45:16.676061Z",
       "last_updated_at": "2026-11-18T01:45:16.676061Z"
-    },
-    {
-      "id": "f5e73eeb9aa888",
-      "datetime": "2026-11-17T23:55:36Z",
-      "magnitude": 3.7,
-      "depth_km": 112.0,
-      "lat": -8.62,
-      "lon": 118.4,
-      "region": "Sumbawa Region, Indonesia",
-      "felt": false,
-      "felt_info": "",
-      "tsunami": false,
-      "potential_text": "",
-      "significant": false,
-      "source_types": [
-        "realtime"
-      ],
-      "source_urls": [
-        "https://www.bmkg.go.id/gempabumi/gempabumi-realtime"
-      ],
-      "shakemap": "",
-      "first_seen_at": "2026-11-18T01:45:16.676061Z",
-      "last_updated_at": "2026-11-18T01:45:16.676061Z"
-    },
-    {
-      "id": "ebcf165e96e7bd",
-      "datetime": "2026-11-17T23:18:38Z",
-      "magnitude": 3.3,
-      "depth_km": 10.0,
-      "lat": -0.73,
-      "lon": 133.74,
-      "region": "West Papua Region, Indonesia",
-      "felt": false,
-      "felt_info": "",
-      "tsunami": false,
-      "potential_text": "",
-      "significant": false,
-      "source_types": [
-        "realtime"
-      ],
-      "source_urls": [
-        "https://www.bmkg.go.id/gempabumi/gempabumi-realtime"
-      ],
-      "shakemap": "",
-      "first_seen_at": "2026-11-17T23:56:32.831383Z",
-      "last_updated_at": "2026-11-17T23:56:32.831383Z"
-    },
-    {
-      "id": "2c4698f5f14422",
-      "datetime": "2026-11-17T21:57:56Z",
-      "magnitude": 2.8,
-      "depth_km": 10.0,
-      "lat": -1.9,
-      "lon": 140.3,
-      "region": "West Papua Region, Indonesia",
-      "felt": false,
-      "felt_info": "",
-      "tsunami": false,
-      "potential_text": "",
-      "significant": false,
-      "source_types": [
-        "realtime"
-      ],
-      "source_urls": [
-        "https://www.bmkg.go.id/gempabumi/gempabumi-realtime"
-      ],
-      "shakemap": "",
-      "first_seen_at": "2026-11-17T23:56:32.831383Z",
-      "last_updated_at": "2026-11-17T23:56:32.831383Z"
     }
   ]
 }
