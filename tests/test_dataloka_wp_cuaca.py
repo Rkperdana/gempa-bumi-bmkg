@@ -100,8 +100,12 @@ class WeatherTests(unittest.TestCase):
         payload = article(entry)
         self.assertIn("Jawa Barat", payload["title"])
         self.assertIn("Sumber: BMKG", payload["content"])
-        self.assertEqual(payload["content"].count("<p>"), 5)
-        self.assertEqual(payload["content"].count("</p>"), 5)
+        self.assertEqual(payload["content"].count("<p>"), 6)  # 5 editorial + source
+        self.assertEqual(payload["content"].count("</p>"), 6)
+        self.assertIn('\n<p><strong>Sumber:</strong>', payload["content"])
+        self.assertEqual(payload["content"].count('href="https://dataloka.id/tag/cuaca"'), 1)
+        self.assertIn('href="https://dataloka.id/tag/cuaca">cuaca</a>', payload["content"].split("</p>", 1)[0])
+        self.assertNotIn("Sumber:", payload["content"].split("<p>")[5])
         self.assertIn(SOURCE, payload["content"])
         self.assertIn("dataloka-nowcast:", payload["content"])
         self.assertEqual(set(payload["yoast_meta"]), {
@@ -235,6 +239,23 @@ class WeatherTests(unittest.TestCase):
         self.assertEqual(process([updated], "live", now, wp, state), 1)
         self.assertEqual(len(wp.calls), 2)
         self.assertEqual(wp.calls[-1][1]["post_id"], 123)
+
+    def test_old_bot_owned_article_updates_editorial_format_once(self):
+        entry = example()
+        old = {
+            "post_id": 123, "status": "publish",
+            "fingerprint": fingerprint(entry),
+            "last_wp_digest": "last-bot-written-content",
+        }
+        state = {"version": 1, "alerts": {entry["key"]: old}}
+        wp = DummyWP()
+        now = dt.datetime(2026, 11, 22, 5, 0, tzinfo=UTC)
+        self.assertEqual(process([entry], "live", now, wp, state), 1)
+        self.assertEqual(wp.calls[0][1]["post_id"], 123)
+        self.assertEqual(state["alerts"][entry["key"]]["editorial_version"],
+                         pub.EDITORIAL_VERSION)
+        self.assertEqual(process([entry], "live", now, wp, state), 0)
+        self.assertEqual(len(wp.calls), 1)
 
     def test_only_explicit_live_mode_can_publish(self):
         with self.assertRaises(ValueError):
