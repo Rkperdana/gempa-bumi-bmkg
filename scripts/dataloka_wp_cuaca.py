@@ -31,6 +31,7 @@ UTC = dt.timezone.utc
 MONTHS = ("Januari", "Februari", "Maret", "April", "Mei", "Juni",
           "Juli", "Agustus", "September", "Oktober", "November", "Desember")
 MARKER = "dataloka-nowcast:"
+EDITORIAL_VERSION = 2  # 5 article paragraphs + separate source credit + contextual Cuaca link
 MAX_ALERTS_PER_RUN = 1
 MAX_NEW_ALERT_AGE_MINUTES = 90
 MAX_BYTES = 600_000
@@ -212,8 +213,9 @@ def article(entry):
     # Exactly five editorial paragraphs, retaining BMKG's complete description.
     content = (
         f'<p><strong>Dataloka.id</strong> - Badan Meteorologi, Klimatologi, '
-        f'dan Geofisika (BMKG) mengeluarkan peringatan dini {clean_event} '
-        f'untuk wilayah {clean_region} pada {date}.</p>'
+        f'dan Geofisika (BMKG) mengeluarkan peringatan dini '
+        f'<a href="https://dataloka.id/tag/cuaca">cuaca</a> '
+        f'terkait {clean_event} untuk wilayah {clean_region} pada {date}.</p>'
         f'<p>Peringatan diterbitkan pukul {issued} dan berlaku sejak pukul '
         f'{start} hingga {end}, sesuai informasi resmi BMKG.</p>'
         f'<p>Wilayah yang disebut dalam peringatan tersebut meliputi '
@@ -222,9 +224,11 @@ def article(entry):
         f'<p>{desc}</p>'
         f'<p>Informasi ini merupakan peringatan dini yang memiliki masa berlaku '
         f'terbatas dan dapat diperbarui. Periksa <a href="{source}">'
-        f'peringatan resmi BMKG</a> untuk kondisi terbaru. '
-        f'Sumber: BMKG (Badan Meteorologi, Klimatologi, dan Geofisika); '
-        f'informasi diakses pada {date_label(checked.isoformat())}.</p>'
+        f'peringatan resmi BMKG</a> untuk kondisi terbaru.</p>'
+        f'\n<p><strong>Sumber:</strong> '
+        f'<a href="{source}">Badan Meteorologi, Klimatologi, dan '
+        f'Geofisika (BMKG)</a>, diakses pada '
+        f'{date_label(checked.isoformat())}.</p>'
         f'<!-- {MARKER}{entry["key"]} -->'
     )
     summary = (f"BMKG mengeluarkan peringatan dini {event} di {region} pada "
@@ -337,7 +341,8 @@ def process(entries, mode, now=None, wp=None, state=None):
     failures = []
     for entry in suitable:
         old = state["alerts"].get(entry["key"], {})
-        if old.get("fingerprint") == fingerprint(entry):
+        if (old.get("fingerprint") == fingerprint(entry) and
+                old.get("editorial_version") == EDITORIAL_VERSION):
             continue
         age_minutes = (now - instant(entry["issued"]).astimezone(UTC)).total_seconds()/60
         if not old.get("post_id") and age_minutes > MAX_NEW_ALERT_AGE_MINUTES:
@@ -356,6 +361,7 @@ def process(entries, mode, now=None, wp=None, state=None):
                 event=entry)
             state["alerts"][entry["key"]] = {
                 **mapping, "fingerprint": fingerprint(entry),
+                "editorial_version": EDITORIAL_VERSION,
                 "expires": entry["expires"]}
             updated += 1
             if updated >= MAX_ALERTS_PER_RUN:

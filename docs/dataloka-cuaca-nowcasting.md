@@ -6,7 +6,8 @@ Sumber resmi: https://data.bmkg.go.id/peringatan-dini-cuaca/ (RSS + CAP XML nowc
 
 ## Tujuan
 
-- Mengikuti pola WordPress gempa Dataloka: artikel 5 paragraf, ringkasan/SEO Yoast, kategori Berita, tag satu kata, tautan BMKG, featured image editorial 1200 x 675 JPEG <500KB, dan proteksi perubahan manual.
+- Mengikuti pola WordPress gempa Dataloka: artikel **5 paragraf isi + 1 paragraf kredit sumber terpisah**, ringkasan/SEO Yoast, kategori Berita, tag satu kata, tautan BMKG, featured image editorial 1200 x 675 JPEG <500KB, dan proteksi perubahan manual.
+- Paragraf pertama menautkan kata **cuaca** ke `https://dataloka.id/tag/cuaca`; baris **Sumber: BMKG** selalu ditempatkan setelah paragraf penutup, tidak digabung ke kalimat penutup.
 - Setiap peringatan CAP mendapat satu slug stabil dari identitas peringatan; CAP references dipakai untuk menautkan revisi ke identitas awal jika tersedia.
 - Hanya memproses peringatan Actual+Public yang masih berlaku. Tidak memublikasikan peringatan yang sudah kedaluwarsa atau menebak dampak.
 - Mode WordPress **live**: artikel baru dibuat sebagai draf sementara untuk validasi Yoast, tag Featured, dan featured image; bila semua terverifikasi, baru berstatus publish. Jika editor menyunting artikel, pembaruan otomatis dilewati, bukan menimpa.
@@ -33,3 +34,5 @@ Kriteria produksi: respons API BMKG nyata perlu lulus (mode manual dry-run), met
 ## Keandalan WordPress
 
 Eksekusi awal pada 22 November 2026 melampaui batas 9 menit dan melaporkan `WordPress network error on POST posts: TimeoutError`. Batas satu alert per siklus serta penyimpanan ledger pada langkah `always()` membantu mengurangi beban dan memungkinkan pemulihan yang aman. Jika WordPress masih tidak merespons, artikel **tidak diklaim telah terbit** dan integrasi perlu pemeriksaan performa REST API/hosting Dataloka. Tidak ada perubahan pada gempa atau Pirsadata.
+
+Perubahan format editorial versi 2 dicoba satu kali untuk artikel lama yang masih aktif dan memiliki ledger bot. Editan manual pada artikel WordPress tidak ditimpa; pembaruan lama di luar feed aktif tidak dibackfill otomatis.
