@@ -99,7 +99,8 @@ class WeatherTests(unittest.TestCase):
         entry = example()
         payload = article(entry)
         self.assertIn("Jawa Barat", payload["title"])
-        self.assertIn("Sumber: BMKG", payload["content"])
+        self.assertIn("<strong>Sumber:</strong>", payload["content"])
+        self.assertIn(">Badan Meteorologi, Klimatologi, dan Geofisika (BMKG)</a>", payload["content"])
         self.assertEqual(payload["content"].count("<p>"), 6)  # 5 editorial + source
         self.assertEqual(payload["content"].count("</p>"), 6)
         self.assertIn('\n<p><strong>Sumber:</strong>', payload["content"])
