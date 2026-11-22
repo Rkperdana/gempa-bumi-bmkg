@@ -70,6 +70,8 @@ class WeatherTests(unittest.TestCase):
         payload = article(entry)
         self.assertIn("Jawa Barat", payload["title"])
         self.assertIn("Sumber: BMKG", payload["content"])
+        self.assertEqual(payload["content"].count("<p>"), 5)
+        self.assertEqual(payload["content"].count("</p>"), 5)
         self.assertIn(SOURCE, payload["content"])
         self.assertIn("dataloka-nowcast:", payload["content"])
         self.assertEqual(set(payload["yoast_meta"]), {
