@@ -7,10 +7,9 @@ import sys
 import unittest
 from unittest import mock
 import urllib.error
-import dataloka_wp_cuaca as pub
-
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "scripts"))
+import dataloka_wp_cuaca as pub
 
 from dataloka_wp_cuaca import (
     UTC, active, article, parse_cap, parse_rss, process, require_official_url,
