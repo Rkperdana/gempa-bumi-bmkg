@@ -10,6 +10,17 @@
       "last_payload_digest": "364fff98a04ec6fe221bb3f46b766c29edd8583a4ed3ba85f17ca0bc2e5c9fb7",
       "fingerprint": "24e8147241466f03042d15cf83cca03c626fb5b1696b2cfe0f3f5a00452d0092",
       "expires": "2026-11-22T14:30:00+07:00"
+    },
+    "905f44fa5685c655": {
+      "post_id": 9221,
+      "media_id": 9220,
+      "last_wp_digest": "030c12d23a914fd44ad22eff9208651f571a05caa61c629eeeb092bf4ac91cf0",
+      "yoast_meta_digest": "df35a8819401b6b9018f356a124267ab5f7ef4abeab6cd0fb444461a9eec0518",
+      "status": "publish",
+      "last_payload_digest": "69a788096ecc9ac8c0ce9b8b0403d36f5128251caf7c308e2474727b270b7ae0",
+      "fingerprint": "40be12166211b064edb2ecba0f43c481a068a4f39991639c80aa00c22cb9d6e4",
+      "editorial_version": 2,
+      "expires": "2026-11-22T15:35:00+07:00"
     }
   }
 }
