@@ -894,156 +894,40 @@ assert str(root) in sys.path
             if feed == "gempadirasakan.json":
                 raise TimeoutError("BMKG temporarily unavailable")
             return {"Infogempa": {"gempa": [RAW]}}
-        with mock.patch.object(p, "fetch_feed", side_effect=fake_fetch), (
-            mock.patch.object(p, "get_realtime_snapshot_events", return_value=[])
-        ), mock.patch.object(p, "get_live_realtime_events", return_value=[]):
+        with mock.patch.object(p, "fetch_feed", side_effect=fake_fetch):
             events = p.get_events()
         self.assertEqual(len(events), 1)
         self.assertEqual(events[0]["magnitude"], 5.6)
 
-    def test_romania_m58_from_global_realtime_publishes_with_featured_tag(self):
-        now = dt.datetime.now(dt.timezone.utc)
-        romanian_quake = {
-            "id": "b85e18d778bf5e", "datetime": (now - dt.timedelta(minutes=35)).isoformat(),
-            "magnitude": 5.8, "depth_km": 10,
-            "lat": 45.75, "lon": 26.68, "region": "Romania",
-            "felt": False, "felt_info": "", "potential_text": "",
-            "source_types": ["realtime"],
-        }
-        snapshot = {
-            "schema_version": 2, "status": "live",
-            "data_origin": "realtime_table",
-            "checked_at": now.isoformat(),
-            "sources": {"realtime": p.REALTIME_URL},
-            "events": [romanian_quake],
-        }
-        saved = []
-        class WP:
-            def save(self, payload, record, status, marker, event=None):
-                saved.append((payload, status, event))
-                return {
-                    "post_id": 9999, "status": status, "media_id": 990,
-                    "last_payload_digest": p.hash_value(json.dumps(
-                        payload, ensure_ascii=False, sort_keys=True)),
-                }
-        with tempfile.TemporaryDirectory() as temp:
-            root = Path(temp)
-            snap = root / "gempa.json"
-            snap.write_text(json.dumps(snapshot), encoding="utf-8")
-            with mock.patch.object(p, "REALTIME_SNAPSHOT", snap), (
-                mock.patch.object(p, "fetch_feed", side_effect=TimeoutError("unavailable"))
-            ), mock.patch.object(p, "get_live_realtime_events", return_value=[]), (
-                mock.patch.object(p, "STATE", root / "wp-state.json")
-            ):
-                p.events_task("live", WP(), now)
-                state = json.loads((root / "wp-state.json").read_text(encoding="utf-8"))
-        self.assertEqual(len(saved), 1)
-        article, status, event = saved[0]
-        self.assertEqual(status, "publish")
-        self.assertEqual(event["region"], "Romania")
-        self.assertEqual(event["magnitude"], 5.8)
-        self.assertEqual((event["lat"], event["lon"]), (45.75, 26.68))
-        self.assertIn("Featured", article["tag_names"])
-        self.assertIn("bersumber dari data BMKG.", article["content"])
-        self.assertNotIn(p.REALTIME_URL, article["content"])
-        self.assertNotIn("https://data.bmkg.go.id/DataMKG/TEWS/realtime", article["content"])
-        self.assertEqual(state["events"][0]["status"], "publish")
-
-    def test_stale_or_untrusted_global_snapshot_not_published(self):
-        now = dt.datetime.now(dt.timezone.utc)
-        document = {
-            "schema_version": 2, "status": "live",
-            "data_origin": "realtime_table",
-            "checked_at": (now - dt.timedelta(hours=4)).isoformat(),
-            "sources": {"realtime": p.REALTIME_URL},
-            "events": [{"source_types": ["realtime"], "magnitude": 5.8,
-                        "datetime": now.isoformat(), "lat": 45.75,
-                        "lon": 26.68, "depth_km": 10, "region": "Romania"}],
-        }
-        with tempfile.TemporaryDirectory() as temp:
-            path = Path(temp) / "snapshot.json"
-            with mock.patch.object(p, "REALTIME_SNAPSHOT", path):
-                path.write_text(json.dumps(document), encoding="utf-8")
-                self.assertEqual(p.get_realtime_snapshot_events(now), [])
-                document["checked_at"] = now.isoformat()
-                document["data_origin"] = "fixtures"
-                path.write_text(json.dumps(document), encoding="utf-8")
-                self.assertEqual(p.get_realtime_snapshot_events(now), [])
-
-    def test_nov19_pacific_antarctic_m58_direct_realtime_and_featured(self):
-        from scripts.update_data import parse_realtime_row
-
-        raw = parse_realtime_row([
-            "1", "19 Nov 2026 02.14.25 WIB", "5,8", "10 Km",
-            "57,72 LS-147,24 BB", "Pacific-Antarctic Ridge", "–",
-        ])
-        self.assertEqual(raw["datetime"], "2026-11-18T19:14:25Z")
-        self.assertEqual((raw["lat"], raw["lon"]), (-57.72, -147.24))
-        with mock.patch("scripts.update_data.fetch_realtime_html", return_value="fixture"), (
-            mock.patch("scripts.update_data.parse_realtime_html", return_value=[raw])
+    def test_json_sources_only_no_interface_or_snapshot(self):
+        normal = self.event(Magnitude="5.8", Wilayah="Sulawesi")
+        feed_doc = {"Infogempa": {"gempa": [{
+            "DateTime": normal["datetime"],
+            "Coordinates": f"{normal['lat']},{normal['lon']}",
+            "Magnitude": normal["magnitude"],
+            "Kedalaman": f"{normal['depth_km']} km",
+            "Wilayah": normal["region"],
+        }]}}
+        with mock.patch.object(p, "fetch_feed", return_value=feed_doc) as fetcher, (
+            mock.patch("urllib.request.urlopen", side_effect=AssertionError(
+                "Only mocked official JSON fetcher may be used"))
         ):
-            events = p.get_live_realtime_events()
-        self.assertEqual(len(events), 1)
-        event = events[0]
-        self.assertEqual(event["region"], "Pacific-Antarctic Ridge")
-        self.assertEqual(event["magnitude"], 5.8)
-        self.assertEqual(event["sources"], ["realtime"])
-        self.assertEqual(p.status_for(event, "live"), "publish")
-        content = p.article(event)["content"]
-        self.assertIn("Ridge", content)
-        self.assertIn("02.14 WIB", content)
-        self.assertIn("Featured", p.article(event)["tag_names"])
-        self.assertIn("bersumber dari data BMKG.", content)
+            result = p.get_events()
+        self.assertEqual(len(result), 1)
+        self.assertGreaterEqual(fetcher.call_count, 3)
+        self.assertEqual(set(result[0]["sources"]), set(p.FEEDS))
 
-    def test_direct_realtime_is_preferred_over_old_snapshot(self):
-        event = self.event(
-            DateTime="2026-11-18T19:14:25Z",
-            Coordinates="-57.72,-147.24", Magnitude="5.8",
-            Wilayah="Pacific-Antarctic Ridge")
-        event["sources"] = ["realtime"]
-        with mock.patch.object(p, "get_live_realtime_events", return_value=[event]), (
-            mock.patch.object(p, "get_realtime_snapshot_events",
-                              side_effect=AssertionError("Stale snapshot should not be read"))
-        ), mock.patch.object(p, "fetch_feed", side_effect=TimeoutError("unavailable")):
-            events = p.get_events()
-        self.assertEqual(len(events), 1)
-        self.assertEqual(events[0]["region"], "Pacific-Antarctic Ridge")
+    def test_no_html_fallback_when_json_feeds_fail(self):
+        with mock.patch.object(p, "fetch_feed",
+                               side_effect=TimeoutError("JSON unavailable")):
+            with self.assertRaisesRegex(RuntimeError, "All official BMKG JSON feeds unavailable"):
+                p.get_events()
 
-    def test_failed_direct_realtime_falls_back_to_trusted_snapshot(self):
+    def test_json_m55_keeps_featured_editorial_article(self):
         event = self.event(Magnitude="5.8")
-        with mock.patch.object(p, "get_live_realtime_events",
-                               side_effect=RuntimeError("BMKG temporarily unavailable")), (
-            mock.patch.object(p, "get_realtime_snapshot_events", return_value=[event])
-        ), mock.patch.object(p, "fetch_feed", side_effect=TimeoutError("unavailable")):
-            events = p.get_events()
-        self.assertEqual(len(events), 1)
-        self.assertEqual(events[0]["magnitude"], 5.8)
-
-    def test_realtime_and_alert_json_merge_without_duplicate(self):
-        now = dt.datetime.now(dt.timezone.utc)
-        event_date = (now - dt.timedelta(minutes=40)).isoformat()
-        snapshot = {
-            "schema_version": 2, "status": "live",
-            "data_origin": "realtime_table", "checked_at": now.isoformat(),
-            "sources": {"realtime": p.REALTIME_URL},
-            "events": [{
-                "datetime": event_date, "magnitude": 5.6, "depth_km": 10,
-                "lat": -6.2, "lon": 106.82, "region": "Selatan Jawa",
-                "felt": False, "source_types": ["realtime"],
-            }],
-        }
-        raw = dict(RAW, DateTime=event_date)
-        with tempfile.TemporaryDirectory() as temp:
-            path = Path(temp) / "gempa.json"
-            path.write_text(json.dumps(snapshot), encoding="utf-8")
-            with mock.patch.object(p, "REALTIME_SNAPSHOT", path), (
-                mock.patch.object(p, "fetch_feed", return_value={
-                    "Infogempa": {"gempa": [raw]}})
-            ), mock.patch.object(p, "get_live_realtime_events", return_value=[]):
-                events = p.get_events()
-        self.assertEqual(len(events), 1)
-        self.assertIn("realtime", events[0]["sources"])
-        self.assertIn("gempaterkini.json", events[0]["sources"])
+        result = p.article(event)
+        self.assertIn("Featured", result["tag_names"])
+        self.assertEqual(p.status_for(event, "live"), "publish")
 
     def test_wordpress_retries_get_but_never_post(self):
         wp = p.WordPress("fake-test-user", "fake-test-password")
