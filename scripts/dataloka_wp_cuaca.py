@@ -31,7 +31,7 @@ UTC = dt.timezone.utc
 MONTHS = ("Januari", "Februari", "Maret", "April", "Mei", "Juni",
           "Juli", "Agustus", "September", "Oktober", "November", "Desember")
 MARKER = "dataloka-nowcast:"
-MAX_ALERTS_PER_RUN = 5
+MAX_ALERTS_PER_RUN = 1
 MAX_NEW_ALERT_AGE_MINUTES = 90
 MAX_BYTES = 600_000
 
@@ -268,7 +268,25 @@ class WeatherWordPress(WordPress):
             assigned = set(int(x) for x in (draft.get("tags") or []))
             if not featured_ids or not set(featured_ids).issubset(assigned):
                 raise RuntimeError("Weather Featured tag missing on draft; refusing publication")
-        return super().call(method, route, params=params, payload=payload)
+        try:
+            return super().call(method, route, params=params, payload=payload)
+        except RuntimeError as exc:
+            # A POST is not safe to retry: WordPress may have committed the
+            # draft before the client timed out. Query its stable slug instead.
+            if (method == "POST" and route == "posts" and
+                    isinstance(payload, dict) and
+                    payload.get("status") == "draft" and
+                    "network error on POST posts" in str(exc)):
+                slug = payload.get("slug")
+                if slug:
+                    found = self.by_slug(slug)
+                    if (found and found.get("slug") == slug and
+                            found.get("content", {}).get("raw") == payload.get("content")
+                            and found.get("status") == "draft"):
+                        print(f"RECOVERED: timed-out draft POST saved by WP: {found['id']}",
+                              flush=True)
+                        return found
+            raise
 
     def cover_image(self, entry):
         from dataloka_cuaca_image import render
@@ -325,7 +343,7 @@ def process(entries, mode, now=None, wp=None, state=None):
         if not old.get("post_id") and age_minutes > MAX_NEW_ALERT_AGE_MINUTES:
             continue
         payload = article(entry)
-        print(f"{mode}: {payload['title']} | {entry['url']}")
+        print(f"{mode}: {payload['title']} | {entry['url']}", flush=True)
         if mode != "live":
             updated += 1
             if updated >= MAX_ALERTS_PER_RUN:
@@ -348,6 +366,8 @@ def process(entries, mode, now=None, wp=None, state=None):
             print(f"ERROR: failed to publish weather alert {entry['key']}: {exc}",
                   file=sys.stderr)
             failures.append(entry["key"])
+            # Avoid flooding WordPress after the first failed write.
+            break
     if mode == "live" and not injected_state:
         STATE.parent.mkdir(parents=True, exist_ok=True)
         STATE.write_text(json.dumps(state, indent=2, ensure_ascii=False)+"\n",
