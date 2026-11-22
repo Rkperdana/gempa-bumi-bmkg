@@ -114,8 +114,10 @@ class WeatherTests(unittest.TestCase):
     def test_prepublish_rejects_missing_featured_image(self):
         wp = pub.WeatherWordPress("example", "not-a-secret")
         draft = {"status": "draft", "featured_media": 0, "tags": [7]}
-        with mock.patch.object(wp, "by_id", return_value=draft), (
-                mock.patch.object(pub.WordPress, "call") as write):
+        with (
+            mock.patch.object(wp, "by_id", return_value=draft),
+            mock.patch.object(pub.WordPress, "call") as write,
+        ):
             with self.assertRaisesRegex(RuntimeError, "featured image missing"):
                 wp.call("POST", "posts/123", payload={"status": "publish"})
             write.assert_not_called()
@@ -123,9 +125,11 @@ class WeatherTests(unittest.TestCase):
     def test_prepublish_rejects_missing_featured_tag(self):
         wp = pub.WeatherWordPress("example", "not-a-secret")
         draft = {"status": "draft", "featured_media": 901, "tags": [3]}
-        with mock.patch.object(wp, "by_id", return_value=draft), (
-                mock.patch.object(wp, "resolve_tags", return_value=[7]), (
-                mock.patch.object(pub.WordPress, "call") as write):
+        with (
+            mock.patch.object(wp, "by_id", return_value=draft),
+            mock.patch.object(wp, "resolve_tags", return_value=[7]),
+            mock.patch.object(pub.WordPress, "call") as write,
+        ):
             with self.assertRaisesRegex(RuntimeError, "Featured tag missing"):
                 wp.call("POST", "posts/123", payload={"status": "publish"})
             write.assert_not_called()
@@ -133,10 +137,12 @@ class WeatherTests(unittest.TestCase):
     def test_prepublish_allows_verified_featured_media_and_tag(self):
         wp = pub.WeatherWordPress("example", "not-a-secret")
         draft = {"status": "draft", "featured_media": 901, "tags": [3, 7]}
-        with mock.patch.object(wp, "by_id", return_value=draft), (
-                mock.patch.object(wp, "resolve_tags", return_value=[7]), (
-                mock.patch.object(pub.WordPress, "call", return_value={
-                    "id": 123, "status": "publish"}) as write):
+        with (
+            mock.patch.object(wp, "by_id", return_value=draft),
+            mock.patch.object(wp, "resolve_tags", return_value=[7]),
+            mock.patch.object(pub.WordPress, "call", return_value={
+                "id": 123, "status": "publish"}) as write,
+        ):
             result = wp.call("POST", "posts/123", payload={"status": "publish"})
             self.assertEqual(result["status"], "publish")
             write.assert_called_once_with(
