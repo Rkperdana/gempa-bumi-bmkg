@@ -16,8 +16,8 @@ on:
         type: choice
         default: dry-run
         options: [dry-run, live]
-  # Backup trigger: successful BMKG dashboard refresh also checks Dataloka.
-  # The publisher uses the live BMKG table directly, not the dashboard snapshot.
+  # Backup trigger: successful JSON-only BMKG dashboard refresh also checks Dataloka.
+  # The publisher independently reads official BMKG JSON API feeds.
   # Its fingerprint ledger prevents duplicate REST writes for unchanged events.
   workflow_run:
     workflows:
