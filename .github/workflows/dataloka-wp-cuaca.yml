@@ -29,7 +29,7 @@ concurrency:
 jobs:
   tests:
     if: >-
-      github.event_name != 'schedule' || vars.BMKG_NOWCAST_AUTHORIZED == 'true'
+      github.event_name != 'schedule' || vars.BMKG_NOWCAST_PAUSED != 'true'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -47,15 +47,16 @@ jobs:
     needs: tests
     if: >-
       github.event_name != 'pull_request' &&
-      (github.event_name == 'workflow_dispatch' && inputs.mode != 'live' ||
-      vars.BMKG_NOWCAST_AUTHORIZED == 'true')
+      vars.BMKG_NOWCAST_PAUSED != 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 9
     permissions:
       contents: write
     env:
       MODE: ${{ github.event_name == 'schedule' && 'live' || inputs.mode }}
-      BMKG_NOWCAST_AUTHORIZED: ${{ vars.BMKG_NOWCAST_AUTHORIZED }}
+      # Owner confirmed written authorization for BMKG CAP use on 22 Nov 2026.
+      # Set repository variable BMKG_NOWCAST_PAUSED=true to halt all live checks.
+      BMKG_NOWCAST_AUTHORIZED: 'true'
       WP_USERNAME: ${{ secrets.DATALOKA_WP_USERNAME }}
       WP_APP_PASSWORD: ${{ secrets.DATALOKA_WP_APP_PASSWORD }}
     steps:
