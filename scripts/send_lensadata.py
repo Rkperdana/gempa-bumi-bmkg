@@ -30,6 +30,8 @@ def instant(value):
 def select_events(snapshot, start_at=START_AT, now=None, include_context=False):
     if snapshot.get('status') != 'live':
         raise ValueError('Refusing to send a preview or unavailable snapshot')
+    if snapshot.get('data_origin') != 'api_feeds':
+        raise ValueError('Refusing legacy HTML realtime snapshot; official BMKG JSON API required')
     now = now or dt.datetime.now(dt.timezone.utc)
     cutoff = instant(start_at)
     selected = {}
@@ -54,8 +56,17 @@ def select_events(snapshot, start_at=START_AT, now=None, include_context=False):
         event_id = str(event['id']).strip()
         if not event_id:
             raise ValueError('Stable event ID is missing')
+        official = {
+            'https://data.bmkg.go.id/DataMKG/TEWS/autogempa.json',
+            'https://data.bmkg.go.id/DataMKG/TEWS/gempaterkini.json',
+            'https://data.bmkg.go.id/DataMKG/TEWS/gempadirasakan.json',
+        }
         sources = event.get('source_urls') or []
-        source = next((url for url in sources if url.startswith('https://www.bmkg.go.id/') or url.startswith('https://data.bmkg.go.id/')), 'https://www.bmkg.go.id/gempabumi/gempabumi-realtime')
+        if 'realtime' in event.get('source_types', []):
+            raise ValueError('HTML-derived earthquake in Pirsadata input')
+        source = next((url for url in sources if url in official), None)
+        if not source:
+            raise ValueError('Earthquake has no approved BMKG JSON feed provenance')
         selected[event_id] = {
             'eventId': event_id, 'eventIdKind': 'derived',
             'occurredAt': occurred.isoformat().replace('+00:00', 'Z'),
