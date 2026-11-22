@@ -28,17 +28,17 @@ function renderStatus(error=false){
  const dot=$('statusDot');dot.className='status-indicator';
  if(error && !directRecent){dot.classList.add('error');$('statusLabel').textContent='Pembaruan gagal';}
  else if(stale && directRecent){dot.classList.add('live');$('statusLabel').textContent='Feed BMKG langsung aktif';}
- else if(stale){dot.classList.add('error');$('statusLabel').textContent='Sinkronisasi data lengkap terlambat';}
+ else if(stale){dot.classList.add('error');$('statusLabel').textContent='Sinkronisasi feed resmi terlambat';}
  else if(payload.status==='live'){dot.classList.add('live');$('statusLabel').textContent='Sinkronisasi aktif';}
  else{$('statusLabel').textContent='Mode pratinjau';}
- const fullCheck=payload.status==='live'&&payload.checked_at ? 'Data lengkap diperiksa '+date(payload.checked_at)+', '+time(payload.checked_at) : 'Data contoh — bukan pantauan real-time';
+ const fullCheck=payload.status==='live'&&payload.checked_at ? 'Feed BMKG diperiksa '+date(payload.checked_at)+', '+time(payload.checked_at) : 'Data contoh — bukan pantauan real-time';
  $('syncTime').textContent=directRecent ? fullCheck+' · Feed penting '+time(state.directCheckedAt) : fullCheck;
  let message='';
- if(stale && directRecent)message='Sinkronisasi 200 gempa terbaru belum diperbarui. Gempa M 5,0+ dan gempa dirasakan tetap diperiksa langsung dari feed JSON resmi BMKG setiap menit. Daftar keseluruhan mungkin tidak lengkap.';
- else if(error)message='Tidak bisa memeriksa pembaruan data lengkap. Data terakhir tetap ditampilkan.';
- else if(stale)message='Data 200 gempa terakhir lebih dari 90 menit belum disinkronkan. Jangan anggap daftar keseluruhan sebagai pemantauan terbaru.';
+ if(stale && directRecent)message='Sinkronisasi terjadwal feed JSON BMKG terlambat. Pemeriksaan langsung feed M 5,0+ dan gempa dirasakan masih tersedia. Daftar ini bukan seluruh gempa real-time.';
+ else if(error)message='Pembaruan feed JSON gagal. Data terakhir tetap ditampilkan.';
+ else if(stale)message='Feed JSON BMKG lebih dari 90 menit belum disinkronkan. Periksa sumber resmi BMKG untuk informasi terbaru.';
  else if(payload.status!=='live')message='MODE PRATINJAU — Data belum disinkronkan dengan BMKG.';
- else if(Array.isArray(payload.errors)&&payload.errors.length)message='Data real-time utama tersedia, tetapi sebagian feed pelengkap mengalami gangguan.';
+ else if(Array.isArray(payload.errors)&&payload.errors.length)message='Sebagian feed JSON BMKG mengalami gangguan; cakupan daftar mungkin tidak lengkap.';
  $('notice').hidden=!message;
  $('noticeText').textContent=message;
 }
@@ -172,9 +172,8 @@ function renderAll(){
  if(!state.filtered.some(e=>e.id===state.selected))state.selected=state.filtered[0]?.id||null;
  renderMapPoints();renderFeed();renderSelected();
 }
-// A browser-side fallback for significant/felt earthquakes when the complete
-// BMKG realtime-table snapshot from GitHub Actions is delayed. These official
-// feeds cover only M>=5 and felt events, NOT all 200 realtime-table earthquakes.
+// Browser-side refresh uses only the three official BMKG JSON API feeds.
+// This is not a list of every earthquake from the HTML realtime table.
 const OFFICIAL_BASE='https://data.bmkg.go.id/DataMKG/TEWS/';
 function officialEvent(raw, kind){
  if(!raw||typeof raw!=='object')return null;
@@ -252,6 +251,7 @@ async function updateData(initial=false){
   if(!response.ok)throw Error('HTTP '+response.status);
   const payload=await response.json();
   if(!Array.isArray(payload.events)||!['live','preview','fixture'].includes(payload.status))throw Error('Format data gempa tidak dikenal');
+  if(payload.status==='live'&&payload.data_origin!=='api_feeds')throw Error('Snapshot HTML lama ditolak: menunggu feed JSON resmi BMKG');
   const signature=JSON.stringify(payload);
   if(!initial&&signature===state.signature){renderStatus();return;}
   state.signature=signature;state.data=payload;
