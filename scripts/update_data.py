@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Fetch and normalize BMKG open earthquake API feeds (stdlib only).
 
-This script targets the documented public JSON API, not website scraping.
+This script uses only the documented public JSON API; HTML scraping is disabled.
 For commercial/repackaged display, obtain the required written permission
 before activating the scheduled workflow.
 """
@@ -162,7 +162,19 @@ def fetch_feed(feed_name, fixture_dir=None):
 
 
 def ingest(existing, feeds, now):
-    saved = [dict(x) for x in existing if isinstance(x, dict) and x.get('id')]
+    # Migrate away from legacy HTML snapshots. Only events backed by official
+    # BMKG JSON feed labels may survive, and HTML provenance is discarded.
+    saved = []
+    for old in existing:
+        if not isinstance(old, dict) or not old.get('id'):
+            continue
+        labels = [x for x in old.get('source_types', []) if x in FEEDS]
+        if not labels:
+            continue
+        event = dict(old)
+        event['source_types'] = sorted(set(labels))
+        event['source_urls'] = [BASE + FEEDS[x] for x in event['source_types']]
+        saved.append(event)
     issues = []
     for feed, doc in feeds.items():
         raw_events = doc.get('Infogempa', {}).get('gempa')
@@ -303,23 +315,11 @@ def parse_realtime_html(html):
 
 
 def fetch_realtime_html():
-    request = urllib.request.Request(REALTIME_URL, headers={
-        'User-Agent':'Mozilla/5.0 (compatible; DatalokaGempaMonitor/1.1; attributed BMKG)',
-        'Accept':'text/html', 'Cache-Control':'no-cache'
-    })
-    for trial in range(3):
-        try:
-            with urllib.request.urlopen(request, timeout=25) as response:
-                if response.status != 200:
-                    raise ValueError(f'HTTP {response.status}')
-                html = response.read(2000000).decode('utf-8-sig', 'replace')
-                if 'Gempa Bumi Real-time' not in html:
-                    raise ValueError('Expected BMKG realtime heading not found')
-                return html
-        except (urllib.error.URLError, TimeoutError, ValueError) as exc:
-            if trial == 2:
-                raise RuntimeError(f'BMKG realtime page failed: {exc}') from exc
-            time.sleep(2 ** trial)
+    """Disabled: the BMKG HTML interface is not an approved automated API.
+
+    Keep a fail-closed compatibility stub for older imports; no network request.
+    """
+    raise RuntimeError("HTML realtime scraping permanently disabled; use official BMKG JSON APIs")
 
 
 def enrich_realtime(events, feeds, previous, now):
@@ -398,28 +398,27 @@ def main():
         status = 'fixture'
         source_note = 'Test fixture; not real-time BMKG data.'
     else:
-        html = fetch_realtime_html()
-        events = parse_realtime_html(html)
-        feeds = {}
-        feed_errors = []
-        for name in FEEDS:
-            try:
-                feeds[name] = fetch_feed(name)
-            except (RuntimeError, ValueError) as exc:
-                feed_errors.append(f'{name}: {str(exc)[:140]}')
+        # Three documented official JSON endpoints only. An incomplete batch
+        # fails before overwriting the last good snapshot.
+        feeds = {name: fetch_feed(name) for name in FEEDS}
         previous = old.get('events', []) if old.get('status') == 'live' else []
-        events, errors = enrich_realtime(events, feeds, previous, now)
-        errors = (errors + feed_errors)[:20]
+        events, errors = ingest(previous, feeds, now)
         status = 'live'
-        source_note = '200 gempa terbaru pada tabel real-time BMKG (jumlah aktual dapat kurang dari 200), termasuk episentrum di luar Indonesia; gempa dirasakan dilengkapi dari feed terpisah. Bukan total seluruh gempa dalam periode tersebut.'
+        source_note = (
+            'Daftar kejadian dari tiga feed JSON resmi BMKG: gempa terbaru, '
+            'gempa M5,0+, dan gempa dirasakan. Bukan daftar 200 gempa '
+            'real-time, bukan seluruh gempa di dunia, serta bukan jumlah '
+            'seluruh kejadian dalam suatu periode.'
+        )
+
     payload = {
         'schema_version': 2,
         'status': status,
-        'data_origin': 'realtime_table' if status == 'live' else 'fixtures',
+        'data_origin': 'api_feeds' if status == 'live' else 'fixtures',
         'checked_at': now,
         'source': 'Badan Meteorologi, Klimatologi, dan Geofisika (BMKG)',
         'coverage_note': source_note,
-        'sources': {'realtime':REALTIME_URL, **{k:BASE+v for k,v in FEEDS.items()}},
+        'sources': {k: BASE + v for k, v in FEEDS.items()},
         'errors': errors[:20],
         'events': events,
     }
