@@ -9,7 +9,8 @@
       "status": "publish",
       "last_payload_digest": "364fff98a04ec6fe221bb3f46b766c29edd8583a4ed3ba85f17ca0bc2e5c9fb7",
       "fingerprint": "24e8147241466f03042d15cf83cca03c626fb5b1696b2cfe0f3f5a00452d0092",
-      "expires": "2026-11-22T14:30:00+07:00"
+      "expires": "2026-11-22T14:30:00+07:00",
+      "featured_tag_removed": true
     },
     "905f44fa5685c655": {
       "post_id": 9221,
@@ -21,6 +22,18 @@
       "fingerprint": "40be12166211b064edb2ecba0f43c481a068a4f39991639c80aa00c22cb9d6e4",
       "editorial_version": 2,
       "expires": "2026-11-22T15:35:00+07:00"
+    },
+    "e3462a3003a7c2e0": {
+      "post_id": 9224,
+      "media_id": 9223,
+      "last_wp_digest": "4d8137b2f94a887919e8500346b9c8484b64bcd956eb029ec223df93de3fc9b6",
+      "yoast_meta_digest": "22edab64542c949047ab85bab6a71c9a056a6cd70b808fe78237ae8d2d33a57d",
+      "status": "publish",
+      "last_payload_digest": "f553715a61d0ae15ad60b55e2244763dd3c1e98dbb016a7dd5a71b446b230c72",
+      "fingerprint": "1bb14872b203634de8cae703a77fb0fc519746a23c06314fe4939d150dcdbc9e",
+      "editorial_version": 3,
+      "featured_tag_removed": true,
+      "expires": "2026-11-22T16:30:00+08:00"
     }
   }
 }
