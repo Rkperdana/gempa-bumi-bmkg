@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
-"""BMKG CAP nowcasting -> Dataloka draft-only, isolated from earthquake automation.
+"""BMKG CAP nowcasting -> Dataloka live WordPress publisher, isolated from earthquake automation.
 
-No live publication mode exists. Requires explicit BMKG authorization and WP secrets
-for --mode draft. The default --mode fixture never accesses external services.
+Live mode publishes only validated active CAP alerts with Featured tag, cover and
+verified Yoast meta. Requires BMKG authorization and WordPress credentials.
+The default --mode fixture never accesses external services.
 """
 from __future__ import annotations
 
@@ -23,7 +24,7 @@ from dataloka_wp_gempa import EditorialConflict, WordPress, hash_value, slugify
 
 ROOT = Path(__file__).resolve().parents[1]
 STATE = ROOT / "data" / "dataloka-cuaca-state.json"
-RSS_URL = "https://www.bmkg.go.id/alerts/nowcast/id"
+RSS_URL = "https://www.bmkg.go.id/alerts/nowcast/id/rss.xml"
 CAP_NS = "{urn:oasis:names:tc:emergency:cap:1.2}"
 UTC = dt.timezone.utc
 MONTHS = ("Januari", "Februari", "Maret", "April", "Mei", "Juni",
@@ -215,7 +216,7 @@ def article(entry):
         "title": html.escape(headline, quote=True),
         "content": content, "excerpt": html.escape(summary, quote=True),
         "slug": slug, "comment_status": "closed",
-        "tag_names": ["BMKG", "Cuaca", "Peringatan"],
+        "tag_names": ["Featured", "BMKG", "Cuaca", "Peringatan"],
         "yoast_meta": {
             "_yoast_wpseo_focuskw": focus,
             "_yoast_wpseo_title": title_seo[:100],
@@ -225,7 +226,7 @@ def article(entry):
 
 
 class WeatherWordPress(WordPress):
-    """Inherit the existing tested draft/Yoast/ownership checks, replace only media."""
+    """Reuse verified WordPress publish + Featured + Yoast checks; replace only cover."""
 
     def cover_image(self, entry):
         from dataloka_cuaca_image import render
@@ -265,8 +266,8 @@ def load_state():
 
 
 def process(entries, mode, now=None, wp=None, state=None):
-    if mode not in ("fixture", "dry-run", "draft"):
-        raise ValueError("No live publication mode")
+    if mode not in ("fixture", "dry-run", "live"):
+        raise ValueError("Unsupported mode")
     now = now or dt.datetime.now(UTC)
     injected_state = state is not None  # offline tests never touch the real ledger
     state = state if state is not None else load_state()
@@ -283,14 +284,14 @@ def process(entries, mode, now=None, wp=None, state=None):
             continue
         payload = article(entry)
         print(f"{mode}: {payload['title']} | {entry['url']}")
-        if mode != "draft":
+        if mode != "live":
             updated += 1
             if updated >= MAX_ALERTS_PER_RUN:
                 break
             continue
         try:
             mapping = wp.save(
-                payload, old, "draft",
+                payload, old, "publish",
                 f"<!-- {MARKER}{entry['key']} -->",
                 event=entry)
             state["alerts"][entry["key"]] = {
@@ -302,21 +303,21 @@ def process(entries, mode, now=None, wp=None, state=None):
         except EditorialConflict as exc:
             print(f"SKIP: editorial revision protected: {exc}", file=sys.stderr)
         except (RuntimeError, OSError, ValueError, KeyError) as exc:
-            print(f"ERROR: failed to create weather draft {entry['key']}: {exc}",
+            print(f"ERROR: failed to publish weather alert {entry['key']}: {exc}",
                   file=sys.stderr)
             failures.append(entry["key"])
-    if mode == "draft" and not injected_state:
+    if mode == "live" and not injected_state:
         STATE.parent.mkdir(parents=True, exist_ok=True)
         STATE.write_text(json.dumps(state, indent=2, ensure_ascii=False)+"\n",
                          encoding="utf-8")
     if failures:
-        raise RuntimeError(f"Failed weather drafts: {','.join(failures)}")
+        raise RuntimeError(f"Failed live weather alerts: {','.join(failures)}")
     return updated
 
 
 def main():
     p = argparse.ArgumentParser()
-    p.add_argument("--mode", choices=("fixture", "dry-run", "draft"),
+    p.add_argument("--mode", choices=("fixture", "dry-run", "live"),
                    default="fixture")
     args = p.parse_args()
     if args.mode == "fixture":
@@ -339,7 +340,7 @@ def main():
     if rss and not entries:
         raise RuntimeError("Official BMKG RSS returned no valid CAP details")
     wp = (WeatherWordPress(os.getenv("WP_USERNAME"), os.getenv("WP_APP_PASSWORD"))
-          if args.mode == "draft" else None)
+          if args.mode == "live" else None)
     count = process(entries, args.mode, wp=wp)
     print(f"{count} weather alerts processed in {args.mode} mode")
 
