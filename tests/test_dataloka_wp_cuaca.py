@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Offline safety and copy tests for BMKG weather draft automation."""
+"""Offline safety and copy tests for BMKG weather live publisher."""
 import datetime as dt
 from io import BytesIO
 from pathlib import Path
@@ -29,12 +29,12 @@ class DummyWP:
         self.calls = []
 
     def save(self, payload, ledger, status, marker, event=None):
-        assert status == "draft"
-        assert "featured" not in payload
+        assert status == "publish"
+        assert "Featured" in payload["tag_names"]
         assert marker in payload["content"]
         assert event is not None
         self.calls.append((payload, dict(ledger)))
-        return {"post_id": 123, "status": "draft",
+        return {"post_id": 123, "status": "publish",
                 "media_id": 456, "last_wp_digest": "abc",
                 "yoast_meta_digest": "xyz"}
 
@@ -77,6 +77,7 @@ class WeatherTests(unittest.TestCase):
         self.assertEqual(set(payload["yoast_meta"]), {
             "_yoast_wpseo_focuskw", "_yoast_wpseo_title", "_yoast_wpseo_metadesc"})
         self.assertLessEqual(len(payload["excerpt"]), 300)
+        self.assertEqual(payload["tag_names"].count("Featured"), 1)
         self.assertNotIn("(RK/D-1)", payload["content"])
         self.assertNotIn("Kecamatan C", payload["content"])
 
@@ -87,23 +88,30 @@ class WeatherTests(unittest.TestCase):
         self.assertEqual(im.size, (1200, 675))
         self.assertEqual(im.format, "JPEG")
 
-    def test_no_duplicate_draft_and_update_same_post(self):
+    def test_no_duplicate_publish_and_update_same_post(self):
         entry = example()
         state = {"version": 1, "alerts": {}}
         wp = DummyWP()
         now = dt.datetime(2026, 11, 22, 5, 0, tzinfo=UTC)
-        self.assertEqual(process([entry], "draft", now, wp, state), 1)
-        self.assertEqual(process([entry], "draft", now, wp, state), 0)
+        self.assertEqual(process([entry], "live", now, wp, state), 1)
+        self.assertEqual(process([entry], "live", now, wp, state), 0)
         self.assertEqual(len(wp.calls), 1)
         updated = dict(entry, description=entry["description"] + " BMKG memperbarui informasi.")
         self.assertNotEqual(fingerprint(entry), fingerprint(updated))
-        self.assertEqual(process([updated], "draft", now, wp, state), 1)
+        self.assertEqual(process([updated], "live", now, wp, state), 1)
         self.assertEqual(len(wp.calls), 2)
         self.assertEqual(wp.calls[-1][1]["post_id"], 123)
 
-    def test_no_auto_publish(self):
+    def test_only_explicit_live_mode_can_publish(self):
         with self.assertRaises(ValueError):
-            process([example()], "live", dt.datetime.now(UTC))
+            process([example()], "draft", dt.datetime.now(UTC))
+
+    def test_no_publishing_expired_alert(self):
+        state = {"version": 1, "alerts": {}}
+        wp = DummyWP()
+        self.assertEqual(process([example()], "live",
+            dt.datetime(2026, 11, 22, 7, 0, tzinfo=UTC), wp, state), 0)
+        self.assertFalse(wp.calls)
 
 
 if __name__ == "__main__":
