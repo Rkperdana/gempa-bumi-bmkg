@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """BMKG CAP nowcasting -> Dataloka live WordPress publisher, isolated from earthquake automation.
 
-Live mode publishes only validated active CAP alerts with Featured tag, cover and
-verified Yoast meta. Requires BMKG authorization and WordPress credentials.
+Live mode publishes only validated active CAP alerts with a cover image and
+verified Yoast meta. No Featured tag is assigned to weather alerts. Requires BMKG authorization and WordPress credentials.
 The default --mode fixture never accesses external services.
 """
 from __future__ import annotations
@@ -31,7 +31,7 @@ UTC = dt.timezone.utc
 MONTHS = ("Januari", "Februari", "Maret", "April", "Mei", "Juni",
           "Juli", "Agustus", "September", "Oktober", "November", "Desember")
 MARKER = "dataloka-nowcast:"
-EDITORIAL_VERSION = 2  # 5 article paragraphs + separate source credit + contextual Cuaca link
+EDITORIAL_VERSION = 3  # No Featured tag; five paragraphs + source; contextual Cuaca link
 MAX_ALERTS_PER_RUN = 1
 MAX_NEW_ALERT_AGE_MINUTES = 90
 MAX_BYTES = 600_000
@@ -245,7 +245,7 @@ def article(entry):
         "title": html.escape(headline, quote=True),
         "content": content, "excerpt": html.escape(summary, quote=True),
         "slug": slug, "comment_status": "closed",
-        "tag_names": ["Featured", "BMKG", "Cuaca", "Peringatan"],
+        "tag_names": ["BMKG", "Cuaca", "Peringatan"],
         "yoast_meta": {
             "_yoast_wpseo_focuskw": focus,
             "_yoast_wpseo_title": title_seo[:100],
@@ -255,12 +255,11 @@ def article(entry):
 
 
 class WeatherWordPress(WordPress):
-    """Publish only when live story has image, Featured tag, and verified SEO."""
+    """Require a featured *image*, but do not require the Featured *tag*."""
 
     def call(self, method, route, params=None, payload=None):
-        # The parent publisher creates a draft, checks Yoast and then makes a
-        # status-only POST to publish it. Fail closed if WordPress silently
-        # ignored the Featured tag or the uploaded cover while saving the draft.
+        # The parent publisher creates a draft, verifies Yoast and then switches
+        # to publish. The image is required; the Featured taxonomy term is not.
         if (method == "POST" and route.startswith("posts/") and
                 isinstance(payload, dict) and payload == {"status": "publish"}):
             draft = self.by_id(int(route.split("/", 1)[1]))
@@ -268,10 +267,6 @@ class WeatherWordPress(WordPress):
                 raise RuntimeError("Weather post is not a verified draft; refusing publication")
             if not int(draft.get("featured_media") or 0):
                 raise RuntimeError("Weather featured image missing on draft; refusing publication")
-            featured_ids = self.resolve_tags(["Featured"])
-            assigned = set(int(x) for x in (draft.get("tags") or []))
-            if not featured_ids or not set(featured_ids).issubset(assigned):
-                raise RuntimeError("Weather Featured tag missing on draft; refusing publication")
         try:
             return super().call(method, route, params=params, payload=payload)
         except RuntimeError as exc:
@@ -291,6 +286,36 @@ class WeatherWordPress(WordPress):
                               flush=True)
                         return found
             raise
+
+    def remove_featured_tag(self, post_id, marker, expected_digest):
+        """Remove only the Featured taxonomy tag from a verified bot-owned post.
+
+        Never overwrite an editor's body, title, image, SEO, or other tags.
+        Existing bot-ledger ownership and unchanged text must be verified first.
+        """
+        post = self.by_id(post_id)
+        raw = post.get("content", {}).get("raw", "")
+        if (not expected_digest or marker not in raw or
+                hash_value(raw) != expected_digest):
+            raise EditorialConflict("Existing weather post was edited or lacks bot marker")
+        tags = [int(tag) for tag in (post.get("tags") or [])]
+        matches = self.call("GET", "tags", {"search": "Featured", "per_page": 100})
+        featured = {
+            int(term["id"]) for term in matches
+            if html.unescape(str(term.get("name", ""))).strip().casefold() == "featured"
+            or str(term.get("slug", "")).strip().casefold() == "featured"
+        }
+        remaining = [tag for tag in tags if tag not in featured]
+        if len(remaining) == len(tags):
+            return True
+        self.call("POST", f"posts/{int(post_id)}", payload={"tags": remaining})
+        confirmed = self.by_id(post_id)
+        actual = [int(tag) for tag in (confirmed.get("tags") or [])]
+        if (set(actual) != set(remaining) or
+                hash_value(confirmed.get("content", {}).get("raw", "")) != expected_digest):
+            raise RuntimeError("WordPress did not persist a tags-only removal safely")
+        print(f"Removed Featured taxonomy tag from weather post {post_id}", flush=True)
+        return True
 
     def cover_image(self, entry):
         from dataloka_cuaca_image import render
@@ -383,6 +408,33 @@ def process(entries, mode, now=None, wp=None, state=None):
     return updated
 
 
+def cleanup_existing_featured(wp, state=None):
+    """Gradually remove Featured from old, unmodified, bot-owned weather posts.
+
+    One post per run limits WordPress traffic. Human edits are never overwritten.
+    """
+    loaded = state if state is not None else load_state()
+    for key, record in loaded["alerts"].items():
+        if record.get("featured_tag_removed") or not record.get("post_id"):
+            continue
+        marker = f"<!-- {MARKER}{key} -->"
+        try:
+            wp.remove_featured_tag(record["post_id"], marker,
+                                   record.get("last_wp_digest"))
+        except EditorialConflict as exc:
+            print(f"SKIP weather post {record['post_id']}: {exc}", file=sys.stderr)
+            continue
+        except (RuntimeError, OSError, ValueError, KeyError) as exc:
+            print(f"WARNING: weather Featured cleanup delayed: {exc}", file=sys.stderr)
+            break
+        record["featured_tag_removed"] = True
+        if state is None:
+            STATE.write_text(json.dumps(loaded, ensure_ascii=False, indent=2) + "\n",
+                             encoding="utf-8")
+        return 1
+    return 0
+
+
 def main():
     p = argparse.ArgumentParser()
     p.add_argument("--mode", choices=("fixture", "dry-run", "live"),
@@ -410,6 +462,8 @@ def main():
     wp = (WeatherWordPress(os.getenv("WP_USERNAME"), os.getenv("WP_APP_PASSWORD"))
           if args.mode == "live" else None)
     count = process(entries, args.mode, wp=wp)
+    if args.mode == "live":
+        cleanup_existing_featured(wp)
     print(f"{count} weather alerts processed in {args.mode} mode")
 
 
