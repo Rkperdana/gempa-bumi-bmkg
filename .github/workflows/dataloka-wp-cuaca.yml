@@ -28,6 +28,8 @@ concurrency:
 
 jobs:
   tests:
+    if: >-
+      github.event_name != 'schedule' || vars.BMKG_NOWCAST_AUTHORIZED == 'true'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
