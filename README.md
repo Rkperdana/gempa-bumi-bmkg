@@ -4,33 +4,34 @@ Dashboard pemantauan gempa berbasis data resmi BMKG, dikembangkan sebagai proyek
 
 ## Sumber data
 
-**Sumber utama:** [Gempa Bumi Real-time BMKG](https://www.bmkg.go.id/gempabumi/gempabumi-realtime). Pengolah Python membaca baris tabel yang di-render server pada halaman resmi BMKG. Halaman berjudul "200 Gempa Bumi Real-time", tetapi jumlah baris aktual dapat kurang dari 200; tidak ada kejadian yang diisi secara sintetis.
+Sistem membaca **tiga feed JSON resmi BMKG**, tanpa mengambil HTML antarmuka tabel gempa:
 
-**Data pelengkap:**
 - [Gempa M5+](https://data.bmkg.go.id/DataMKG/TEWS/gempaterkini.json)
 - [Gempa dirasakan](https://data.bmkg.go.id/DataMKG/TEWS/gempadirasakan.json)
 - [Gempa terbaru](https://data.bmkg.go.id/DataMKG/TEWS/autogempa.json)
 
-Data pelengkap hanya menambahkan label gempa dirasakan, informasi intensitas, potensi tsunami, dan sumber. Parameter magnitudo, lokasi, kedalaman, dan waktu pada data utama **tetap mengikuti tabel real-time** untuk menghindari angka berbeda akibat revisi antarproduk BMKG.
-
-Beberapa kejadian di tabel BMKG berada **di luar Indonesia**. Daftar kejadian tetap menampilkan data tersebut, sementara titik di peta hanya muncul dalam cakupan peta Indonesia. Angka "gempa dalam daftar terbaru" bukan jumlah seluruh gempa sepanjang hari.
+Semua data bersumber dari BMKG. Daftar ini **bukan** tabel 200 gempa real-time,
+bukan catatan seluruh gempa di Indonesia atau dunia, dan tidak menjamin mencakup
+kejadian di luar Indonesia. Kejadian yang sebelumnya hanya muncul di antarmuka
+HTML tidak akan dipantau lagi. Data historis yang semata-mata berasal dari HTML
+tidak dipertahankan ketika snapshot dipindah ke mode JSON-only.
 
 ## Cara kerjanya
 
 - GitHub Actions `.github/workflows/update-bmkg.yml` dijadwalkan setiap 10 menit, dengan cadangan `.github/workflows/schedule-bmkg.yml` dua kali per jam. **Jadwal GitHub bersifat best-effort**: eksekusi dapat tertunda atau tidak muncul sama sekali. Untuk keandalan yang lebih tinggi, gunakan pemicu HTTP eksternal di bawah ini.
-- `scripts/update_data.py` mengambil HTML tabel real-time, memvalidasi isi, mengubah WIB ke UTC, dan menormalisasi koordinat.
-- Parser gagal secara aman ketika halaman BMKG berubah drastis atau jumlah data tiba-tiba kurang dari 100; JSON yang sudah berhasil diambil sebelumnya tidak ditimpa.
-- JSON feed pelengkap dicocokkan berdasarkan waktu dan jarak. Kejadian duplikat dipersatukan, dan detail dari feed pelengkap tidak menimpa parameter utama real-time.
+- `scripts/update_data.py` mengambil tiga JSON resmi BMKG, memvalidasi isi, dan menormalisasi waktu, koordinat, magnitudo, serta kedalaman.
+- Jika salah satu feed resmi gagal, pembaruan snapshot gagal secara aman tanpa mengganti data terakhir.
+- Kejadian dari tiga feed dipadukan berdasarkan waktu dan lokasi, tanpa menduplikasi kejadian yang sama.
 - Hasil yang berhasil ditulis ke `data/gempa.json` dengan status `live`, lalu situs diterbitkan via GitHub Pages.
 - Browser yang membuka dashboard memeriksa perubahan berkas data setiap 60 detik.
 
 ### Status data
 
-- `live`: sudah mengambil daftar kejadian dari tabel BMKG dan mencatat waktu pemeriksaan.
+- `live`: ketiga feed JSON resmi BMKG berhasil diperiksa dan waktu pemeriksaan tercatat.
 - `preview` atau `fixture`: hanya data contoh atau data pengujian, bukan pantauan live.
 - Jika lebih dari 90 menit tidak ada pemeriksaan sukses, dashboard menampilkan peringatan keterlambatan sinkronisasi.
 
-Gempa real-time merupakan parameter awal yang dapat direvisi BMKG. Lihat situs resmi BMKG untuk informasi terkini dan informasi gempa yang telah dikonfirmasi.
+Parameter gempa pada feed JSON resmi dapat direvisi BMKG. Lihat situs resmi BMKG untuk informasi terkini dan informasi gempa yang telah dikonfirmasi.
 
 ## Struktur berkas
 
