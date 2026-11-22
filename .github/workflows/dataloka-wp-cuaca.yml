@@ -1,6 +1,12 @@
 name: Dataloka | Cuaca ekstrem BMKG (live)
 
 on:
+  # One-time immediate live verification on deployment of this workflow.
+  # State commits change only data/**, so they never retrigger this push rule.
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/dataloka-wp-cuaca.yml'
   pull_request:
     paths:
       - '.github/workflows/dataloka-wp-cuaca.yml'
@@ -29,7 +35,7 @@ concurrency:
 jobs:
   tests:
     if: >-
-      github.event_name != 'schedule' || vars.BMKG_NOWCAST_AUTHORIZED == 'true'
+      github.event_name != 'schedule' || vars.BMKG_NOWCAST_PAUSED != 'true'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -42,20 +48,35 @@ jobs:
         run: python -m py_compile scripts/dataloka_wp_cuaca.py scripts/dataloka_cuaca_image.py
       - name: Run isolated weather automation tests
         run: python -m unittest discover -s tests -p 'test_dataloka_wp_cuaca.py' -v
+      - name: Check real BMKG CAP feed without WordPress (diagnostic)
+        if: github.event_name == 'pull_request'
+        continue-on-error: true
+        run: |
+          python - <<'PY'
+          import sys
+          sys.path.insert(0, "scripts")
+          from dataloka_wp_cuaca import fetch_rss, parse_rss, fetch_xml, parse_cap
+          items = parse_rss(fetch_rss())
+          print(f"Official BMKG CAP RSS accepted: {len(items)} links")
+          if items:
+              entry = parse_cap(fetch_xml(items[0]["url"]), items[0]["url"])
+              print(f"First official CAP parse accepted: {entry['identifier']}")
+          PY
 
   weather-publisher:
     needs: tests
     if: >-
       github.event_name != 'pull_request' &&
-      (github.event_name == 'workflow_dispatch' && inputs.mode != 'live' ||
-      vars.BMKG_NOWCAST_AUTHORIZED == 'true')
+      vars.BMKG_NOWCAST_PAUSED != 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 9
     permissions:
       contents: write
     env:
-      MODE: ${{ github.event_name == 'schedule' && 'live' || inputs.mode }}
-      BMKG_NOWCAST_AUTHORIZED: ${{ vars.BMKG_NOWCAST_AUTHORIZED }}
+      MODE: ${{ github.event_name == 'workflow_dispatch' && inputs.mode || 'live' }}
+      # Owner confirmed written authorization for BMKG CAP use on 22 Nov 2026.
+      # Set repository variable BMKG_NOWCAST_PAUSED=true to halt all live checks.
+      BMKG_NOWCAST_AUTHORIZED: 'true'
       WP_USERNAME: ${{ secrets.DATALOKA_WP_USERNAME }}
       WP_APP_PASSWORD: ${{ secrets.DATALOKA_WP_APP_PASSWORD }}
     steps:

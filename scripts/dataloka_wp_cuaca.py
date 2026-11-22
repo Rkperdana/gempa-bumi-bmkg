@@ -251,7 +251,24 @@ def article(entry):
 
 
 class WeatherWordPress(WordPress):
-    """Reuse verified WordPress publish + Featured + Yoast checks; replace only cover."""
+    """Publish only when live story has image, Featured tag, and verified SEO."""
+
+    def call(self, method, route, params=None, payload=None):
+        # The parent publisher creates a draft, checks Yoast and then makes a
+        # status-only POST to publish it. Fail closed if WordPress silently
+        # ignored the Featured tag or the uploaded cover while saving the draft.
+        if (method == "POST" and route.startswith("posts/") and
+                isinstance(payload, dict) and payload == {"status": "publish"}):
+            draft = self.by_id(int(route.split("/", 1)[1]))
+            if draft.get("status") != "draft":
+                raise RuntimeError("Weather post is not a verified draft; refusing publication")
+            if not int(draft.get("featured_media") or 0):
+                raise RuntimeError("Weather featured image missing on draft; refusing publication")
+            featured_ids = self.resolve_tags(["Featured"])
+            assigned = set(int(x) for x in (draft.get("tags") or []))
+            if not featured_ids or not set(featured_ids).issubset(assigned):
+                raise RuntimeError("Weather Featured tag missing on draft; refusing publication")
+        return super().call(method, route, params=params, payload=payload)
 
     def cover_image(self, entry):
         from dataloka_cuaca_image import render
