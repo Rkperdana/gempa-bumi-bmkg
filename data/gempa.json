@@ -2,7 +2,7 @@
   "schema_version": 2,
   "status": "live",
   "data_origin": "api_feeds",
-  "checked_at": "2026-11-22T05:54:05.807026Z",
+  "checked_at": "2026-11-22T08:14:14.070396Z",
   "source": "Badan Meteorologi, Klimatologi, dan Geofisika (BMKG)",
   "coverage_note": "Daftar kejadian dari tiga feed JSON resmi BMKG: gempa terbaru, gempa M5,0+, dan gempa dirasakan. Bukan daftar 200 gempa real-time, bukan seluruh gempa di dunia, serta bukan jumlah seluruh kejadian dalam suatu periode.",
   "sources": {
@@ -12,6 +12,31 @@
   },
   "errors": [],
   "events": [
+    {
+      "id": "9b284877a0ec9c",
+      "datetime": "2026-11-22T07:54:39Z",
+      "magnitude": 5.4,
+      "depth_km": 10.0,
+      "lat": 3.12,
+      "lon": 126.57,
+      "region": "98 km BaratDaya MELONGUANE-SULUT",
+      "felt": true,
+      "felt_info": "-",
+      "tsunami": false,
+      "potential_text": "Tidak berpotensi tsunami",
+      "significant": false,
+      "source_types": [
+        "latest",
+        "m5"
+      ],
+      "source_urls": [
+        "https://data.bmkg.go.id/DataMKG/TEWS/autogempa.json",
+        "https://data.bmkg.go.id/DataMKG/TEWS/gempaterkini.json"
+      ],
+      "shakemap": "20261122145730.mmi.jpg",
+      "first_seen_at": "2026-11-22T08:14:14.070396Z",
+      "last_updated_at": "2026-11-22T08:14:14.070396Z"
+    },
     {
       "id": "0839128f05e273",
       "datetime": "2026-11-21T23:16:01Z",
@@ -35,7 +60,7 @@
       ],
       "shakemap": "20261122061601.mmi.jpg",
       "first_seen_at": "2026-11-22T01:17:16.963738Z",
-      "last_updated_at": "2026-11-22T05:54:05.807026Z"
+      "last_updated_at": "2026-11-22T08:14:14.070396Z"
     },
     {
       "id": "e4e9290e25a556",
