@@ -184,14 +184,16 @@ def article(entry):
     desc = html.escape(entry["description"], quote=True)
     clean_region = html.escape(region, quote=True)
     clean_event = html.escape(event, quote=True)
+    # Exactly five editorial paragraphs, retaining BMKG's complete description.
     content = (
         f'<p><strong>Dataloka.id</strong> - Badan Meteorologi, Klimatologi, '
         f'dan Geofisika (BMKG) mengeluarkan peringatan dini {clean_event} '
-        f'untuk wilayah {clean_region} pada {date}. '
-        f'Peringatan diterbitkan pukul {issued}.</p>'
-        f'<p>Berdasarkan informasi BMKG, peringatan berlaku sejak pukul '
-        f'{start} hingga {end}. BMKG menyebut kondisi dan wilayah '
-        f'terdampak sebagai berikut.</p>'
+        f'untuk wilayah {clean_region} pada {date}.</p>'
+        f'<p>Peringatan diterbitkan pukul {issued} dan berlaku sejak pukul '
+        f'{start} hingga {end}, sesuai informasi resmi BMKG.</p>'
+        f'<p>Wilayah yang disebut dalam peringatan tersebut meliputi '
+        f'{clean_region}. BMKG merinci kondisi cuaca dan lokasi yang '
+        f'berpotensi terdampak dalam keterangannya.</p>'
         f'<p>{desc}</p>'
         f'<p>Informasi ini merupakan peringatan dini yang memiliki masa berlaku '
         f'terbatas dan dapat diperbarui. Periksa <a href="{source}">'
