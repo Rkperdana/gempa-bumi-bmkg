@@ -251,6 +251,7 @@ async function updateData(initial=false){
   if(!response.ok)throw Error('HTTP '+response.status);
   const payload=await response.json();
   if(!Array.isArray(payload.events)||!['live','preview','fixture'].includes(payload.status))throw Error('Format data gempa tidak dikenal');
+  if(payload.status==='live'&&payload.data_origin!=='api_feeds')throw Error('Snapshot HTML lama ditolak: menunggu feed JSON resmi BMKG');
   const signature=JSON.stringify(payload);
   if(!initial&&signature===state.signature){renderStatus();return;}
   state.signature=signature;state.data=payload;
