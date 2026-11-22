@@ -266,6 +266,7 @@ def process(entries, mode, now=None, wp=None, state=None):
     if mode not in ("fixture", "dry-run", "draft"):
         raise ValueError("No live publication mode")
     now = now or dt.datetime.now(UTC)
+    injected_state = state is not None  # offline tests never touch the real ledger
     state = state if state is not None else load_state()
     suitable = [x for x in entries if active(x, now)]
     suitable.sort(key=lambda x: instant(x["issued"]), reverse=True)
@@ -302,12 +303,12 @@ def process(entries, mode, now=None, wp=None, state=None):
             print(f"ERROR: failed to create weather draft {entry['key']}: {exc}",
                   file=sys.stderr)
             failures.append(entry["key"])
-    if mode == "draft":
+    if mode == "draft" and not injected_state:
         STATE.parent.mkdir(parents=True, exist_ok=True)
         STATE.write_text(json.dumps(state, indent=2, ensure_ascii=False)+"\n",
                          encoding="utf-8")
-        if failures:
-            raise RuntimeError(f"Failed weather drafts: {','.join(failures)}")
+    if failures:
+        raise RuntimeError(f"Failed weather drafts: {','.join(failures)}")
     return updated
 
 
