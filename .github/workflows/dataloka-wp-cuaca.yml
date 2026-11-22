@@ -69,7 +69,7 @@ jobs:
       github.event_name != 'pull_request' &&
       vars.BMKG_NOWCAST_PAUSED != 'true'
     runs-on: ubuntu-latest
-    timeout-minutes: 9
+    timeout-minutes: 12
     permissions:
       contents: write
     env:
@@ -95,12 +95,16 @@ jobs:
       - name: Run source validation and weather publication
         run: python scripts/dataloka_wp_cuaca.py --mode "$MODE"
       - name: Persist separate weather state (not earthquake state)
-        if: env.MODE == 'live'
+        if: ${{ always() && env.MODE == 'live' }}
         shell: bash
         run: |
           set -euo pipefail
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          if [ ! -f data/dataloka-cuaca-state.json ]; then
+            echo "No weather ledger written; nothing to persist"
+            exit 0
+          fi
           git add data/dataloka-cuaca-state.json
           if git diff --cached --quiet; then
             echo "No weather ledger changes"

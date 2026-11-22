@@ -26,6 +26,10 @@ Workflow: .github/workflows/dataloka-wp-cuaca.yml, dapat dijalankan manual lewat
     python -m unittest discover -s tests -p 'test_dataloka_wp_cuaca.py' -v
     python scripts/dataloka_wp_cuaca.py --mode fixture
 
-Batas awal: maksimal lima peringatan per eksekusi, dan tidak membuat draf perdana untuk alert yang diterbitkan lebih dari 90 menit sebelumnya. Jadwal GitHub Actions bersifat best effort. HTML artikel memakai seluruh deskripsi resmi CAP, termasuk nama kecamatan sebagaimana tertulis, sehingga versi uji tidak mengubah istilah atau menambahkan prediksi.
+Batas sementara: maksimal **satu** peringatan per eksekusi, dan tidak membuat draf perdana untuk alert yang diterbitkan lebih dari 90 menit sebelumnya. Batas waktu live 12 menit, pemeriksaan 15 menit; kegagalan WordPress menghentikan pemrosesan alert lain pada siklus tersebut. POST draf tidak diulang secara buta; jika WP sempat menerima draf saat koneksi timeout, bot mencoba pemulihan hanya jika slug dan konten identik. Jadwal GitHub Actions bersifat best effort. HTML artikel memakai seluruh deskripsi resmi CAP, termasuk nama kecamatan sebagaimana tertulis, sehingga versi uji tidak mengubah istilah atau menambahkan prediksi.
 
 Kriteria produksi: respons API BMKG nyata perlu lulus (mode manual dry-run), metadata Yoast di WP wajib tervalidasi, hak akses bot, gambar di WP Media Library dan tag Featured harus ada sebelum artikel berstatus publish. Mode live di workflow menyetel `BMKG_NOWCAST_AUTHORIZED=true` berdasarkan konfirmasi pemilik; bila BMKG tidak merespons valid, WordPress tidak diubah.
+
+## Keandalan WordPress
+
+Eksekusi awal pada 22 November 2026 melampaui batas 9 menit dan melaporkan `WordPress network error on POST posts: TimeoutError`. Batas satu alert per siklus serta penyimpanan ledger pada langkah `always()` membantu mengurangi beban dan memungkinkan pemulihan yang aman. Jika WordPress masih tidak merespons, artikel **tidak diklaim telah terbit** dan integrasi perlu pemeriksaan performa REST API/hosting Dataloka. Tidak ada perubahan pada gempa atau Pirsadata.

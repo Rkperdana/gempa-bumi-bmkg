@@ -148,6 +148,73 @@ class WeatherTests(unittest.TestCase):
             write.assert_called_once_with(
                 "POST", "posts/123", params=None, payload={"status": "publish"})
 
+    def test_timeout_draft_post_recovers_only_identical_slug_and_content(self):
+        wp = pub.WeatherWordPress("example", "not-a-secret")
+        entry = example()
+        payload = article(entry)
+        draft = {
+            "id": 321, "status": "draft",
+            "slug": payload["slug"],
+            "content": {"raw": payload["content"]},
+        }
+        with (
+            mock.patch.object(pub.WordPress, "call", side_effect=RuntimeError(
+                "WordPress network error on POST posts: TimeoutError")),
+            mock.patch.object(wp, "by_slug", return_value=draft) as lookup,
+        ):
+            self.assertEqual(
+                wp.call("POST", "posts", payload={
+                    "status": "draft",
+                    "slug": payload["slug"],
+                    "content": payload["content"],
+                })["id"], 321)
+            lookup.assert_called_once_with(payload["slug"])
+
+    def test_timeout_draft_post_rejects_unrelated_existing_content(self):
+        wp = pub.WeatherWordPress("example", "not-a-secret")
+        entry = example()
+        payload = article(entry)
+        draft = {
+            "id": 321, "status": "draft",
+            "slug": payload["slug"],
+            "content": {"raw": "unrelated article"},
+        }
+        with (
+            mock.patch.object(pub.WordPress, "call", side_effect=RuntimeError(
+                "WordPress network error on POST posts: TimeoutError")),
+            mock.patch.object(wp, "by_slug", return_value=draft),
+        ):
+            with self.assertRaisesRegex(RuntimeError, "network error on POST posts"):
+                wp.call("POST", "posts", payload={
+                    "status": "draft",
+                    "slug": payload["slug"],
+                    "content": payload["content"],
+                })
+
+    def test_only_one_new_alert_per_run(self):
+        first = example()
+        second = dict(first, key="1234567890abcdef", identifier="ANOTHER")
+        state = {"version": 1, "alerts": {}}
+        wp = DummyWP()
+        now = dt.datetime(2026, 11, 22, 5, 0, tzinfo=UTC)
+        self.assertEqual(process([first, second], "live", now, wp, state), 1)
+        self.assertEqual(len(wp.calls), 1)
+
+    def test_wordpress_timeout_stops_following_alerts(self):
+        first = example()
+        second = dict(first, key="1234567890abcdef", identifier="ANOTHER")
+        state = {"version": 1, "alerts": {}}
+        now = dt.datetime(2026, 11, 22, 5, 0, tzinfo=UTC)
+        class FailWP:
+            calls = 0
+            def save(self, *args, **kwargs):
+                self.calls += 1
+                raise RuntimeError("WordPress network error on POST posts: TimeoutError")
+        wp = FailWP()
+        with self.assertRaisesRegex(RuntimeError, "Failed live weather alerts"):
+            process([first, second], "live", now, wp, state)
+        self.assertEqual(wp.calls, 1)
+
     def test_original_featured_image(self):
         data = render(example())
         self.assertLess(len(data), 500_000)
