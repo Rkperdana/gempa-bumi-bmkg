@@ -1,0 +1,36 @@
+name: Validate BMKG JSON-only ingestion
+
+on:
+  pull_request:
+    paths:
+      - 'scripts/update_data.py'
+      - 'scripts/dataloka_wp_gempa.py'
+      - 'scripts/send_lensadata.py'
+      - 'tests/**'
+      - 'app.js'
+      - 'index.html'
+      - '.github/workflows/bmkg-json-only-verify.yml'
+      - '.github/workflows/publish-lensadata.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+      - name: Install image dependency for complete test suite
+        run: python -m pip install "Pillow==12.0.0"
+      - name: Reject Python syntax errors
+        run: python -m compileall -q scripts tests
+      - name: Run full test suite offline
+        run: python -m unittest discover -s tests -v
+      - name: Validate JavaScript
+        run: node --check app.js
+      - name: Prevent live data mutation during tests
+        run: git diff --exit-code -- data/gempa.json data/dataloka-wp-state.json
