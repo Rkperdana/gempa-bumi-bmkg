@@ -1,0 +1,98 @@
+name: Dataloka | Cuaca ekstrem BMKG (live)
+
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/dataloka-wp-cuaca.yml'
+      - 'scripts/dataloka_wp_cuaca.py'
+      - 'scripts/dataloka_cuaca_image.py'
+      - 'tests/test_dataloka_wp_cuaca.py'
+      - 'tests/fixtures/nowcast-sample.xml'
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: "fixture = uji offline; dry-run = cek CAP; live = publish WordPress"
+        required: true
+        type: choice
+        default: fixture
+        options: [fixture, dry-run, live]
+  schedule:
+    - cron: '11,26,41,56 * * * *'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: dataloka-nowcast-only
+  cancel-in-progress: false
+
+jobs:
+  tests:
+    if: >-
+      github.event_name != 'schedule' || vars.BMKG_NOWCAST_AUTHORIZED == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+      - name: Install Pillow for featured artwork
+        run: python -m pip install "Pillow==12.0.0"
+      - name: Check Python syntax
+        run: python -m py_compile scripts/dataloka_wp_cuaca.py scripts/dataloka_cuaca_image.py
+      - name: Run isolated weather automation tests
+        run: python -m unittest discover -s tests -p 'test_dataloka_wp_cuaca.py' -v
+
+  weather-publisher:
+    needs: tests
+    if: >-
+      github.event_name != 'pull_request' &&
+      (github.event_name == 'workflow_dispatch' && inputs.mode == 'fixture' ||
+      vars.BMKG_NOWCAST_AUTHORIZED == 'true')
+    runs-on: ubuntu-latest
+    timeout-minutes: 9
+    permissions:
+      contents: write
+    env:
+      MODE: ${{ github.event_name == 'schedule' && 'live' || inputs.mode }}
+      BMKG_NOWCAST_AUTHORIZED: ${{ vars.BMKG_NOWCAST_AUTHORIZED }}
+      WP_USERNAME: ${{ secrets.DATALOKA_WP_USERNAME }}
+      WP_APP_PASSWORD: ${{ secrets.DATALOKA_WP_APP_PASSWORD }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+      - run: python -m pip install "Pillow==12.0.0"
+      - name: Require WordPress credentials for live
+        if: env.MODE == 'live'
+        run: |
+          test -n "$WP_USERNAME" || { echo "Missing DATALOKA_WP_USERNAME"; exit 1; }
+          test -n "$WP_APP_PASSWORD" || { echo "Missing DATALOKA_WP_APP_PASSWORD"; exit 1; }
+      - name: Run source validation and weather publication
+        run: python scripts/dataloka_wp_cuaca.py --mode "$MODE"
+      - name: Persist separate weather state (not earthquake state)
+        if: env.MODE == 'live'
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/dataloka-cuaca-state.json
+          if git diff --cached --quiet; then
+            echo "No weather ledger changes"
+            exit 0
+          fi
+          git commit -m "data: update isolated Dataloka weather ledger"
+          for attempt in 1 2 3; do
+            git fetch origin main
+            if git rebase origin/main && git push origin HEAD:main; then
+              exit 0
+            fi
+            git rebase --abort || true
+            sleep "$attempt"
+          done
+          echo "Cannot persist ledger; WordPress slug lookup prevents duplicate posts"
+          exit 1
