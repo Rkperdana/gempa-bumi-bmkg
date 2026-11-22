@@ -31,7 +31,7 @@ UTC = dt.timezone.utc
 MONTHS = ("Januari", "Februari", "Maret", "April", "Mei", "Juni",
           "Juli", "Agustus", "September", "Oktober", "November", "Desember")
 MARKER = "dataloka-nowcast:"
-EDITORIAL_VERSION = 3  # No Featured tag; five paragraphs + source; contextual Cuaca link
+EDITORIAL_VERSION = 2  # Editorial HTML unchanged; tag cleanup must not republish content
 MAX_ALERTS_PER_RUN = 1
 MAX_NEW_ALERT_AGE_MINUTES = 90
 MAX_BYTES = 600_000

@@ -174,6 +174,22 @@ class WeatherTests(unittest.TestCase):
                 wp.remove_featured_tag(123, marker, "digest-from-ledger")
             call.assert_not_called()
 
+    def test_tag_cleanup_does_not_republish_existing_unchanged_article(self):
+        entry = example()
+        state = {"version": 1, "alerts": {
+            entry["key"]: {
+                "post_id": 123,
+                "fingerprint": fingerprint(entry),
+                "editorial_version": pub.EDITORIAL_VERSION,
+                "featured_tag_removed": False,
+                "status": "publish",
+            },
+        }}
+        wp = DummyWP()
+        now = dt.datetime(2026, 11, 22, 5, 0, tzinfo=UTC)
+        self.assertEqual(process([entry], "live", now, wp, state), 0)
+        self.assertEqual(wp.calls, [])
+
     def test_featured_cleanup_marks_at_most_one_ledger_post(self):
         class RemoveWP:
             calls = []
