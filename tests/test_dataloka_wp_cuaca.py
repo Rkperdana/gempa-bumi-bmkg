@@ -32,7 +32,7 @@ class DummyWP:
 
     def save(self, payload, ledger, status, marker, event=None):
         assert status == "publish"
-        assert "Featured" in payload["tag_names"]
+        assert "Featured" not in payload["tag_names"]
         assert marker in payload["content"]
         assert event is not None
         self.calls.append((payload, dict(ledger)))
@@ -112,7 +112,8 @@ class WeatherTests(unittest.TestCase):
         self.assertEqual(set(payload["yoast_meta"]), {
             "_yoast_wpseo_focuskw", "_yoast_wpseo_title", "_yoast_wpseo_metadesc"})
         self.assertLessEqual(len(payload["excerpt"]), 300)
-        self.assertEqual(payload["tag_names"].count("Featured"), 1)
+        self.assertNotIn("Featured", payload["tag_names"])
+        self.assertEqual(payload["tag_names"], ["BMKG", "Cuaca", "Peringatan"])
         self.assertNotIn("(RK/D-1)", payload["content"])
         self.assertNotIn("Kecamatan C", payload["content"])
 
@@ -127,31 +128,67 @@ class WeatherTests(unittest.TestCase):
                 wp.call("POST", "posts/123", payload={"status": "publish"})
             write.assert_not_called()
 
-    def test_prepublish_rejects_missing_featured_tag(self):
+    def test_prepublish_allows_draft_without_featured_tag(self):
         wp = pub.WeatherWordPress("example", "not-a-secret")
         draft = {"status": "draft", "featured_media": 901, "tags": [3]}
         with (
             mock.patch.object(wp, "by_id", return_value=draft),
-            mock.patch.object(wp, "resolve_tags", return_value=[7]),
-            mock.patch.object(pub.WordPress, "call") as write,
-        ):
-            with self.assertRaisesRegex(RuntimeError, "Featured tag missing"):
-                wp.call("POST", "posts/123", payload={"status": "publish"})
-            write.assert_not_called()
-
-    def test_prepublish_allows_verified_featured_media_and_tag(self):
-        wp = pub.WeatherWordPress("example", "not-a-secret")
-        draft = {"status": "draft", "featured_media": 901, "tags": [3, 7]}
-        with (
-            mock.patch.object(wp, "by_id", return_value=draft),
-            mock.patch.object(wp, "resolve_tags", return_value=[7]),
             mock.patch.object(pub.WordPress, "call", return_value={
                 "id": 123, "status": "publish"}) as write,
+            mock.patch.object(wp, "resolve_tags") as resolve,
         ):
             result = wp.call("POST", "posts/123", payload={"status": "publish"})
             self.assertEqual(result["status"], "publish")
+            resolve.assert_not_called()
             write.assert_called_once_with(
                 "POST", "posts/123", params=None, payload={"status": "publish"})
+
+    def test_featured_cleanup_only_removes_term_from_bot_owned_post(self):
+        wp = pub.WeatherWordPress("example", "not-a-secret")
+        marker = "<!-- dataloka-nowcast:abc -->"
+        content = "<p>Unchanged weather warning.</p>" + marker
+        digest = pub.hash_value(content)
+        post = {"id": 123, "content": {"raw": content}, "tags": [3, 7, 9]}
+        verified = {"id": 123, "content": {"raw": content}, "tags": [3, 9]}
+        with (
+            mock.patch.object(wp, "by_id", side_effect=[post, verified]),
+            mock.patch.object(pub.WordPress, "call", side_effect=[
+                [{"id": 7, "name": "Featured", "slug": "featured"}],
+                {"id": 123},
+            ]) as call,
+        ):
+            self.assertTrue(wp.remove_featured_tag(123, marker, digest))
+            call.assert_any_call("POST", "posts/123", params=None,
+                                 payload={"tags": [3, 9]})
+
+    def test_featured_cleanup_does_not_modify_human_edited_post(self):
+        wp = pub.WeatherWordPress("example", "not-a-secret")
+        marker = "<!-- dataloka-nowcast:abc -->"
+        post = {"id": 123, "content": {"raw": "<p>Human edit</p>" + marker},
+                "tags": [3, 7]}
+        with (
+            mock.patch.object(wp, "by_id", return_value=post),
+            mock.patch.object(pub.WordPress, "call") as call,
+        ):
+            with self.assertRaises(pub.EditorialConflict):
+                wp.remove_featured_tag(123, marker, "digest-from-ledger")
+            call.assert_not_called()
+
+    def test_featured_cleanup_marks_at_most_one_ledger_post(self):
+        class RemoveWP:
+            calls = []
+            def remove_featured_tag(self, post_id, marker, digest):
+                self.calls.append(post_id)
+                return True
+        wp = RemoveWP()
+        ledger = {"version": 1, "alerts": {
+            "first": {"post_id": 123, "last_wp_digest": "abc"},
+            "second": {"post_id": 456, "last_wp_digest": "xyz"},
+        }}
+        self.assertEqual(pub.cleanup_existing_featured(wp, state=ledger), 1)
+        self.assertEqual(wp.calls, [123])
+        self.assertTrue(ledger["alerts"]["first"]["featured_tag_removed"])
+        self.assertNotIn("featured_tag_removed", ledger["alerts"]["second"])
 
     def test_timeout_draft_post_recovers_only_identical_slug_and_content(self):
         wp = pub.WeatherWordPress("example", "not-a-secret")
