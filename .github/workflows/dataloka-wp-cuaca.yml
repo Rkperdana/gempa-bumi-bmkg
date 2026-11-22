@@ -1,6 +1,12 @@
 name: Dataloka | Cuaca ekstrem BMKG (live)
 
 on:
+  # One-time immediate live verification on deployment of this workflow.
+  # State commits change only data/**, so they never retrigger this push rule.
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/dataloka-wp-cuaca.yml'
   pull_request:
     paths:
       - '.github/workflows/dataloka-wp-cuaca.yml'
@@ -67,7 +73,7 @@ jobs:
     permissions:
       contents: write
     env:
-      MODE: ${{ github.event_name == 'schedule' && 'live' || inputs.mode }}
+      MODE: ${{ github.event_name == 'workflow_dispatch' && inputs.mode || 'live' }}
       # Owner confirmed written authorization for BMKG CAP use on 22 Nov 2026.
       # Set repository variable BMKG_NOWCAST_PAUSED=true to halt all live checks.
       BMKG_NOWCAST_AUTHORIZED: 'true'
