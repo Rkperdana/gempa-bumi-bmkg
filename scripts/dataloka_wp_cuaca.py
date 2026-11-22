@@ -387,6 +387,8 @@ def process(entries, mode, now=None, wp=None, state=None):
             state["alerts"][entry["key"]] = {
                 **mapping, "fingerprint": fingerprint(entry),
                 "editorial_version": EDITORIAL_VERSION,
+                "featured_tag_removed": (not bool(old.get("post_id")) or
+                                         bool(old.get("featured_tag_removed"))),
                 "expires": entry["expires"]}
             updated += 1
             if updated >= MAX_ALERTS_PER_RUN:
