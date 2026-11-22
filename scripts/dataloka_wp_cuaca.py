@@ -24,7 +24,8 @@ from dataloka_wp_gempa import EditorialConflict, WordPress, hash_value, slugify
 
 ROOT = Path(__file__).resolve().parents[1]
 STATE = ROOT / "data" / "dataloka-cuaca-state.json"
-RSS_URL = "https://www.bmkg.go.id/alerts/nowcast/id/rss.xml"
+RSS_URL = "https://www.bmkg.go.id/alerts/nowcast/id"
+RSS_FALLBACK_URL = "https://www.bmkg.go.id/alerts/nowcast/id/rss.xml"
 CAP_NS = "{urn:oasis:names:tc:emergency:cap:1.2}"
 UTC = dt.timezone.utc
 MONTHS = ("Januari", "Februari", "Maret", "April", "Mei", "Juni",
@@ -46,7 +47,7 @@ def require_official_url(value):
 
 
 def fetch_xml(url):
-    if url != RSS_URL:
+    if url not in (RSS_URL, RSS_FALLBACK_URL):
         require_official_url(url)
     req = urllib.request.Request(url, headers={
         "User-Agent": "DatalokaNowcastEditorial/0.1 (BMKG official CAP)",
@@ -70,6 +71,28 @@ def instant(value):
     if when.tzinfo is None:
         raise ValueError("CAP timestamp has no timezone")
     return when
+
+
+def fetch_rss():
+    """Use the API path published on data.bmkg.go.id; retry the official
+    RSS filename from BMKG's own code example on HTTP 404/405 only.
+    No website HTML scraping and no third-party endpoints.
+    """
+    import urllib.error
+    try:
+        raw = fetch_xml(RSS_URL)
+        parse_rss(raw)  # also reject a 200 HTML response
+        return raw
+    except urllib.error.HTTPError as exc:
+        if exc.code not in (404, 405):
+            raise
+    except (ET.ParseError, ValueError):
+        pass
+    print("WARNING: primary BMKG CAP RSS endpoint unavailable; trying official rss.xml",
+          file=sys.stderr)
+    raw = fetch_xml(RSS_FALLBACK_URL)
+    parse_rss(raw)
+    return raw
 
 
 def parse_rss(raw):
@@ -183,6 +206,7 @@ def article(entry):
         headline = f"BMKG Terbitkan Peringatan Dini Cuaca untuk {region}"
     source = html.escape(entry["url"], quote=True)
     desc = html.escape(entry["description"], quote=True)
+    checked = dt.datetime.now(UTC).astimezone(instant(entry["issued"]).tzinfo)
     clean_region = html.escape(region, quote=True)
     clean_event = html.escape(event, quote=True)
     # Exactly five editorial paragraphs, retaining BMKG's complete description.
@@ -199,7 +223,8 @@ def article(entry):
         f'<p>Informasi ini merupakan peringatan dini yang memiliki masa berlaku '
         f'terbatas dan dapat diperbarui. Periksa <a href="{source}">'
         f'peringatan resmi BMKG</a> untuk kondisi terbaru. '
-        f'Sumber: BMKG.</p>'
+        f'Sumber: BMKG (Badan Meteorologi, Klimatologi, dan Geofisika); '
+        f'informasi diakses pada {date_label(checked.isoformat())}.</p>'
         f'<!-- {MARKER}{entry["key"]} -->'
     )
     summary = (f"BMKG mengeluarkan peringatan dini {event} di {region} pada "
@@ -328,9 +353,9 @@ def main():
         jpg = __import__("dataloka_cuaca_image").render(doc)
         print(f"BMKG fixture parsed and 1200x675 cover generated ({len(jpg)} bytes)")
         return
-    if os.environ.get("BMKG_NOWCAST_AUTHORIZED") != "true":
-        raise RuntimeError("BMKG written authorization not confirmed")
-    rss = parse_rss(fetch_xml(RSS_URL))
+    if args.mode == "live" and os.environ.get("BMKG_NOWCAST_AUTHORIZED") != "true":
+        raise RuntimeError("BMKG written authorization not confirmed for live WordPress publication")
+    rss = parse_rss(fetch_rss())
     entries = []
     for item in rss[:45]:
         try:

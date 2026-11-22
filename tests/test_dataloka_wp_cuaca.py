@@ -5,9 +5,11 @@ from io import BytesIO
 from pathlib import Path
 import sys
 import unittest
-
+from unittest import mock
+import urllib.error
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "scripts"))
+import dataloka_wp_cuaca as pub
 
 from dataloka_wp_cuaca import (
     UTC, active, article, parse_cap, parse_rss, process, require_official_url,
@@ -47,6 +49,34 @@ class WeatherTests(unittest.TestCase):
         self.assertEqual(len(parse_rss(rss)), 1)
         with self.assertRaises(ValueError):
             require_official_url("https://www.bmkg.go.id.evil.invalid/alerts/nowcast/id/X_alert.xml")
+
+    def test_official_rss_api_path_and_fallback(self):
+        self.assertEqual(pub.RSS_URL, "https://www.bmkg.go.id/alerts/nowcast/id")
+        self.assertEqual(pub.RSS_FALLBACK_URL,
+                         "https://www.bmkg.go.id/alerts/nowcast/id/rss.xml")
+        rss = f"<rss><channel><item><link>{SOURCE}</link></item></channel></rss>"
+        with mock.patch.object(pub, "fetch_xml", side_effect=[
+                urllib.error.HTTPError(pub.RSS_URL, 404, "not found", {}, None),
+                rss.encode("utf-8")]) as fetch:
+            items = parse_rss(pub.fetch_rss())
+        self.assertEqual(len(items), 1)
+        self.assertEqual(fetch.call_args_list[0].args[0], pub.RSS_URL)
+        self.assertEqual(fetch.call_args_list[1].args[0], pub.RSS_FALLBACK_URL)
+
+    def test_html_success_response_falls_back_to_official_rss(self):
+        rss = f"<rss><channel><item><link>{SOURCE}</link></item></channel></rss>"
+        with mock.patch.object(pub, "fetch_xml", side_effect=[
+                b"<html><body>not an RSS feed</body></html>", rss.encode()]) as fetch:
+            items = parse_rss(pub.fetch_rss())
+        self.assertEqual(len(items), 1)
+        self.assertEqual(fetch.call_count, 2)
+
+    def test_no_fallback_for_forbidden_response(self):
+        with mock.patch.object(pub, "fetch_xml", side_effect=urllib.error.HTTPError(
+                pub.RSS_URL, 403, "forbidden", {}, None)) as fetch:
+            with self.assertRaises(urllib.error.HTTPError):
+                pub.fetch_rss()
+        self.assertEqual(fetch.call_count, 1)
 
     def test_cap_details_and_region_exact(self):
         entry = example()

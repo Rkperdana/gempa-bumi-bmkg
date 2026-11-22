@@ -11,7 +11,7 @@ on:
   workflow_dispatch:
     inputs:
       mode:
-        description: "fixture = uji offline; dry-run = cek CAP; live = publish WordPress"
+        description: "fixture = offline; dry-run = periksa API tanpa WP; live = terbit ke WordPress"
         required: true
         type: choice
         default: fixture
@@ -47,7 +47,7 @@ jobs:
     needs: tests
     if: >-
       github.event_name != 'pull_request' &&
-      (github.event_name == 'workflow_dispatch' && inputs.mode == 'fixture' ||
+      (github.event_name == 'workflow_dispatch' && inputs.mode != 'live' ||
       vars.BMKG_NOWCAST_AUTHORIZED == 'true')
     runs-on: ubuntu-latest
     timeout-minutes: 9
