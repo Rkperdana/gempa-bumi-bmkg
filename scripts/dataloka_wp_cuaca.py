@@ -80,13 +80,19 @@ def fetch_rss():
     """
     import urllib.error
     try:
-        return fetch_xml(RSS_URL)
+        raw = fetch_xml(RSS_URL)
+        parse_rss(raw)  # also reject a 200 HTML response
+        return raw
     except urllib.error.HTTPError as exc:
         if exc.code not in (404, 405):
             raise
-        print("WARNING: CAP RSS path unavailable; trying BMKG official rss.xml",
-              file=sys.stderr)
-        return fetch_xml(RSS_FALLBACK_URL)
+    except (ET.ParseError, ValueError):
+        pass
+    print("WARNING: primary BMKG CAP RSS endpoint unavailable; trying official rss.xml",
+          file=sys.stderr)
+    raw = fetch_xml(RSS_FALLBACK_URL)
+    parse_rss(raw)
+    return raw
 
 
 def parse_rss(raw):
@@ -200,6 +206,7 @@ def article(entry):
         headline = f"BMKG Terbitkan Peringatan Dini Cuaca untuk {region}"
     source = html.escape(entry["url"], quote=True)
     desc = html.escape(entry["description"], quote=True)
+    checked = dt.datetime.now(UTC).astimezone(instant(entry["issued"]).tzinfo)
     clean_region = html.escape(region, quote=True)
     clean_event = html.escape(event, quote=True)
     # Exactly five editorial paragraphs, retaining BMKG's complete description.
@@ -217,7 +224,7 @@ def article(entry):
         f'terbatas dan dapat diperbarui. Periksa <a href="{source}">'
         f'peringatan resmi BMKG</a> untuk kondisi terbaru. '
         f'Sumber: BMKG (Badan Meteorologi, Klimatologi, dan Geofisika); '
-        f'informasi diakses pada {date_label(entry["issued"])}.</p>'
+        f'informasi diakses pada {date_label(checked.isoformat())}.</p>'
         f'<!-- {MARKER}{entry["key"]} -->'
     )
     summary = (f"BMKG mengeluarkan peringatan dini {event} di {region} pada "
@@ -346,8 +353,8 @@ def main():
         jpg = __import__("dataloka_cuaca_image").render(doc)
         print(f"BMKG fixture parsed and 1200x675 cover generated ({len(jpg)} bytes)")
         return
-    if os.environ.get("BMKG_NOWCAST_AUTHORIZED") != "true":
-        raise RuntimeError("BMKG written authorization not confirmed")
+    if args.mode == "live" and os.environ.get("BMKG_NOWCAST_AUTHORIZED") != "true":
+        raise RuntimeError("BMKG written authorization not confirmed for live WordPress publication")
     rss = parse_rss(fetch_rss())
     entries = []
     for item in rss[:45]:
