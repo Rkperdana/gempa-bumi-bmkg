@@ -32,6 +32,30 @@ class IngestTests(unittest.TestCase):
         no=m.parse_event({**SAMPLE, 'Magnitude':'6.1', 'Potensi':'Tidak berpotensi tsunami'},'latest')
         self.assertTrue(yes['tsunami'])
         self.assertFalse(m.merge(yes,no)['tsunami'])
+    def test_legacy_html_only_events_removed_from_api_snapshot(self):
+        legacy = {
+            'id': 'old-html-only', 'datetime': '2026-11-05T00:00:00Z',
+            'magnitude': 5.8, 'lat': 45.75, 'lon': 26.68, 'depth_km': 12,
+            'region': 'Romania', 'source_types': ['realtime'],
+            'source_urls': ['https://www.bmkg.go.id/gempabumi/gempabumi-realtime'],
+        }
+        mixed = {
+            **legacy, 'id': 'api-backed', 'source_types': ['realtime', 'm5'],
+            'source_urls': [legacy['source_urls'][0],
+                            'https://data.bmkg.go.id/DataMKG/TEWS/gempaterkini.json'],
+        }
+        feeds = {'m5': {'Infogempa': {'gempa': {
+            'DateTime': '2026-11-05T01:00:00Z',
+            'Coordinates': '-1.14,120.15', 'Magnitude': '5.6',
+            'Kedalaman': '10 km', 'Wilayah': 'Sulawesi'
+        }}}}
+        events, issues = m.ingest([legacy, mixed], feeds, '2026-11-05T02:00:00Z')
+        self.assertNotIn('old-html-only', [x['id'] for x in events])
+        self.assertIn('api-backed', [x['id'] for x in events])
+        for event in events:
+            self.assertNotIn('realtime', event['source_types'])
+            self.assertTrue(all('/DataMKG/TEWS/' in url for url in event['source_urls']))
+
     def test_partial_failure_no_silent_success(self):
         with self.assertRaises(ValueError):
             m.ingest([],{'felt':{'Infogempa':{'gempa':[]}}},'2026-11-05T00:00:00Z')
