@@ -42,6 +42,20 @@ jobs:
         run: python -m py_compile scripts/dataloka_wp_cuaca.py scripts/dataloka_cuaca_image.py
       - name: Run isolated weather automation tests
         run: python -m unittest discover -s tests -p 'test_dataloka_wp_cuaca.py' -v
+      - name: Check real BMKG CAP feed without WordPress (diagnostic)
+        if: github.event_name == 'pull_request'
+        continue-on-error: true
+        run: |
+          python - <<'PY'
+          import sys
+          sys.path.insert(0, "scripts")
+          from dataloka_wp_cuaca import fetch_rss, parse_rss, fetch_xml, parse_cap
+          items = parse_rss(fetch_rss())
+          print(f"Official BMKG CAP RSS accepted: {len(items)} links")
+          if items:
+              entry = parse_cap(fetch_xml(items[0]["url"]), items[0]["url"])
+              print(f"First official CAP parse accepted: {entry['identifier']}")
+          PY
 
   weather-publisher:
     needs: tests
