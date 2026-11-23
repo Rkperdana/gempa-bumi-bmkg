@@ -823,7 +823,7 @@ assert str(root) in sys.path
             Wilayah="Pusat gempa berada di laut 49 km timur laut Ruteng, Manggarai",
             Dirasakan="III Kab. Manggarai")
         old_71 = self.event(
-            DateTime="2026-11-15T21:11:20+00:00",
+            DateTime="2026-11-14T21:11:20+00:00",
             Coordinates="-6.03,131.62", Magnitude="7.1",
             Wilayah="130 km BaratDaya MALUKUTENGGARA",
             Dirasakan="III Saumlaki")
@@ -864,7 +864,7 @@ assert str(root) in sys.path
 
     def test_m55_old_event_is_not_backfilled(self):
         felt = self.event(
-            DateTime="2026-11-15T18:00:00+00:00",
+            DateTime="2026-11-14T18:00:00+00:00",
             Magnitude="5.5", Dirasakan="III")
         now = dt.datetime(2026, 11, 17, 8, 45, tzinfo=dt.timezone.utc)
         state = {"events": [], "daily": {}}
