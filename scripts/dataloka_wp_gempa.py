@@ -32,9 +32,12 @@ WP_URL = "https://dataloka.id"
 MARKER = "dataloka-bmkg:"
 YOAST_KEYS = ("_yoast_wpseo_focuskw", "_yoast_wpseo_title", "_yoast_wpseo_metadesc")
 
-# Short live-news window, longer catch-up for drafts when GitHub schedules lag.
-LIVE_NEW_EVENT_MINUTES = 120
-DRAFT_NEW_EVENT_MINUTES = 720  # 12 hours, not historical bulk backfill.
+# The GitHub Actions scheduler can be delayed for hours; retain a bounded
+# live window without bulk historical republishing.
+LIVE_NEW_EVENT_MINUTES = 24 * 60
+MISSED_EVENT_ALERT_MINUTES = 48 * 60
+HEARTBEAT_WRITE_MINUTES = 30
+SCHEDULE_DELAY_WARNING_MINUTES = 90
 TRANSIENT_HTTP = frozenset((429, 500, 502, 503, 504))
 
 
@@ -862,15 +865,29 @@ def events_task(mode, wp, now):
     events = get_events()
     state = read_state()
     failures = []
+    missed = []
+    previous_check = state.get("last_checked_at")
+    elapsed = ((now - timestamp(previous_check)).total_seconds() / 60
+               if previous_check else None)
+    if elapsed is not None and elapsed > SCHEDULE_DELAY_WARNING_MINUTES:
+        print(f"::warning::Dataloka earthquake check delayed by {elapsed:.0f} minutes")
+    # Persist a lightweight heartbeat at most twice per hour.
+    if elapsed is None or elapsed >= HEARTBEAT_WRITE_MINUTES:
+        state["last_checked_at"] = now.isoformat().replace("+00:00", "Z")
     for incoming in events:
-        # Filter BEFORE touching the ledger or WordPress. Felt M4.x and M5.0-5.4
-        # are ignored completely, including corrections below the threshold.
-        if float(incoming["magnitude"]) < 5.5:
+        # Collect monitored M5.0-5.4 for the daily editorial draft, but never
+        # send those events to WordPress individually. Ignore M<5.0.
+        if float(incoming["magnitude"]) < 5.0:
             continue
         age = (now - timestamp(incoming["datetime"])).total_seconds() / 60
         if age < -5 or age > 14 * 1440:
             continue
         record = next((r for r in state["events"] if same_event(r["data"], incoming)), None)
+        # Never downgrade an existing major-event article or silently move a
+        # previously eligible major quake into the lower-magnitude summary.
+        if (float(incoming["magnitude"]) < 5.5 and record and
+                (record.get("post_id") or float(record["data"]["magnitude"]) >= 5.5)):
+            continue
         previous_data = dict(record["data"]) if record else None
         if record is None:
             record = {"key": incoming["key"], "data": incoming}
@@ -884,8 +901,15 @@ def events_task(mode, wp, now):
         if event["magnitude"] < 5.5:
             continue
         if not record.get("post_id"):
-            # No historical backfill: only new M5.5+ within the live window.
+            # Bound automatic backfill to 24h. A missed event beyond that
+            # window is highlighted as an Actions failure, not silently posted
+            # with an inaccurate current-news timestamp.
             if age > LIVE_NEW_EVENT_MINUTES:
+                if age <= MISSED_EVENT_ALERT_MINUTES:
+                    missed.append(record["key"])
+                    print(f"::error::Unpublished M{event['magnitude']:.1f} "
+                          f"{event['region']} is {age:.0f} minutes old; "
+                          "manual editorial recovery required")
                 continue
 
         versions = record.setdefault("published_versions", {})
@@ -950,6 +974,10 @@ def events_task(mode, wp, now):
         raise RuntimeError(
             f"{len(failures)} BMKG events still need WordPress retry: "
             + ", ".join(failures))
+    if missed:
+        raise RuntimeError(
+            f"{len(missed)} eligible BMKG events missed the 24h publication window: "
+            + ", ".join(missed))
 
 
 def daily_task(mode, wp, now):
@@ -974,17 +1002,20 @@ def daily_task(mode, wp, now):
         return
     state["daily"][day.isoformat()] = result
     STATE.write_text(json.dumps(state, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    print(f"Created Dataloka daily editorial draft for {day}: post {result['post_id']}")
 
 
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--mode", choices=("live", "dry-run"), default="dry-run")
-    parser.add_argument("--task", choices=("events",), default="events")
+    parser.add_argument("--task", choices=("events", "daily"), default="events")
     args = parser.parse_args()
     wp = None if args.mode == "dry-run" else WordPress(
         os.getenv("WP_USERNAME"), os.getenv("WP_APP_PASSWORD"))
     now = dt.datetime.now(UTC)
     events_task(args.mode, wp, now)
+    if args.task == "daily":
+        daily_task(args.mode, wp, now)
 
 
 if __name__ == "__main__":
