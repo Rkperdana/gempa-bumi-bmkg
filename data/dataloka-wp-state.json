@@ -1042,6 +1042,100 @@
           "realtime"
         ]
       }
+    },
+    {
+      "key": "9b284877a0ec9c",
+      "data": {
+        "key": "9b284877a0ec9c",
+        "datetime": "2026-11-22T07:54:39Z",
+        "magnitude": 5.4,
+        "depth_km": 10.0,
+        "lat": 3.12,
+        "lon": 126.57,
+        "region": "98 km BaratDaya MELONGUANE-SULUT",
+        "potential": "Tidak berpotensi tsunami",
+        "felt_info": "II Tahuna",
+        "felt": true,
+        "sources": [
+          "gempadirasakan.json",
+          "gempaterkini.json"
+        ]
+      }
+    },
+    {
+      "key": "f515d6cf5bf45b",
+      "data": {
+        "key": "f515d6cf5bf45b",
+        "datetime": "2026-11-19T01:34:48Z",
+        "magnitude": 5.4,
+        "depth_km": 12.0,
+        "lat": 0.47,
+        "lon": 96.56,
+        "region": "114 km BaratDaya NIASBARAT-SUMUT",
+        "potential": "Tidak berpotensi tsunami",
+        "felt_info": "II Nias Selatan",
+        "felt": true,
+        "sources": [
+          "gempadirasakan.json",
+          "gempaterkini.json"
+        ]
+      }
+    },
+    {
+      "key": "f1d95b30cd8356",
+      "data": {
+        "key": "f1d95b30cd8356",
+        "datetime": "2026-11-23T11:24:32Z",
+        "magnitude": 5.3,
+        "depth_km": 10.0,
+        "lat": 1.44,
+        "lon": 131.96,
+        "region": "241 km TimurLaut RAJAAMPAT-PAPUABRTDY",
+        "potential": "Tidak berpotensi tsunami",
+        "felt_info": "-",
+        "felt": true,
+        "sources": [
+          "autogempa.json",
+          "gempaterkini.json"
+        ]
+      }
+    },
+    {
+      "key": "7ffe3ea138746b",
+      "data": {
+        "key": "7ffe3ea138746b",
+        "datetime": "2026-11-23T07:36:24Z",
+        "magnitude": 5.4,
+        "depth_km": 141.0,
+        "lat": -7.63,
+        "lon": 128.38,
+        "region": "87 km TimurLaut MALUKUBRTDAYA",
+        "potential": "Tidak berpotensi tsunami",
+        "felt_info": "",
+        "felt": false,
+        "sources": [
+          "gempaterkini.json"
+        ]
+      }
+    },
+    {
+      "key": "4172e08c39eb5d",
+      "data": {
+        "key": "4172e08c39eb5d",
+        "datetime": "2026-11-20T13:09:01Z",
+        "magnitude": 5.2,
+        "depth_km": 10.0,
+        "lat": 5.38,
+        "lon": 125.21,
+        "region": "199 km BaratLaut TAHUNA-KEP.SANGIHE-SULUT",
+        "potential": "Tidak berpotensi tsunami",
+        "felt_info": "",
+        "felt": false,
+        "sources": [
+          "gempaterkini.json"
+        ]
+      }
     }
-  ]
+  ],
+  "last_checked_at": "2026-11-23T12:28:35.133259Z"
 }
