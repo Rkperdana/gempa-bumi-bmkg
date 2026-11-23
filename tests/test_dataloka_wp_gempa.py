@@ -59,7 +59,8 @@ class PublisherTests(unittest.TestCase):
     def test_m50_to_m54_collected_without_individual_wordpress_posts(self):
         ignored = [
             self.event(Magnitude="5.4"),
-            self.event(Magnitude="5.0", Dirasakan="IV"),
+            self.event(Magnitude="5.0", Dirasakan="IV",
+                       DateTime="2026-11-17T01:12:00+00:00"),
             self.event(Magnitude="4.8", Dirasakan="III"),
         ]
         state = {"version": 1, "events": [], "daily": {}}
