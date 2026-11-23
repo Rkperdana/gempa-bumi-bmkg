@@ -906,7 +906,7 @@ assert str(root) in sys.path
     def test_major_event_missed_after_24h_raises_action_alert(self):
         quake = self.event(
             DateTime="2026-11-16T01:00:00+00:00", Magnitude="6.1")
-        now = dt.datetime(2026, 11, 17, 08, 45, tzinfo=dt.timezone.utc)
+        now = dt.datetime(2026, 11, 17, 8, 45, tzinfo=dt.timezone.utc)
         state = {"version": 1, "events": [], "daily": {}}
 
         class NoWP:
