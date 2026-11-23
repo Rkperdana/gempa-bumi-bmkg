@@ -56,10 +56,11 @@ class PublisherTests(unittest.TestCase):
             "publish"
         )
 
-    def test_below_m55_never_creates_posts_or_ledger_entries(self):
+    def test_m50_to_m54_collected_without_individual_wordpress_posts(self):
         ignored = [
             self.event(Magnitude="5.4"),
-            self.event(Magnitude="5.0", Dirasakan="IV"),
+            self.event(Magnitude="5.0", Dirasakan="IV",
+                       DateTime="2026-11-17T01:12:00+00:00"),
             self.event(Magnitude="4.8", Dirasakan="III"),
         ]
         state = {"version": 1, "events": [], "daily": {}}
@@ -73,7 +74,9 @@ class PublisherTests(unittest.TestCase):
             mock.patch.object(p, "STATE", Path(temp) / "state.json")
         ):
             p.events_task("live", NoWP(), now)
-        self.assertEqual(state["events"], [])
+        self.assertEqual(sorted(x["data"]["magnitude"] for x in state["events"]),
+                         [5.0, 5.4])
+        self.assertTrue(all("post_id" not in x for x in state["events"]))
 
     def test_existing_m56_corrected_below_threshold_never_contacts_wp(self):
         old = self.event(Magnitude="5.6")
@@ -95,7 +98,7 @@ class PublisherTests(unittest.TestCase):
         self.assertEqual(state["events"][0]["post_id"], 9111)
 
     def test_daily_task_and_drafts_mode_disallowed_at_cli(self):
-        for args in (["--mode", "drafts"], ["--task", "daily"]):
+        for args in (["--mode", "drafts"], ["--task", "invalid"]):
             with self.subTest(args=args):
                 result = subprocess.run(
                     [sys.executable, str(ROOT / "scripts" / "dataloka_wp_gempa.py"),
@@ -811,8 +814,8 @@ assert str(root) in sys.path
                 self.assertIn("HTTP 403", errors.getvalue())
 
     def test_below_threshold_ignored_without_backfilling_old_m71(self):
-        # At 15.45 WIB, M4.8 is ignored completely and stale M7.1 is not
-        # retroactively published. Only the fresh M5.6 goes live.
+        # M4.8 is ignored, M7.1 older than 24h is not backfilled.
+        # Only the fresh M5.6 goes live.
         felt = self.event(
             feed="gempadirasakan.json",
             DateTime="2026-11-17T00:49:17+00:00",
@@ -821,7 +824,7 @@ assert str(root) in sys.path
             Wilayah="Pusat gempa berada di laut 49 km timur laut Ruteng, Manggarai",
             Dirasakan="III Kab. Manggarai")
         old_71 = self.event(
-            DateTime="2026-11-16T21:11:20+00:00",
+            DateTime="2026-11-14T21:11:20+00:00",
             Coordinates="-6.03,131.62", Magnitude="7.1",
             Wilayah="130 km BaratDaya MALUKUTENGGARA",
             Dirasakan="III Saumlaki")
@@ -862,7 +865,7 @@ assert str(root) in sys.path
 
     def test_m55_old_event_is_not_backfilled(self):
         felt = self.event(
-            DateTime="2026-11-16T18:00:00+00:00",
+            DateTime="2026-11-14T18:00:00+00:00",
             Magnitude="5.5", Dirasakan="III")
         now = dt.datetime(2026, 11, 17, 8, 45, tzinfo=dt.timezone.utc)
         state = {"events": [], "daily": {}}
@@ -876,6 +879,90 @@ assert str(root) in sys.path
         ):
             p.events_task("live", WP(), now)
         self.assertIsNone(state["events"][0].get("post_id"))
+
+
+    def test_delayed_major_event_within_24h_is_published_exactly_once(self):
+        quake = self.event(
+            DateTime="2026-11-17T00:10:00+00:00", Magnitude="5.8")
+        now = dt.datetime(2026, 11, 17, 10, 15, tzinfo=dt.timezone.utc)
+        state = {"version": 1, "events": [], "daily": {}}
+        sends = []
+
+        class WP:
+            def save(self, payload, ledger, status, marker, event=None):
+                sends.append((event["key"], status))
+                return {"post_id": 9911, "status": "publish", "media_id": 9912}
+
+        with tempfile.TemporaryDirectory() as temp, (
+            mock.patch.object(p, "get_events", return_value=[quake])
+        ), mock.patch.object(p, "read_state", return_value=state), (
+            mock.patch.object(p, "STATE", Path(temp) / "state.json")
+        ):
+            p.events_task("live", WP(), now)
+            p.events_task("live", WP(), now + dt.timedelta(minutes=10))
+        self.assertEqual(sends, [(quake["key"], "publish")])
+        self.assertEqual(len(state["events"]), 1)
+        self.assertEqual(state["events"][0]["post_id"], 9911)
+
+    def test_major_event_missed_after_24h_raises_action_alert(self):
+        quake = self.event(
+            DateTime="2026-11-16T01:00:00+00:00", Magnitude="6.1")
+        now = dt.datetime(2026, 11, 17, 8, 45, tzinfo=dt.timezone.utc)
+        state = {"version": 1, "events": [], "daily": {}}
+
+        class NoWP:
+            def save(self, *args, **kwargs):
+                raise AssertionError("Stale major earthquake requires editorial review")
+
+        with tempfile.TemporaryDirectory() as temp, (
+            mock.patch.object(p, "get_events", return_value=[quake])
+        ), mock.patch.object(p, "read_state", return_value=state), (
+            mock.patch.object(p, "STATE", Path(temp) / "state.json")
+        ), mock.patch("sys.stdout", new_callable=io.StringIO) as stdout:
+            with self.assertRaisesRegex(RuntimeError, "missed the 24h publication window"):
+                p.events_task("live", NoWP(), now)
+            self.assertIn("::error::Unpublished M6.1", stdout.getvalue())
+        self.assertIsNone(state["events"][0].get("post_id"))
+
+    def test_daily_draft_created_once_for_collected_m50_to_m54(self):
+        quake = self.event(
+            DateTime="2026-11-17T04:00:00+00:00", Magnitude="5.3")
+        now = dt.datetime(2026, 11, 17, 18, 15, tzinfo=dt.timezone.utc)
+        state = {"version": 1, "events": [], "daily": {}}
+        sends = []
+
+        class WP:
+            def save(self, payload, ledger, status, marker, event=None):
+                sends.append((payload["slug"], status, marker))
+                return {"post_id": 9913, "status": status}
+
+        with tempfile.TemporaryDirectory() as temp, (
+            mock.patch.object(p, "get_events", return_value=[quake])
+        ), mock.patch.object(p, "read_state", return_value=state), (
+            mock.patch.object(p, "STATE", Path(temp) / "state.json")
+        ):
+            p.events_task("live", WP(), now)
+            p.daily_task("live", WP(), now)
+            p.daily_task("live", WP(), now)
+        self.assertEqual(len(sends), 1)
+        self.assertEqual(sends[0][1], "draft")
+        self.assertEqual(sends[0][0], "daftar-gempa-m50-m54-2026-11-17")
+        self.assertIn("dataloka-bmkg-daily:2026-11-17", sends[0][2])
+        self.assertEqual(state["daily"]["2026-11-17"]["post_id"], 9913)
+
+    def test_scheduler_gap_is_reported_in_action_log(self):
+        state = {"version": 1, "events": [], "daily": {},
+                 "last_checked_at": "2026-11-17T06:00:00Z"}
+        now = dt.datetime(2026, 11, 17, 8, 45, tzinfo=dt.timezone.utc)
+        with tempfile.TemporaryDirectory() as temp, (
+            mock.patch.object(p, "get_events", return_value=[])
+        ), mock.patch.object(p, "read_state", return_value=state), (
+            mock.patch.object(p, "STATE", Path(temp) / "state.json")
+        ), mock.patch("sys.stdout", new_callable=io.StringIO) as stdout:
+            p.events_task("live", None, now)
+            self.assertIn("::warning::Dataloka earthquake check delayed",
+                          stdout.getvalue())
+        self.assertEqual(state["last_checked_at"], "2026-11-17T08:45:00Z")
 
     def test_bmkg_transient_timeout_is_retried(self):
         class FakeResponse(io.BytesIO):

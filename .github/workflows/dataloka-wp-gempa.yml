@@ -16,6 +16,12 @@ on:
         type: choice
         default: dry-run
         options: [dry-run, live]
+      task:
+        description: "events (publish M5.5+) atau daily (buat draf ringkasan kemarin)"
+        required: true
+        type: choice
+        default: events
+        options: [events, daily]
   # Backup trigger: successful JSON-only BMKG dashboard refresh also checks Dataloka.
   # The publisher independently reads official BMKG JSON API feeds.
   # Its fingerprint ledger prevents duplicate REST writes for unchanged events.
@@ -27,6 +33,8 @@ on:
     branches: [main]
   schedule:
     - cron: '7,17,27,37,47,57 * * * *'
+    # 00:45 WIB daily: compile yesterday's monitored M5.0-5.4 as a draft.
+    - cron: '45 17 * * *'
 
 permissions:
   contents: write
@@ -64,6 +72,7 @@ jobs:
     timeout-minutes: 8
     env:
       MODE: ${{ github.event_name == 'workflow_dispatch' && inputs.mode || 'live' }}
+      TASK: ${{ github.event_name == 'schedule' && github.event.schedule == '45 17 * * *' && 'daily' || (github.event_name == 'workflow_dispatch' && inputs.task || 'events') }}
       WP_USERNAME: ${{ secrets.DATALOKA_WP_USERNAME }}
       WP_APP_PASSWORD: ${{ secrets.DATALOKA_WP_APP_PASSWORD }}
     steps:
@@ -85,7 +94,7 @@ jobs:
           test -n "$WP_USERNAME" || { echo "Missing DATALOKA_WP_USERNAME secret"; exit 1; }
           test -n "$WP_APP_PASSWORD" || { echo "Missing DATALOKA_WP_APP_PASSWORD secret"; exit 1; }
       - name: Process official BMKG feeds
-        run: python scripts/dataloka_wp_gempa.py --mode "$MODE" --task events
+        run: python scripts/dataloka_wp_gempa.py --mode "$MODE" --task "$TASK"
       - name: Persist isolated Dataloka publication state
         if: ${{ env.MODE != 'dry-run' }}
         shell: bash
