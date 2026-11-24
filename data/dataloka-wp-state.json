@@ -1,6 +1,15 @@
 {
   "version": 1,
-  "daily": {},
+  "daily": {
+    "2026-11-23": {
+      "post_id": 9258,
+      "media_id": 0,
+      "last_wp_digest": "82ddef23d10166c3bd6d4b0bea6d49e64521f470520f4888754cc26ec52b7530",
+      "yoast_meta_digest": "784a69849e9c6f63256495e1263cf64db3ad810b8eca91bc4134da7590bdca25",
+      "status": "draft",
+      "last_payload_digest": "f39bfab84405573dc5941ef53b043fecccf9078c18691e8febd44aba7f124547"
+    }
+  },
   "events": [
     {
       "key": "2cba3dde5800ca",
@@ -1137,5 +1146,5 @@
       }
     }
   ],
-  "last_checked_at": "2026-11-23T22:38:28.497343Z"
+  "last_checked_at": "2026-11-24T03:28:30.025098Z"
 }
