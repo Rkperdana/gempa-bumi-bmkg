@@ -392,24 +392,6 @@
       }
     },
     {
-      "key": "4cd3ed77114554",
-      "data": {
-        "key": "4cd3ed77114554",
-        "datetime": "2026-11-09T09:48:29Z",
-        "magnitude": 5.5,
-        "depth_km": 10.0,
-        "lat": -2.93,
-        "lon": 130.44,
-        "region": "20 km BaratLaut SERAMBAGIANTIMUR-MALUKU",
-        "potential": "Tidak berpotensi tsunami",
-        "felt_info": "",
-        "felt": false,
-        "sources": [
-          "gempaterkini.json"
-        ]
-      }
-    },
-    {
       "key": "9e768c8c7873b3",
       "data": {
         "key": "9e768c8c7873b3",
@@ -1146,5 +1128,5 @@
       }
     }
   ],
-  "last_checked_at": "2026-11-24T05:35:40.586928Z"
+  "last_checked_at": "2026-11-24T16:20:36.376898Z"
 }
