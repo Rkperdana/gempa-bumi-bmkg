@@ -22,7 +22,7 @@ on:
         type: choice
         default: events
         options: [events, daily]
-  # Backup trigger: successful JSON-only BMKG dashboard refresh also checks Dataloka.
+  # Backup trigger: completed dashboard refresh also checks Dataloka, even if Pages fails.
   # The publisher independently reads official BMKG JSON API feeds.
   # Its fingerprint ledger prevents duplicate REST writes for unchanged events.
   workflow_run:
@@ -64,10 +64,13 @@ jobs:
         run: git diff --exit-code -- data/dataloka-wp-state.json
 
   send-to-dataloka:
-    # A failed upstream sync should not trigger publication.
+    # The publisher validates BMKG JSON independently; Pages failure is not a reason to skip.
+    # Only trusted main-branch runs from this repository may invoke the live publisher.
     if: >-
       github.event_name != 'pull_request' &&
-      (github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success')
+      (github.event_name != 'workflow_run' ||
+       (github.event.workflow_run.head_repository.full_name == github.repository &&
+        (github.event.workflow_run.conclusion == 'success' || github.event.workflow_run.conclusion == 'failure')))
     runs-on: ubuntu-latest
     timeout-minutes: 8
     env:
@@ -78,6 +81,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
+          # Always use the latest ledger, including when an old job is retried.
+          ref: main
           persist-credentials: true
       - uses: actions/setup-python@v6
         with:
@@ -94,9 +99,11 @@ jobs:
           test -n "$WP_USERNAME" || { echo "Missing DATALOKA_WP_USERNAME secret"; exit 1; }
           test -n "$WP_APP_PASSWORD" || { echo "Missing DATALOKA_WP_APP_PASSWORD secret"; exit 1; }
       - name: Process official BMKG feeds
+        id: process
         run: python scripts/dataloka_wp_gempa.py --mode "$MODE" --task "$TASK"
       - name: Persist isolated Dataloka publication state
-        if: ${{ env.MODE != 'dry-run' }}
+        # A partial publication failure must not discard successful post IDs.
+        if: ${{ !cancelled() && env.MODE != 'dry-run' && (steps.process.outcome == 'success' || steps.process.outcome == 'failure') }}
         shell: bash
         run: |
           set -euo pipefail
