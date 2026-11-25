@@ -2,7 +2,7 @@
   "schema_version": 2,
   "status": "live",
   "data_origin": "api_feeds",
-  "checked_at": "2026-11-25T02:30:52.911721Z",
+  "checked_at": "2026-11-25T02:31:48.733282Z",
   "source": "Badan Meteorologi, Klimatologi, dan Geofisika (BMKG)",
   "coverage_note": "Daftar kejadian dari tiga feed JSON resmi BMKG: gempa terbaru, gempa M5,0+, dan gempa dirasakan. Bukan daftar 200 gempa real-time, bukan seluruh gempa di dunia, serta bukan jumlah seluruh kejadian dalam suatu periode.",
   "sources": {
@@ -87,7 +87,7 @@
       ],
       "shakemap": "20261122145730.mmi.jpg",
       "first_seen_at": "2026-11-22T08:14:14.070396Z",
-      "last_updated_at": "2026-11-25T02:30:52.911721Z"
+      "last_updated_at": "2026-11-25T02:31:48.733282Z"
     },
     {
       "id": "0839128f05e273",
@@ -112,7 +112,7 @@
       ],
       "shakemap": "20261122061601.mmi.jpg",
       "first_seen_at": "2026-11-22T01:17:16.963738Z",
-      "last_updated_at": "2026-11-25T02:30:52.911721Z"
+      "last_updated_at": "2026-11-25T02:31:48.733282Z"
     },
     {
       "id": "e4e9290e25a556",
