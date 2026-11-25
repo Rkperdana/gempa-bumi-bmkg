@@ -2,7 +2,7 @@
   "schema_version": 2,
   "status": "live",
   "data_origin": "api_feeds",
-  "checked_at": "2026-11-25T02:31:48.733282Z",
+  "checked_at": "2026-11-25T11:39:17.789394Z",
   "source": "Badan Meteorologi, Klimatologi, dan Geofisika (BMKG)",
   "coverage_note": "Daftar kejadian dari tiga feed JSON resmi BMKG: gempa terbaru, gempa M5,0+, dan gempa dirasakan. Bukan daftar 200 gempa real-time, bukan seluruh gempa di dunia, serta bukan jumlah seluruh kejadian dalam suatu periode.",
   "sources": {
@@ -12,6 +12,31 @@
   },
   "errors": [],
   "events": [
+    {
+      "id": "da975dd99e9e18",
+      "datetime": "2026-11-25T05:33:27Z",
+      "magnitude": 4.0,
+      "depth_km": 5.0,
+      "lat": -8.14,
+      "lon": 120.49,
+      "region": "Pusat gempa berada di laut 53 km utara Ruteng-Manggarai",
+      "felt": true,
+      "felt_info": "II Kab. Manggarai",
+      "tsunami": false,
+      "potential_text": "Gempa ini dirasakan untuk diteruskan pada masyarakat",
+      "significant": false,
+      "source_types": [
+        "felt",
+        "latest"
+      ],
+      "source_urls": [
+        "https://data.bmkg.go.id/DataMKG/TEWS/autogempa.json",
+        "https://data.bmkg.go.id/DataMKG/TEWS/gempadirasakan.json"
+      ],
+      "shakemap": "20261125123327.mmi.jpg",
+      "first_seen_at": "2026-11-25T11:39:17.789394Z",
+      "last_updated_at": "2026-11-25T11:39:17.789394Z"
+    },
     {
       "id": "f1d95b30cd8356",
       "datetime": "2026-11-23T11:24:32Z",
@@ -87,7 +112,7 @@
       ],
       "shakemap": "20261122145730.mmi.jpg",
       "first_seen_at": "2026-11-22T08:14:14.070396Z",
-      "last_updated_at": "2026-11-25T02:31:48.733282Z"
+      "last_updated_at": "2026-11-25T11:39:17.789394Z"
     },
     {
       "id": "0839128f05e273",
@@ -112,7 +137,7 @@
       ],
       "shakemap": "20261122061601.mmi.jpg",
       "first_seen_at": "2026-11-22T01:17:16.963738Z",
-      "last_updated_at": "2026-11-25T02:31:48.733282Z"
+      "last_updated_at": "2026-11-25T11:39:17.789394Z"
     },
     {
       "id": "e4e9290e25a556",
