@@ -374,24 +374,6 @@
       }
     },
     {
-      "key": "b7b4f5fde73648",
-      "data": {
-        "key": "b7b4f5fde73648",
-        "datetime": "2026-11-10T01:53:28Z",
-        "magnitude": 5.4,
-        "depth_km": 84.0,
-        "lat": -8.02,
-        "lon": 130.49,
-        "region": "90 km BaratDaya TANIMBAR",
-        "potential": "Tidak berpotensi tsunami",
-        "felt_info": "",
-        "felt": false,
-        "sources": [
-          "gempaterkini.json"
-        ]
-      }
-    },
-    {
       "key": "9e768c8c7873b3",
       "data": {
         "key": "9e768c8c7873b3",
@@ -1128,5 +1110,5 @@
       }
     }
   ],
-  "last_checked_at": "2026-11-25T01:36:08.530875Z"
+  "last_checked_at": "2026-11-25T02:31:19.188099Z"
 }
