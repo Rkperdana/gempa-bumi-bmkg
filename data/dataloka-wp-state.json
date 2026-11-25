@@ -299,25 +299,6 @@
       }
     },
     {
-      "key": "949d050ce63a1f",
-      "data": {
-        "key": "949d050ce63a1f",
-        "datetime": "2026-11-10T08:34:04Z",
-        "magnitude": 5.3,
-        "depth_km": 10.0,
-        "lat": -0.19,
-        "lon": 132.98,
-        "region": "69 km BaratLaut KEBARMANOKWARI-PAPUABRT",
-        "potential": "Tidak berpotensi tsunami",
-        "felt_info": "II - III Manokwari",
-        "felt": true,
-        "sources": [
-          "gempadirasakan.json",
-          "gempaterkini.json"
-        ]
-      }
-    },
-    {
       "key": "2ee2d310cae945",
       "data": {
         "key": "2ee2d310cae945",
@@ -1110,5 +1091,5 @@
       }
     }
   ],
-  "last_checked_at": "2026-11-25T02:31:19.188099Z"
+  "last_checked_at": "2026-11-25T09:25:22.788202Z"
 }
