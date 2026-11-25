@@ -263,42 +263,6 @@
       }
     },
     {
-      "key": "9302050448d713",
-      "data": {
-        "key": "9302050448d713",
-        "datetime": "2026-11-10T16:04:15Z",
-        "magnitude": 4.0,
-        "depth_km": 5.0,
-        "lat": -4.29,
-        "lon": 122.38,
-        "region": "Pusat gempa berada di darat 12 km timur Konawe Selatan",
-        "potential": "",
-        "felt_info": "IV Konawe Selatan, III Kendari",
-        "felt": true,
-        "sources": [
-          "gempadirasakan.json"
-        ]
-      }
-    },
-    {
-      "key": "43843fa13b24c5",
-      "data": {
-        "key": "43843fa13b24c5",
-        "datetime": "2026-11-10T14:31:38Z",
-        "magnitude": 4.0,
-        "depth_km": 102.0,
-        "lat": -7.04,
-        "lon": 106.98,
-        "region": "Pusat gempa berada di darat 15 km selatan Kota Sukabumi",
-        "potential": "",
-        "felt_info": "III Cianjur, II Sukabumi, II - III Ciwidey, II - III Pangalengan, II - III Nagrak, II Kec. Kebonpedes, II Cihanjuang, II Padalarang, II Cihideung, II Ngamprah, II Cisarua, II Lembang, II Karawang Selatan",
-        "felt": true,
-        "sources": [
-          "gempadirasakan.json"
-        ]
-      }
-    },
-    {
       "key": "2ee2d310cae945",
       "data": {
         "key": "2ee2d310cae945",
@@ -333,24 +297,6 @@
         "sources": [
           "gempaterkini.json",
           "realtime"
-        ]
-      }
-    },
-    {
-      "key": "01629aad592e63",
-      "data": {
-        "key": "01629aad592e63",
-        "datetime": "2026-11-10T15:51:37Z",
-        "magnitude": 5.1,
-        "depth_km": 10.0,
-        "lat": -0.93,
-        "lon": 128.6,
-        "region": "116 km TimurLaut HALMAHERASELATAN-MALUT",
-        "potential": "Tidak berpotensi tsunami",
-        "felt_info": "",
-        "felt": false,
-        "sources": [
-          "gempaterkini.json"
         ]
       }
     },
@@ -1099,8 +1045,8 @@
         "depth_km": 56.0,
         "lat": -0.43,
         "lon": 123.08,
-        "region": "Pusat gempa berada di laut 56 km timur laut Pulau Puah",
-        "potential": "Gempa ini dirasakan untuk diteruskan pada masyarakat",
+        "region": "56 km TimurLaut PULAUPUAH-SULTENG",
+        "potential": "Tidak berpotensi tsunami",
         "felt_info": "III Luwuk, III Kota Gorontalo, III Kab. Gorontalo, III Bone Bolango, III Gorontalo Utara, III Pohuwato, III Minahasa Tenggara, III Boalemo",
         "felt": true,
         "sources": [
@@ -1114,6 +1060,11 @@
           "post_id": 9297,
           "status": "publish",
           "media_id": 9296
+        },
+        "f85492c0597bc3e5:publish": {
+          "post_id": 9303,
+          "status": "publish",
+          "media_id": 9296
         }
       },
       "post_id": 9297,
@@ -1124,5 +1075,5 @@
       "last_payload_digest": "c9cd2efee2c2c3b9dc869c7c36aa0487e5cdbac343dd4bbacf4e5846f28270e6"
     }
   ],
-  "last_checked_at": "2026-11-25T12:31:21.737788Z"
+  "last_checked_at": "2026-11-25T19:29:35.222692Z"
 }
