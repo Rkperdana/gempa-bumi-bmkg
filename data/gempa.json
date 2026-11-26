@@ -2,7 +2,7 @@
   "schema_version": 2,
   "status": "live",
   "data_origin": "api_feeds",
-  "checked_at": "2026-11-26T12:39:22.199931Z",
+  "checked_at": "2026-11-26T21:51:44.202777Z",
   "source": "Badan Meteorologi, Klimatologi, dan Geofisika (BMKG)",
   "coverage_note": "Daftar kejadian dari tiga feed JSON resmi BMKG: gempa terbaru, gempa M5,0+, dan gempa dirasakan. Bukan daftar 200 gempa real-time, bukan seluruh gempa di dunia, serta bukan jumlah seluruh kejadian dalam suatu periode.",
   "sources": {
@@ -12,6 +12,31 @@
   },
   "errors": [],
   "events": [
+    {
+      "id": "5e3c7941b9593a",
+      "datetime": "2026-11-26T15:40:36Z",
+      "magnitude": 4.2,
+      "depth_km": 14.0,
+      "lat": -1.22,
+      "lon": 134.27,
+      "region": "Pusat gempa berada di laut 34 km utara Ransiki",
+      "felt": true,
+      "felt_info": "II-III Manokwari",
+      "tsunami": false,
+      "potential_text": "Gempa ini dirasakan untuk diteruskan pada masyarakat",
+      "significant": false,
+      "source_types": [
+        "felt",
+        "latest"
+      ],
+      "source_urls": [
+        "https://data.bmkg.go.id/DataMKG/TEWS/autogempa.json",
+        "https://data.bmkg.go.id/DataMKG/TEWS/gempadirasakan.json"
+      ],
+      "shakemap": "20261126224036.mmi.jpg",
+      "first_seen_at": "2026-11-26T21:51:44.202777Z",
+      "last_updated_at": "2026-11-26T21:51:44.202777Z"
+    },
     {
       "id": "251b9eff620b0b",
       "datetime": "2026-11-26T09:08:39Z",
@@ -60,7 +85,7 @@
       ],
       "shakemap": "20261125202830.mmi.jpg",
       "first_seen_at": "2026-11-25T20:40:06.417751Z",
-      "last_updated_at": "2026-11-26T12:39:22.199931Z"
+      "last_updated_at": "2026-11-26T21:51:44.202777Z"
     },
     {
       "id": "deed7c74cd2ec1",
@@ -87,7 +112,7 @@
       ],
       "shakemap": "20261125190811.mmi.jpg",
       "first_seen_at": "2026-11-25T12:30:40.656926Z",
-      "last_updated_at": "2026-11-26T12:39:22.199931Z"
+      "last_updated_at": "2026-11-26T21:51:44.202777Z"
     },
     {
       "id": "da975dd99e9e18",
@@ -112,7 +137,7 @@
       ],
       "shakemap": "20261125123327.mmi.jpg",
       "first_seen_at": "2026-11-25T11:39:17.789394Z",
-      "last_updated_at": "2026-11-26T12:39:22.199931Z"
+      "last_updated_at": "2026-11-26T21:51:44.202777Z"
     },
     {
       "id": "f1d95b30cd8356",
@@ -189,7 +214,7 @@
       ],
       "shakemap": "20261122145730.mmi.jpg",
       "first_seen_at": "2026-11-22T08:14:14.070396Z",
-      "last_updated_at": "2026-11-26T12:39:22.199931Z"
+      "last_updated_at": "2026-11-26T21:51:44.202777Z"
     },
     {
       "id": "0839128f05e273",
@@ -214,7 +239,7 @@
       ],
       "shakemap": "20261122061601.mmi.jpg",
       "first_seen_at": "2026-11-22T01:17:16.963738Z",
-      "last_updated_at": "2026-11-26T12:39:22.199931Z"
+      "last_updated_at": "2026-11-26T21:51:44.202777Z"
     },
     {
       "id": "e4e9290e25a556",
