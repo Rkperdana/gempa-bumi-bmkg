@@ -108,10 +108,15 @@ jobs:
               time.sleep(attempt)
           PY
 
+      # GitHub Pages deployment belongs to the primary scheduled workflow.
+      # Reusable backup calls keep data synchronization and publisher triggers,
+      # but skip Pages because upload/deploy artifacts are scoped to the caller run.
       - name: Configure GitHub Pages
+        if: ${{ github.event_name != 'workflow_call' }}
         uses: actions/configure-pages@v5
 
       - name: Prepare static website
+        if: ${{ github.event_name != 'workflow_call' }}
         run: |
           mkdir -p _site
           cp index.html styles.css explorer.css app.js _site/
@@ -119,12 +124,14 @@ jobs:
           touch _site/.nojekyll
 
       - name: Upload GitHub Pages artifact
+        if: ${{ github.event_name != 'workflow_call' }}
         uses: actions/upload-pages-artifact@v4
         with:
           path: _site
           name: github-pages-${{ github.run_id }}-${{ github.run_attempt }}
 
       - name: Deploy to GitHub Pages
+        if: ${{ github.event_name != 'workflow_call' }}
         id: deployment
         uses: actions/deploy-pages@v4
         with:
