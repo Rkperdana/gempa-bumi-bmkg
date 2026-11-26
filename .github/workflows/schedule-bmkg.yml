@@ -3,6 +3,7 @@ name: Cadangan otomatis sinkronisasi BMKG
 on:
   workflow_dispatch:
   # Offset backup trigger between the primary ten-minute checks.
+  # The reusable call syncs data only; the primary workflow owns Pages deployment.
   # Six staggered checks per hour fill the five-minute gaps between primary checks.
   schedule:
     - cron: '9,19,29,39,49,59 * * * *'
