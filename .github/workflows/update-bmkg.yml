@@ -130,6 +130,10 @@ jobs:
           path: _site
           name: github-pages-${{ github.run_id }}-${{ github.run_attempt }}
 
+      - name: Wait for Pages artifact metadata
+        if: ${{ github.event_name != 'workflow_call' }}
+        run: sleep 10
+
       - name: Deploy to GitHub Pages
         if: ${{ github.event_name != 'workflow_call' }}
         id: deployment
