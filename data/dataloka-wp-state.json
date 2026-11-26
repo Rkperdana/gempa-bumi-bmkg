@@ -1037,7 +1037,39 @@
       "yoast_meta_digest": "35de20abfe1b3376763c9cb7afdbf49fa972d5ec6659ef65d6500c5e91554f1f",
       "status": "publish",
       "last_payload_digest": "c9cd2efee2c2c3b9dc869c7c36aa0487e5cdbac343dd4bbacf4e5846f28270e6"
+    },
+    {
+      "key": "251b9eff620b0b",
+      "data": {
+        "key": "251b9eff620b0b",
+        "datetime": "2026-11-26T09:08:39Z",
+        "magnitude": 5.6,
+        "depth_km": 10.0,
+        "lat": -10.79,
+        "lon": 117.26,
+        "region": "230 km Tenggara SUMBAWABARAT-NTB",
+        "potential": "Tidak berpotensi tsunami",
+        "felt_info": "-",
+        "felt": true,
+        "sources": [
+          "autogempa.json",
+          "gempaterkini.json"
+        ]
+      },
+      "published_versions": {
+        "5bcb03137d05b3b6:publish": {
+          "post_id": 9324,
+          "status": "publish",
+          "media_id": 9323
+        }
+      },
+      "post_id": 9324,
+      "media_id": 9323,
+      "last_wp_digest": "76a79644a5295ad8345bd6db6d58cdf6fa1c9e508483e08011ca7279c9c48a06",
+      "yoast_meta_digest": "c1041fcdf1ecb545a5cab3c14da5f7ba514cb01a2943bdd5f08c47f36517baaf",
+      "status": "publish",
+      "last_payload_digest": "ba29b86e751455a28e3a0fe8559d7daecfafdb5d24466ae25222f0968cd731b8"
     }
   ],
-  "last_checked_at": "2026-11-26T08:21:42.871939Z"
+  "last_checked_at": "2026-11-26T11:13:36.684272Z"
 }
