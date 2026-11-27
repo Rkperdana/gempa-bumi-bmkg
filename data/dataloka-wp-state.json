@@ -208,25 +208,6 @@
       }
     },
     {
-      "key": "906a019d2d0682",
-      "data": {
-        "key": "906a019d2d0682",
-        "datetime": "2026-11-12T11:16:30Z",
-        "magnitude": 4.8,
-        "depth_km": 13.0,
-        "lat": -8.06,
-        "lon": 120.81,
-        "region": "Pusat gempa berada di laut 73 km Timur Laut Ruteng, Manggarai",
-        "potential": "",
-        "felt_info": "II Kab. Manggarai",
-        "felt": true,
-        "sources": [
-          "gempadirasakan.json",
-          "realtime"
-        ]
-      }
-    },
-    {
       "key": "2ee2d310cae945",
       "data": {
         "key": "2ee2d310cae945",
@@ -1035,5 +1016,5 @@
       "last_payload_digest": "ba29b86e751455a28e3a0fe8559d7daecfafdb5d24466ae25222f0968cd731b8"
     }
   ],
-  "last_checked_at": "2026-11-27T03:53:08.791504Z"
+  "last_checked_at": "2026-11-27T11:28:47.226234Z"
 }
