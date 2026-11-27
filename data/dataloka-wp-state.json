@@ -566,24 +566,6 @@
       }
     },
     {
-      "key": "5312b248f809c3",
-      "data": {
-        "key": "5312b248f809c3",
-        "datetime": "2026-11-12T03:45:53Z",
-        "magnitude": 5.4,
-        "depth_km": 89.0,
-        "lat": -58.95,
-        "lon": -25.72,
-        "region": "South Sandwich Islands Region",
-        "felt": false,
-        "felt_info": "",
-        "potential": "",
-        "sources": [
-          "realtime"
-        ]
-      }
-    },
-    {
       "key": "86bf2242952643",
       "data": {
         "key": "86bf2242952643",
@@ -1053,5 +1035,5 @@
       "last_payload_digest": "ba29b86e751455a28e3a0fe8559d7daecfafdb5d24466ae25222f0968cd731b8"
     }
   ],
-  "last_checked_at": "2026-11-27T02:50:51.509421Z"
+  "last_checked_at": "2026-11-27T03:53:08.791504Z"
 }
