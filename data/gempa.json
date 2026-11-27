@@ -2,7 +2,7 @@
   "schema_version": 2,
   "status": "live",
   "data_origin": "api_feeds",
-  "checked_at": "2026-11-27T03:56:40.895702Z",
+  "checked_at": "2026-11-27T13:22:05.973719Z",
   "source": "Badan Meteorologi, Klimatologi, dan Geofisika (BMKG)",
   "coverage_note": "Daftar kejadian dari tiga feed JSON resmi BMKG: gempa terbaru, gempa M5,0+, dan gempa dirasakan. Bukan daftar 200 gempa real-time, bukan seluruh gempa di dunia, serta bukan jumlah seluruh kejadian dalam suatu periode.",
   "sources": {
@@ -12,6 +12,100 @@
   },
   "errors": [],
   "events": [
+    {
+      "id": "9ebfdfef153d37",
+      "datetime": "2026-11-27T03:59:44Z",
+      "magnitude": 2.6,
+      "depth_km": 3.0,
+      "lat": 4.74,
+      "lon": 96.74,
+      "region": "Pusat gempa berada di darat 13 km barat Bener Meriah",
+      "felt": true,
+      "felt_info": "II - III Bener Meriah",
+      "tsunami": false,
+      "potential_text": "Gempa ini dirasakan untuk diteruskan pada masyarakat",
+      "significant": false,
+      "source_types": [
+        "felt",
+        "latest"
+      ],
+      "source_urls": [
+        "https://data.bmkg.go.id/DataMKG/TEWS/autogempa.json",
+        "https://data.bmkg.go.id/DataMKG/TEWS/gempadirasakan.json"
+      ],
+      "shakemap": "20261127105944.mmi.jpg",
+      "first_seen_at": "2026-11-27T13:22:05.973719Z",
+      "last_updated_at": "2026-11-27T13:22:05.973719Z"
+    },
+    {
+      "id": "1f8c220b933c63",
+      "datetime": "2026-11-27T03:56:37Z",
+      "magnitude": 3.1,
+      "depth_km": 10.0,
+      "lat": -8.55,
+      "lon": 116.04,
+      "region": "Pusat gempa berada di laut 18 km barat laut Lombok Barat",
+      "felt": true,
+      "felt_info": "III Kota Mataram , III Kab. Lombok Barat",
+      "tsunami": false,
+      "potential_text": "",
+      "significant": false,
+      "source_types": [
+        "felt"
+      ],
+      "source_urls": [
+        "https://data.bmkg.go.id/DataMKG/TEWS/gempadirasakan.json"
+      ],
+      "shakemap": "",
+      "first_seen_at": "2026-11-27T13:22:05.973719Z",
+      "last_updated_at": "2026-11-27T13:22:05.973719Z"
+    },
+    {
+      "id": "55708386db87ea",
+      "datetime": "2026-11-27T03:51:14Z",
+      "magnitude": 2.8,
+      "depth_km": 16.0,
+      "lat": -2.49,
+      "lon": 140.66,
+      "region": "Pusat gempa berada di darat 8 km barat laut Kota Jayapura",
+      "felt": true,
+      "felt_info": "III Kota Jayapura",
+      "tsunami": false,
+      "potential_text": "",
+      "significant": false,
+      "source_types": [
+        "felt"
+      ],
+      "source_urls": [
+        "https://data.bmkg.go.id/DataMKG/TEWS/gempadirasakan.json"
+      ],
+      "shakemap": "",
+      "first_seen_at": "2026-11-27T13:22:05.973719Z",
+      "last_updated_at": "2026-11-27T13:22:05.973719Z"
+    },
+    {
+      "id": "e33649f7efc3ed",
+      "datetime": "2026-11-27T02:39:21Z",
+      "magnitude": 4.3,
+      "depth_km": 21.0,
+      "lat": -7.79,
+      "lon": 120.49,
+      "region": "Pusat gempa berada dilaut 92 km utara Ruteng-Manggarai",
+      "felt": true,
+      "felt_info": "II Manggarai",
+      "tsunami": false,
+      "potential_text": "",
+      "significant": false,
+      "source_types": [
+        "felt"
+      ],
+      "source_urls": [
+        "https://data.bmkg.go.id/DataMKG/TEWS/gempadirasakan.json"
+      ],
+      "shakemap": "",
+      "first_seen_at": "2026-11-27T13:22:05.973719Z",
+      "last_updated_at": "2026-11-27T13:22:05.973719Z"
+    },
     {
       "id": "5e3c7941b9593a",
       "datetime": "2026-11-26T15:40:36Z",
@@ -35,7 +129,7 @@
       ],
       "shakemap": "20261126224036.mmi.jpg",
       "first_seen_at": "2026-11-26T21:51:44.202777Z",
-      "last_updated_at": "2026-11-27T03:56:40.895702Z"
+      "last_updated_at": "2026-11-27T13:22:05.973719Z"
     },
     {
       "id": "251b9eff620b0b",
@@ -85,7 +179,7 @@
       ],
       "shakemap": "20261125202830.mmi.jpg",
       "first_seen_at": "2026-11-25T20:40:06.417751Z",
-      "last_updated_at": "2026-11-27T03:56:40.895702Z"
+      "last_updated_at": "2026-11-27T13:22:05.973719Z"
     },
     {
       "id": "deed7c74cd2ec1",
@@ -112,7 +206,7 @@
       ],
       "shakemap": "20261125190811.mmi.jpg",
       "first_seen_at": "2026-11-25T12:30:40.656926Z",
-      "last_updated_at": "2026-11-27T03:56:40.895702Z"
+      "last_updated_at": "2026-11-27T13:22:05.973719Z"
     },
     {
       "id": "da975dd99e9e18",
@@ -137,7 +231,7 @@
       ],
       "shakemap": "20261125123327.mmi.jpg",
       "first_seen_at": "2026-11-25T11:39:17.789394Z",
-      "last_updated_at": "2026-11-27T03:56:40.895702Z"
+      "last_updated_at": "2026-11-27T13:22:05.973719Z"
     },
     {
       "id": "f1d95b30cd8356",
@@ -214,7 +308,7 @@
       ],
       "shakemap": "20261122145730.mmi.jpg",
       "first_seen_at": "2026-11-22T08:14:14.070396Z",
-      "last_updated_at": "2026-11-27T03:56:40.895702Z"
+      "last_updated_at": "2026-11-27T13:22:05.973719Z"
     },
     {
       "id": "0839128f05e273",
@@ -239,7 +333,7 @@
       ],
       "shakemap": "20261122061601.mmi.jpg",
       "first_seen_at": "2026-11-22T01:17:16.963738Z",
-      "last_updated_at": "2026-11-27T03:56:40.895702Z"
+      "last_updated_at": "2026-11-27T13:22:05.973719Z"
     },
     {
       "id": "e4e9290e25a556",
