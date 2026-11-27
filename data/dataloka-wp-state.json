@@ -171,43 +171,6 @@
       }
     },
     {
-      "key": "f2c3d197d4d102",
-      "data": {
-        "key": "f2c3d197d4d102",
-        "datetime": "2026-11-12T19:14:40Z",
-        "magnitude": 4.6,
-        "depth_km": 17.0,
-        "lat": -8.2,
-        "lon": 116.76,
-        "region": "Pusat gempa berada di laut 32 km barat laut Pulau Panjang",
-        "potential": "",
-        "felt_info": "III Kab. Sumbawa, III Kab. Sumbawa Barat, III Kab. Lombok Utara, III Kab. Lombok Timur, II Kota Mataram",
-        "felt": true,
-        "sources": [
-          "gempadirasakan.json",
-          "realtime"
-        ]
-      }
-    },
-    {
-      "key": "7641d577918d30",
-      "data": {
-        "key": "7641d577918d30",
-        "datetime": "2026-11-12T14:19:05Z",
-        "magnitude": 1.9,
-        "depth_km": 17.0,
-        "lat": -3.95,
-        "lon": 121.66,
-        "region": "Pusat gempa berada di darat 13 km utara Kolaka",
-        "potential": "",
-        "felt_info": "II Kolaka",
-        "felt": true,
-        "sources": [
-          "gempadirasakan.json"
-        ]
-      }
-    },
-    {
       "key": "2ee2d310cae945",
       "data": {
         "key": "2ee2d310cae945",
@@ -1016,5 +979,5 @@
       "last_payload_digest": "ba29b86e751455a28e3a0fe8559d7daecfafdb5d24466ae25222f0968cd731b8"
     }
   ],
-  "last_checked_at": "2026-11-27T13:22:43.845659Z"
+  "last_checked_at": "2026-11-27T20:15:00.760945Z"
 }
