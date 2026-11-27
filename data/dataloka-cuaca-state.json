@@ -191,6 +191,18 @@
       "editorial_version": 2,
       "featured_tag_removed": true,
       "expires": "2026-11-27T05:30:00+07:00"
+    },
+    "e19f27e02b29ff4c": {
+      "post_id": 9347,
+      "media_id": 9346,
+      "last_wp_digest": "a862efdacaa94f590dba76f994392383326389689ebd73dd2c125bde6a3d939d",
+      "yoast_meta_digest": "da90bd661b0f266d27a0d72878c1b6a2e1bb7cd37d6ae8bdd9eeec811e4bc151",
+      "status": "publish",
+      "last_payload_digest": "430d2a55ed068024e84a6adb8229a136fabb51b382425d01e8e5629ade5820ea",
+      "fingerprint": "0b4a3b9f02a9006b18639f9b5f1fcb853f1390e0e77e1d182b5f0b38ddc0463d",
+      "editorial_version": 2,
+      "featured_tag_removed": true,
+      "expires": "2026-11-27T11:30:00+07:00"
     }
   }
 }
