@@ -491,42 +491,33 @@
       "editorial_version": 2,
       "featured_tag_removed": true,
       "expires": "2026-11-28T14:39:00+09:00"
-    }
-  },
-  "pending": {
-    "a28ca48659abae4e": {
-      "key": "a28ca48659abae4e",
-      "identifier": "2.49.0.1.360.0.2026.11.28.02.13.003",
-      "url": "https://www.bmkg.go.id/alerts/nowcast/id/CSB20261128003_alert.xml",
-      "event": "Hujan Lebat dan Petir",
-      "headline": "Hujan Lebat disertai Petir di Sumatera Barat",
-      "description": "Hujan lebat disertai petir akan terjadi pada 28 November 2026, 09:30 WIB di sebagian wilayah Sumatera Barat, khususnya di AMPEK NAGARI, BATANG ANAI, BATANG GASAN, BAYANG, BUNGUS TELUK KABUNG, ENAM LINGKUNG, IV KOTO AUR MALINTANG, KOTO TANGAH, KOTO XI TARUSAN, KURANJI, LUBUK ALUNG, LUBUK BASUNG, LUBUK BEGALUNG, NAN SABARIS, NANGGALO, PADANG BARAT, PADANG SAGO, PADANG SELATAN, PADANG TIMUR, PADANG UTARA, PAGAI UTARA, PARIAMAN SELATAN, PARIAMAN TENGAH, PARIAMAN TIMUR, PARIAMAN UTARA, PELEMBAYAN, SIBERUT BARAT, SIBERUT UTARA, SINTUAK TOBOH GADANG, SIPORA SELATAN, SIPORA UTARA, SUNGAI GARINGGING, SUNGAI LIMAU, TANJUNG MUTIARA, TIGO NAGARI, ULAKAN TAPAKIH, V KOTO KAMPUNG DALAM, V KOTO TIMUR, VII KOTO SUNGAI SARIK. Kondisi ini berpotensi menimbulkan dampak berupa jarak pandang berkurang, angin kencang, dan banjir lokal. Masyarakat dihimbau untuk tetap waspada, mengurangi aktivitas di luar ruangan, serta mengambil langkah-langkah pencegahan yang diperlukan guna menjaga keselamatan. Kondisi diperkirakan dapat berlangsung hingga 28 November 2026, 12:00 WIB.",
-      "region": "Sumatera Barat",
-      "issued": "2026-11-28T09:20:00+07:00",
-      "effective": "2026-11-28T09:30:00+07:00",
-      "expires": "2026-11-28T12:00:00+07:00",
-      "severity": "Moderate",
-      "urgency": "Immediate",
-      "certainty": "Observed",
-      "sender": "Badan Meteorologi Klimatologi dan Geofisika"
     },
     "7393254fc3e5d19f": {
-      "key": "7393254fc3e5d19f",
-      "identifier": "2.49.0.1.360.0.2026.11.28.02.92.001",
-      "url": "https://www.bmkg.go.id/alerts/nowcast/id/CPB20261128001_alert.xml",
-      "event": "Hujan Lebat dan Petir",
-      "headline": "Hujan Lebat disertai Petir di Papua Barat",
-      "description": "Hujan lebat disertai petir akan terjadi pada 28 November 2026, 11:48 WIT di sebagian wilayah Papua Barat, khususnya di CATUBOUW, MASNI, SIDEY. Kondisi ini berpotensi menimbulkan dampak berupa jarak pandang berkurang, angin kencang, dan banjir lokal. Masyarakat dihimbau untuk tetap waspada, mengurangi aktivitas di luar ruangan, serta mengambil langkah-langkah pencegahan yang diperlukan guna menjaga keselamatan. Kondisi diperkirakan dapat berlangsung hingga 28 November 2026, 13:48 WIT.",
-      "region": "Papua Barat",
-      "issued": "2026-11-28T11:18:00+09:00",
-      "effective": "2026-11-28T11:48:00+09:00",
-      "expires": "2026-11-28T13:48:00+09:00",
-      "severity": "Moderate",
-      "urgency": "Immediate",
-      "certainty": "Observed",
-      "sender": "Badan Meteorologi Klimatologi dan Geofisika"
+      "post_id": 9463,
+      "media_id": 9462,
+      "last_wp_digest": "0798d2a40df639af312a475d27c1bfcf22dc58ae9157494fc83d21d252be94d1",
+      "yoast_meta_digest": "5561fa100a4e142c6439c899d9ec6373d8aa4aa07cfb7a21f4ba9fbda9fcd532",
+      "status": "publish",
+      "last_payload_digest": "854371d9394bc377bd9405ab28ed314e7f27d67e4757c067a0f1b34328d10eca",
+      "fingerprint": "d82016ce3766eb3637abe0c68155518c2a5b70791299ee3e44f99aefeb8316bc",
+      "editorial_version": 2,
+      "featured_tag_removed": true,
+      "expires": "2026-11-28T13:48:00+09:00"
+    },
+    "a28ca48659abae4e": {
+      "post_id": 9466,
+      "media_id": 9465,
+      "last_wp_digest": "9f46b43d3c22419379c1bbd9deafc50c77a13db2c6dd7c57849d04046f643d44",
+      "yoast_meta_digest": "acf2df8ddc696364d53d4c8b9e4e0b38a9d40edb9eee8d07535cc34a496b7083",
+      "status": "publish",
+      "last_payload_digest": "1b41c16c134099cf48c13630baa2ed8ee247b835a2a50fda6336b87bf4932a6e",
+      "fingerprint": "baa7952287d7e512edaf3e039c95065db69ee272af7593a98090367fcc1b65ec",
+      "editorial_version": 2,
+      "featured_tag_removed": true,
+      "expires": "2026-11-28T12:00:00+07:00"
     }
   },
+  "pending": {},
   "skipped": {
     "16876fd4b23bb830": {
       "region": "Sumatera Barat",
@@ -593,9 +584,10 @@
     "Kep. Bangka Belitung": "2026-11-28T01:17:56.934775+00:00",
     "Kalimantan Utara": "2026-11-28T02:10:44.472061+00:00",
     "Bengkulu": "2026-11-28T02:08:22.808462+00:00",
-    "Sumatera Barat": "2026-11-28T02:09:14.856898+00:00",
+    "Sumatera Barat": "2026-11-28T02:39:04.540456+00:00",
     "Jawa Timur": "2026-11-28T02:10:01.215208+00:00",
     "Aceh": "2026-11-28T02:17:53.130988+00:00",
-    "Papua": "2026-11-28T02:27:33.618523+00:00"
+    "Papua": "2026-11-28T02:27:33.618523+00:00",
+    "Papua Barat": "2026-11-28T02:37:59.709886+00:00"
   }
 }
