@@ -96,7 +96,7 @@ def article(a, now):
         highest = next(k for k in reversed(LEVELS) if a["groups"][k])
         title = f"BMKG: Waspada Gelombang {('Ekstrem' if highest == 'ekstrem' else 'Sangat Tinggi' if highest == 'sangat_tinggi' else 'Tinggi')} di {region} hingga {date_label(end)}"
         if region == "Indonesia" and highest == "tinggi":
-            title = f"BMKG: Waspada Gelombang hingga 4 Meter di Perairan Indonesia hingga {date_label(end)}"
+            title = f"BMKG: Waspada Gelombang 2,5–4 Meter di Perairan Indonesia hingga {date_label(end)}"
         topic = "gelombang tinggi"
         detail = "; ".join(LEVELS[k]+": "+", ".join(v) for k,v in a["groups"].items() if v)
         tags = ["BMKG","Cuaca","Gelombang Tinggi","Maritim"]
