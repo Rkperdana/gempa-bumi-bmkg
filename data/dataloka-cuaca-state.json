@@ -1618,7 +1618,8 @@
       "yoast_meta_digest": "91a17baf59ce797178833ce2878db672ced83ebea64da3dd5389d15369f56907",
       "status": "publish",
       "last_payload_digest": "7ba85d728d2d3efbdab58d833dc671a63a359415a8ae8d1323b449549154a60f",
-      "marker_key": "a767b204fdb7aa7c"
+      "marker_key": "a767b204fdb7aa7c",
+      "featured_tag_removed": true
     },
     "8a3a5edd83894bd1": {
       "fingerprint": "5862c4e0b0af3838c6c8ed849f09e906afaa9b67cbf04565702ac6e5dec2dd89",
