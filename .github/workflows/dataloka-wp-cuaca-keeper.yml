@@ -30,6 +30,7 @@ jobs:
     timeout-minutes: 350
     permissions:
       contents: write
+      actions: write
     env:
       BMKG_NOWCAST_AUTHORIZED: 'true'
       WP_USERNAME: ${{ secrets.DATALOKA_WP_USERNAME }}
@@ -52,3 +53,8 @@ jobs:
         run: python -m unittest discover -s tests -p 'test_dataloka_wp_cuaca.py' -v
       - name: Check BMKG and WordPress every 10 minutes
         run: bash scripts/dataloka-cuaca-keeper.sh 34 600
+      - name: Queue the next keeper run
+        if: success()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh workflow run dataloka-wp-cuaca-keeper.yml --ref main --repo "$GITHUB_REPOSITORY"
