@@ -2319,6 +2319,22 @@
       "urgency": "Immediate",
       "certainty": "Observed",
       "sender": "Badan Meteorologi Klimatologi dan Geofisika"
+    },
+    "62d43892ebde1150": {
+      "key": "62d43892ebde1150",
+      "identifier": "2.49.0.1.360.0.2026.11.28.16.94.003",
+      "url": "https://www.bmkg.go.id/alerts/nowcast/id/CPT20261128003_alert.xml",
+      "event": "Hujan Lebat dan Petir",
+      "headline": "Hujan Lebat disertai Petir di Papua Tengah",
+      "description": "Hujan lebat disertai petir akan terjadi pada 29 November 2026, 01:15 WIT di sebagian wilayah Papua Tengah, khususnya di AMAR, IWAKA, KUALA KENCANA, MIMIKA BARAT, TEMBAGAPURA. Kondisi ini berpotensi menimbulkan dampak berupa jarak pandang berkurang, angin kencang, dan banjir lokal. Masyarakat dihimbau untuk tetap waspada, mengurangi aktivitas di luar ruangan, serta mengambil langkah-langkah pencegahan yang diperlukan guna menjaga keselamatan. Kondisi diperkirakan dapat berlangsung hingga 29 November 2026, 03:45 WIT.",
+      "region": "Papua Tengah",
+      "issued": "2026-11-29T01:00:00+09:00",
+      "effective": "2026-11-29T01:15:00+09:00",
+      "expires": "2026-11-29T03:45:00+09:00",
+      "severity": "Moderate",
+      "urgency": "Immediate",
+      "certainty": "Observed",
+      "sender": "Badan Meteorologi Klimatologi dan Geofisika"
     }
   },
   "skipped": {
@@ -2556,10 +2572,15 @@
       "region": "Gorontalo",
       "expires": "2026-11-28T23:49:00+08:00",
       "reason": "expired"
+    },
+    "b2855ac6066dca4e": {
+      "region": "Papua Tengah",
+      "expires": "2026-11-29T01:15:00+09:00",
+      "reason": "expired"
     }
   },
   "unread_urls": [],
-  "last_checked_at": "2026-11-28T16:08:37.967858+00:00",
+  "last_checked_at": "2026-11-28T16:18:38.423020+00:00",
   "last_served": {
     "Bali": "2026-11-28T06:11:07.653059+00:00",
     "Sumatera Utara": "2026-11-28T15:30:52.663173+00:00",
