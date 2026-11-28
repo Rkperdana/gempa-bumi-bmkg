@@ -4,6 +4,8 @@ on:
     paths:
       - 'scripts/dataloka_maritim.py'
       - 'tests/test_dataloka_maritim.py'
+      - 'tests/test_dataloka_wp_maritim.py'
+      - 'scripts/dataloka_wp_maritim.py'
       - '.github/workflows/dataloka-maritim-preview.yml'
   workflow_dispatch:
   schedule:
@@ -23,8 +25,8 @@ jobs:
         with:
           python-version: '3.12'
       - run: python -m pip install "Pillow==12.0.0"
-      - run: python -m py_compile scripts/dataloka_maritim.py
-      - run: python -m unittest discover -s tests -p test_dataloka_maritim.py -v
+      - run: python -m py_compile scripts/dataloka_maritim.py scripts/dataloka_wp_maritim.py
+      - run: python -m unittest discover -s tests -p 'test_dataloka*maritim.py' -v
       - run: python scripts/dataloka_maritim.py
       - uses: actions/upload-artifact@v4
         with:
@@ -32,7 +34,7 @@ jobs:
           path: maritim-preview/
           retention-days: 7
   authorized-preview:
-    if: github.event_name != 'pull_request' && vars.BMKG_MARITIM_AUTHORIZED == 'true'
+    if: github.event_name != 'pull_request' && vars.BMKG_MARITIM_AUTHORIZED == 'true' && vars.BMKG_MARITIM_LIVE != 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 5
     env:
@@ -52,34 +54,43 @@ jobs:
       - name: Inspect rob schema (no publication)
         run: python scripts/dataloka_maritim.py --inspect-rob
 
-  schema-diagnostic:
-    if: github.event_name == 'pull_request'
+  wave-live:
+    if: github.event_name != 'pull_request' && vars.BMKG_MARITIM_AUTHORIZED == 'true' && vars.BMKG_MARITIM_LIVE == 'true'
     runs-on: ubuntu-latest
-    timeout-minutes: 3
+    timeout-minutes: 20
+    permissions:
+      contents: write
+    env:
+      BMKG_MARITIM_AUTHORIZED: ${{ vars.BMKG_MARITIM_AUTHORIZED }}
+      BMKG_MARITIM_LIVE: ${{ vars.BMKG_MARITIM_LIVE }}
+      WP_USERNAME: ${{ secrets.DATALOKA_WP_USERNAME }}
+      WP_APP_PASSWORD: ${{ secrets.DATALOKA_WP_APP_PASSWORD }}
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: main
+          persist-credentials: true
       - uses: actions/setup-python@v6
         with:
           python-version: '3.12'
-      - name: Inspect authorized BMKG sources (read only, no secrets)
+      - run: python -m pip install "Pillow==12.0.0"
+      - run: python -m unittest discover -s tests -p 'test_dataloka*maritim.py' -v
+      - name: Process verified wave warnings only
+        id: publish
+        run: python scripts/dataloka_wp_maritim.py
+      - name: Persist isolated maritime ledger even on partial failure
+        if: ${{ !cancelled() && (steps.publish.outcome == 'success' || steps.publish.outcome == 'failure') }}
         run: |
-          python - <<'PY'
-          import json, urllib.request
-          def shape(v,depth=0):
-              if depth>7: return type(v).__name__
-              if isinstance(v,dict): return {k:shape(x,depth+1) for k,x in list(v.items())[:12]}
-              if isinstance(v,list): return [shape(v[0],depth+1)] if v else []
-              return type(v).__name__
-          base="https://maritim.bmkg.go.id/marine2026-data/"
-          for path in ["w-banjirob/banjirrob_combine.json","w-banjirob/31.json","warning/warnings.json"]:
-              try:
-                  req=urllib.request.Request(base+path,headers={"User-Agent":"DatalokaMaritimEditorial/1.0","Accept":"application/json"})
-                  with urllib.request.urlopen(req,timeout=20) as r:
-                      data=json.loads(r.read(5000000))
-                  print(path,json.dumps(shape(data),ensure_ascii=False)[:12000],flush=True)
-                  if "banjirob" in path:
-                      # Inspect representative field values, not the entire bulletin.
-                      print("Sample:",json.dumps(data,ensure_ascii=False)[:2200],flush=True)
-              except Exception as exc:
-                  print(path,type(exc).__name__,str(exc),flush=True)
-          PY
+          set -euo pipefail
+          if [[ ! -f data/dataloka-maritim-state.json ]]; then exit 0; fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/dataloka-maritim-state.json
+          if git diff --cached --quiet; then exit 0; fi
+          git commit -m "data: sync isolated Dataloka maritime ledger"
+          for attempt in 1 2 3; do
+            if git fetch origin main && git rebase origin/main && git push origin HEAD:main; then exit 0; fi
+            git rebase --abort || true
+            sleep "$attempt"
+          done
+          exit 1
