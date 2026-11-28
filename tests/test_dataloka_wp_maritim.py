@@ -64,4 +64,17 @@ class TestPublisher(unittest.TestCase):
         with patch.dict(os.environ,{"BMKG_MARITIM_AUTHORIZED":"true","BMKG_MARITIM_LIVE":"false"}):
             with self.assertRaises(PermissionError): p.live_wave(NOW)
 
+    def test_reviewed_approval_required(self):
+        with patch.dict(os.environ,{"BMKG_MARITIM_REVIEWED_APPROVED":"false"}):
+            with self.assertRaises(PermissionError): p.reviewed_wave("missing.json")
+    def test_stale_review_cannot_contact_wordpress(self):
+        from tempfile import TemporaryDirectory
+        import json
+        with TemporaryDirectory() as temp:
+            path=Path(temp)/"snapshot.json"
+            path.write_text(json.dumps({"source":p.WAVE,"checked_at":"2020-01-01T00:00:00Z","bulletin":{"Indonesia":{}}}))
+            with patch.dict(os.environ,{"BMKG_MARITIM_REVIEWED_APPROVED":"true"}),patch.object(p,"MaritimeWP") as wp:
+                with self.assertRaisesRegex(RuntimeError,"older than"): p.reviewed_wave(path)
+                wp.assert_not_called()
+
 if __name__=="__main__": unittest.main()
