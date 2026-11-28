@@ -1,0 +1,16 @@
+{
+  "key": "98396bfaf07b131c",
+  "identifier": "2.49.0.1.360.0.2026.11.28.15.16.008",
+  "url": "https://www.bmkg.go.id/alerts/nowcast/id/CSS20261128008_alert.xml",
+  "event": "Hujan Lebat dan Petir",
+  "headline": "Hujan Lebat disertai Petir di Sumatera Selatan",
+  "description": "Hujan lebat disertai petir akan terjadi pada 28 November 2026, 21:00 WIB di sebagian wilayah Sumatera Selatan, khususnya di ABAB, AIR SALEK, BABAT SUPAT, BANYUASIN II, BANYUASIN III, BATANG HARI LEKO, BAYUNG LENCIR, BETUNG, CENGAL, GANDUS, GELUMBANG, INDRALAYA, INDRALAYA SELATAN, INDRALAYA UTARA, JEJAWI, KANDIS, KAYU AGUNG, KELEKAR, KELUANG, KERTAPATI, LAIS, LALAN, LAWANG WETAN, MAKARTI JAYA, MESUJI, MESUJI RAYA, MUARA BELIDA, MUARA SUGIHAN, PAMPANGAN, PEDAMARAN TIMUR, PEMULUTAN, PEMULUTAN BARAT, PEMULUTAN SELATAN, PENUKAL, PENUKAL UTARA, PLAJU, PULAU RIMAU, RAMBUTAN, RANTAU ALAI, RANTAU BAYUR, RANTAU PANJANG, SEKAYU, SEMBAWA, SIRAH PULAU PADANG, SUAK TAPEH, SUMBER MARGA TELANG, SUNGAI KERUH, SUNGAI LILIN, SUNGAI PINANG, SUNGAI ROTAN, TALANG KELAPA, TANAH ABANG, TANJUNG BATU, TANJUNG LAGO, TANJUNG LUBUK, TANJUNG RAJA, TUNGKAL ILIR, TUNGKAL JAYA. Kondisi ini berpotensi menimbulkan dampak berupa jarak pandang berkurang, angin kencang, dan banjir lokal. Masyarakat dihimbau untuk tetap waspada, mengurangi aktivitas di luar ruangan, serta mengambil langkah-langkah pencegahan yang diperlukan guna menjaga keselamatan. Kondisi diperkirakan dapat berlangsung hingga 28 November 2026, 23:00 WIB.",
+  "region": "Sumatera Selatan",
+  "issued": "2026-11-28T20:30:00+07:00",
+  "effective": "2026-11-28T21:00:00+07:00",
+  "expires": "2026-11-28T23:00:00+07:00",
+  "severity": "Moderate",
+  "urgency": "Immediate",
+  "certainty": "Observed",
+  "sender": "Badan Meteorologi Klimatologi dan Geofisika"
+}

@@ -32,8 +32,9 @@ UTC = dt.timezone.utc
 WIB = dt.timezone(dt.timedelta(hours=7))
 MONTHS = ("Januari", "Februari", "Maret", "April", "Mei", "Juni",
           "Juli", "Agustus", "September", "Oktober", "November", "Desember")
+WEEKDAYS = ("Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu", "Minggu")
 MARKER = "dataloka-nowcast:"
-EDITORIAL_VERSION = 4  # One article per province, local date, and time period
+EDITORIAL_VERSION = 5  # One article per province, local date, and time period
 MAX_ALERTS_PER_RUN = 5
 _last_request = 0.0
 MAX_BYTES = 600_000
@@ -192,6 +193,53 @@ def date_label(value):
     return f"{when.day} {MONTHS[when.month-1]} {when.year}"
 
 
+def dated_time_label(value):
+    when = instant(value)
+    return f"pukul {time_label(value)} pada {WEEKDAYS[when.weekday()]}, {date_label(value)}"
+
+
+def cap_details(entry):
+    """Extract only fields explicitly present in the official CAP description."""
+    description = entry["description"]
+    phrase_match = re.match(r"(.{3,100}?)\s+akan terjadi pada\b", description, re.I)
+    phenomenon = (phrase_match.group(1).strip() if phrase_match
+                  else str(entry["event"]).strip())
+    areas_match = re.search(r"\bkhususnya di\s+(.+?)\.\s+Kondisi ini\b",
+                            description, re.I)
+    areas = []
+    if areas_match:
+        names = re.sub(r",?\s+dan\s+", ", ", areas_match.group(1))
+        for name in names.split(","):
+            name = name.strip()
+            if name and len(name) <= 80 and name.casefold() not in {
+                    item.casefold() for item in areas}:
+                areas.append(name)
+        if len(areas) > 250:
+            areas = []
+    impact_match = re.search(
+        r"Kondisi ini berpotensi menimbulkan dampak berupa\s+(.+?)\.\s+Masyarakat\b",
+        description, re.I)
+    advice_match = re.search(r"\bMasyarakat dihimbau\s+(.+?)\.\s+Kondisi diperkirakan\b",
+                             description, re.I)
+    return phenomenon, areas, (impact_match.group(1).strip() if impact_match else None), (
+        advice_match.group(1).strip() if advice_match else None)
+
+
+def area_label(value):
+    roman = {"I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X"}
+    return " ".join(word if word in roman else word.title() for word in value.split())
+
+
+def media_copy(entry):
+    phrase, _, _, _ = cap_details(entry)
+    caption = f"Ilustrasi {phrase.lower()}."
+    return {
+        "alt_text": f"Peringatan dini cuaca BMKG {display_region(entry)}",
+        "title": caption,
+        "caption": caption,
+    }
+
+
 def fingerprint(entry):
     keep = ("identifier", "event", "headline", "description", "region",
             "issued", "effective", "expires", "severity", "urgency", "certainty")
@@ -255,7 +303,7 @@ def display_region(entry):
 
 
 def article(entries, marker_key=None):
-    """Build one provincial bulletin for a local time period with CAP warnings."""
+    """Build a source-grounded provincial bulletin for one local time period."""
     if isinstance(entries, dict):
         entries = [entries]
     entries = sorted(entries, key=lambda e: (instant(e["issued"]), e["key"]))
@@ -266,23 +314,42 @@ def article(entries, marker_key=None):
     event = latest["event"]
     period_day, period = period_details(latest)
     date = f"{period_day.day} {MONTHS[period_day.month-1]} {period_day.year}"
-    issued = time_label(latest["issued"])
-    start = time_label(latest["effective"])
-    end = time_label(latest["expires"])
-    headline = f"Peringatan Dini Cuaca {region} {date} {period} - BMKG"
-    if len(headline) > 125:
-        headline = f"Peringatan Dini Cuaca {region} {period} - BMKG"
+    issued_at = instant(latest["issued"])
+    expires_at = instant(latest["expires"])
+    issued, start, end = (time_label(latest[key]) for key in ("issued", "effective", "expires"))
+    phenomenon, areas, impact, advice = cap_details(latest)
+    clean_region = html.escape(region, quote=True)
+    clean_event = html.escape(event, quote=True)
+    clean_phenomenon = html.escape(phenomenon, quote=True)
+    headline_base = f"BMKG: Peringatan Dini Cuaca {region} {date} {period}"
+    headline = f"{headline_base}, Waspada {event}"
+    if len(headline) > 150:
+        headline = headline_base
+
+    if issued_at.date() != period_day:
+        lead_time = (f"pada {WEEKDAYS[issued_at.weekday()]} dini hari "
+                     f"({issued_at:%d/%m/%Y}), dalam periode malam {date}")
+    else:
+        lead_time = (f"pada {WEEKDAYS[issued_at.weekday()]} "
+                     f"({issued_at:%d/%m/%Y}) {period.lower()}")
+    end_detail = (dated_time_label(latest["expires"])
+                  if expires_at.date() != issued_at.date() else f"pukul {end}")
 
     now = dt.datetime.now(UTC)
-    item_html = "".join(
-        f'<li><strong>{html.escape(item["event"], quote=True)}</strong> — '
-        f'{time_label(item["effective"])} hingga {time_label(item["expires"])}: '
-        f'{html.escape(item["description"], quote=True)}</li>'
-        for item in reversed(entries)
-    )
+    history = ""
+    if len(entries) > 1:
+        items = "".join(
+            f'<li><strong>{date_label(item["issued"])} pukul '
+            f'{time_label(item["issued"])}</strong> — '
+            f'{html.escape(item["event"], quote=True)}; '
+            f'berlaku {time_label(item["effective"])}–{time_label(item["expires"])}. '
+            f'{html.escape(item["description"], quote=True)}</li>'
+            for item in reversed(entries)
+        )
+        history = f'<h2>Riwayat Peringatan BMKG pada Periode {period}</h2><ul>{items}</ul>'
     source_urls = sorted({item["url"] for item in entries})
     links = ", ".join(
-        f'<a href="{html.escape(url, quote=True)}">peringatan BMKG</a>'
+        f'<a href="{html.escape(url, quote=True)}">dokumen peringatan BMKG</a>'
         for url in source_urls
     )
     area_note = (
@@ -291,40 +358,59 @@ def article(entries, marker_key=None):
         'mengikuti isi peringatan resmi.</p>'
         if region == "Jabodetabek" else ""
     )
-    clean_region = html.escape(region, quote=True)
-    clean_event = html.escape(event, quote=True)
+    area_heading = f'<h2>Wilayah {clean_region} yang Berpotensi {clean_event}</h2>'
+    if areas:
+        labels = [area_label(name) for name in areas]
+        listed = (labels[0] if len(labels) == 1 else
+                  ", ".join(labels[:-1]) + ", dan " + labels[-1])
+        area_body = (f'<p>{clean_phenomenon} berpotensi terjadi di {len(areas)} '
+                     f'kecamatan di {clean_region}. Wilayah tersebut meliputi '
+                     f'{html.escape(listed, quote=True)}.</p>')
+    else:
+        # Unrecognized CAP wording is displayed faithfully without a guessed count.
+        area_body = f'<p>{html.escape(latest["description"], quote=True)}</p>'
+        impact = advice = None
+    impact_html = (f'<h2>Potensi Dampak Cuaca Buruk di {clean_region}</h2>'
+                   f'<p>Menurut BMKG, kondisi ini berpotensi menimbulkan dampak '
+                   f'berupa {html.escape(impact, quote=True)}.</p>' if impact else "")
+    advice_html = (f'<p>BMKG mengimbau masyarakat '
+                   f'{html.escape(advice, quote=True)}.</p>' if advice else "")
     content = (
-        f'<p><strong>Dataloka.id</strong> - Badan Meteorologi, Klimatologi, '
-        f'dan Geofisika (BMKG) mengeluarkan peringatan dini cuaca untuk '
-        f'{clean_region} pada periode {period} {date}. Artikel ini memuat '
-        f'{len(entries)} peringatan BMKG yang diterbitkan pada periode tersebut.</p>'
-        f'<p>Pembaruan terakhir diterbitkan pada {date_label(latest["issued"])} '
-        f'pukul {issued} terkait '
-        f'{clean_event}. Peringatan terbaru berlaku pukul {start} hingga {end}.</p>'
-        f'<ul>{item_html}</ul>'
+        f'<p><strong>Dataloka.id</strong> – Badan Meteorologi, Klimatologi, '
+        f'dan Geofisika (BMKG) mengeluarkan peringatan dini cuaca {clean_region} '
+        f'{lead_time}. {clean_phenomenon} berpotensi terjadi di sejumlah wilayah '
+        f'hingga {end_detail}.</p>'
+        f'<p>Berdasarkan pembaruan informasi BMKG pada pukul {issued}, '
+        f'peringatan tersebut berlaku mulai pukul {start} hingga {end_detail}.</p>'
+        f'{area_heading}{area_body}'
         f'{area_note}'
-        f'<p>Wilayah dan kondisi cuaca mengikuti rincian pada setiap peringatan. '
-        f'Peringatan memiliki masa berlaku terbatas dan dapat berubah mengikuti '
-        f'pembaruan resmi BMKG.</p>'
-        f'<p><strong>Sumber:</strong> {links}. Diperiksa pada '
+        f'{impact_html}{advice_html}'
+        f'<h2>Masa Berlaku Peringatan Dini Cuaca BMKG</h2>'
+        f'<p>Berdasarkan informasi terbaru BMKG, peringatan untuk {clean_region} '
+        f'berlaku hingga {dated_time_label(latest["expires"])}.</p>'
+        f'<p>Peringatan dini cuaca memiliki masa berlaku terbatas dan dapat '
+        f'berubah mengikuti perkembangan kondisi atmosfer. Pembaca dapat '
+        f'memantau pembaruan melalui kanal resmi BMKG.</p>'
+        f'{history}'
+        f'<p><strong>Sumber:</strong> Badan Meteorologi, Klimatologi, dan '
+        f'Geofisika (BMKG); {links}. Diperiksa pada '
         f'{date_label(now.astimezone(WIB).isoformat())}.</p>'
         f'<!-- {MARKER}{marker_key or latest["key"]} -->'
     )
-    summary = (
-        f"Peringatan dini cuaca BMKG untuk {region} periode {period} {date}. "
-        f"Pembaruan terakhir: {event}, berlaku pukul {start}–{end}. "
-        "Pantau rincian wilayah dan perkembangan terbaru."
-    )
+    count_copy = (f"Sebanyak {len(areas)} kecamatan berpotensi mengalami "
+                  if areas else "Potensi ")
+    summary = (f"Peringatan dini BMKG {region} {date} {period.lower()}. "
+               f"{count_copy}{phenomenon.lower()} hingga pukul {end}.")
     if len(summary) > 280:
-        summary = (
-            f"Peringatan dini cuaca BMKG untuk {region} periode {period} {date}; "
-            f"pembaruan terakhir berlaku hingga {end}. Pantau informasi resmi."
-        )[:280]
-    title_seo = headline
+        summary = (f"Peringatan dini cuaca BMKG {region} {date} {period.lower()}, "
+                   f"berlaku hingga pukul {end}.")[:280]
+    title_seo = headline_base
     focus = f"peringatan dini cuaca {region}"
-    # Province aliases must resolve to the same permalink across CAP revisions.
+    # Preserve already-published 28 Nov ISO slugs; later periods use readable dates.
+    date_slug = (period_day.isoformat() if period_day <= dt.date(2026, 11, 28)
+                 else f"{period_day.day}-{MONTHS[period_day.month-1].lower()}-{period_day.year}")
     slug = (f"peringatan-dini-cuaca-{slugify(canonical_province(latest))[:45].rstrip('-')}-"
-            f"{period_day.isoformat()}-{period.casefold()}")
+            f"{date_slug}-{period.casefold()}")
     return {
         "title": html.escape(headline, quote=True),
         "content": content, "excerpt": html.escape(summary, quote=True),
@@ -437,10 +523,7 @@ class WeatherWordPress(WordPress):
         with urllib.request.urlopen(req, timeout=40) as response:
             item = json.loads(response.read(1_000_000))
         media_id = int(item["id"])
-        caption = (f"Ilustrasi editorial Dataloka untuk peringatan dini "
-                   f"{entry['event']} di {display_region(entry)}. Sumber: BMKG.")
-        self.call("POST", f"media/{media_id}", payload={
-            "alt_text": caption, "title": caption, "caption": caption})
+        self.call("POST", f"media/{media_id}", payload=media_copy(entry))
         return media_id
 
 
@@ -521,7 +604,7 @@ def collect(entries, state, now, failed_urls=(), cancelled=()):
                             "reason": "expired" if instant(entry["expires"]) <= now else "inactive"}
             pending.pop(key, None)
         elif (old.get("fingerprint") == fingerprint(entry)
-              and (old.get("post_id") or old.get("editorial_version") in (2, 3, 4))):
+              and (old.get("post_id") or old.get("editorial_version") in (2, 3, 4, 5))):
             # A format rollout must not republish already-covered CAP messages.
             pending.pop(key, None)
         else:
@@ -591,11 +674,16 @@ def process(entries, mode, now=None, wp=None, state=None):
         if old.get("post_id"):
             prior_entries = old.get("entries") or eligible
             prior = max(prior_entries, key=lambda e: (instant(e["issued"]), e["key"]))
+            prior_day, prior_period = period_details(prior)
+            prior_date = f"{prior_day.day} {MONTHS[prior_day.month-1]} {prior_day.year}"
+            prior_region = display_region(prior)
             old = dict(old, bot_previous_titles=[
                 f"BMKG: Peringatan {prior['event']} di {prior['region']}",
                 f"BMKG Terbitkan Peringatan Dini Cuaca untuk {prior['region']}",
                 f"Peringatan Dini Cuaca {prior['region']} "
                 f"{date_label(prior['issued'])} - BMKG",
+                f"Peringatan Dini Cuaca {prior_region} {prior_date} {prior_period} - BMKG",
+                html.unescape(article(prior)["title"]),
             ])
 
         combined = {}

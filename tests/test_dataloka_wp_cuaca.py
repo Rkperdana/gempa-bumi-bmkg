@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Offline safety and copy tests for BMKG weather live publisher."""
 import datetime as dt
+import json
 from io import BytesIO
 from pathlib import Path
 import sys
@@ -100,11 +101,12 @@ class WeatherTests(unittest.TestCase):
         payload = article(entry)
         self.assertIn("Jawa Barat", payload["title"])
         self.assertIn("<strong>Sumber:</strong>", payload["content"])
-        self.assertIn('>peringatan BMKG</a>', payload["content"])
-        self.assertEqual(payload["content"].count("<p>"), 4)
-        self.assertEqual(payload["content"].count("</p>"), 4)
+        self.assertIn('>dokumen peringatan BMKG</a>', payload["content"])
+        self.assertIn("Masa Berlaku Peringatan Dini Cuaca BMKG", payload["content"])
+        self.assertNotIn("Potensi Dampak Cuaca Buruk", payload["content"])
+        self.assertEqual(payload["content"].count("<p>"), payload["content"].count("</p>"))
         self.assertIn('<p><strong>Sumber:</strong>', payload["content"])
-        self.assertEqual(payload["content"].count("<li>"), 1)
+        self.assertEqual(payload["content"].count("<li>"), 0)
         self.assertNotIn("Sumber:", payload["content"].split("<p>")[3])
         self.assertIn(SOURCE, payload["content"])
         self.assertIn("dataloka-nowcast:", payload["content"])
@@ -115,6 +117,30 @@ class WeatherTests(unittest.TestCase):
         self.assertEqual(payload["tag_names"], ["BMKG", "Cuaca", "Peringatan"])
         self.assertNotIn("(RK/D-1)", payload["content"])
         self.assertNotIn("Kecamatan C", payload["content"])
+        self.assertNotIn("kecamatan di Jawa Barat", payload["content"])
+
+    def test_live_bmkg_cap_generates_58_area_bulletin_without_inferred_administration(self):
+        entry = json.loads((ROOT / "tests" / "fixtures" / "sumsel-live-sample.json")
+                           .read_text(encoding="utf-8"))
+        payload = article(entry)
+        self.assertEqual(payload["title"],
+            "BMKG: Peringatan Dini Cuaca Sumatera Selatan 28 November 2026 "
+            "Malam, Waspada Hujan Lebat dan Petir")
+        self.assertEqual(payload["yoast_meta"]["_yoast_wpseo_title"],
+            "BMKG: Peringatan Dini Cuaca Sumatera Selatan 28 November 2026 Malam")
+        self.assertIn("Sebanyak 58 kecamatan", payload["yoast_meta"]["_yoast_wpseo_metadesc"])
+        self.assertIn("58 kecamatan di Sumatera Selatan", payload["content"])
+        self.assertIn("Banyuasin II", payload["content"])
+        self.assertIn("Tungkal Jaya", payload["content"])
+        self.assertIn("jarak pandang berkurang, angin kencang, dan banjir lokal",
+                      payload["content"])
+        self.assertNotIn("Kabupaten Banyuasin", payload["content"])
+        self.assertEqual(pub.media_copy(entry)["caption"],
+                         "Ilustrasi hujan lebat disertai petir.")
+        self.assertEqual(pub.media_copy(entry)["alt_text"],
+                         "Peringatan dini cuaca BMKG Sumatera Selatan")
+        self.assertEqual(payload["slug"],
+                         "peringatan-dini-cuaca-sumatera-selatan-2026-11-28-malam")
 
     def test_jabodetabek_warning_uses_stable_period_slug(self):
         entry = dict(example(), region="Jakarta",
@@ -149,8 +175,10 @@ class WeatherTests(unittest.TestCase):
                 warning = dict(entry, issued=issued)
                 self.assertEqual(pub.period_details(warning),
                                  (dt.date.fromisoformat(day), period))
+                date_slug = (day if day <= "2026-11-28" else
+                             f"{int(day[-2:])}-november-2026")
                 self.assertTrue(article(warning)["slug"].endswith(
-                    f"{day}-{period.lower()}"))
+                    f"{date_slug}-{period.lower()}"))
         night = dict(entry, issued="2026-11-30T00:15:00+07:00")
         self.assertIn("29 November 2026 Malam", article(night)["title"])
         self.assertEqual(pub.province_period_key(night), pub.province_period_key(
@@ -461,8 +489,8 @@ class WeatherTests(unittest.TestCase):
         self.assertEqual(len(wp.calls), 2)
         self.assertEqual(wp.calls[1][1]["post_id"], 123)
         self.assertEqual(wp.calls[1][0]["content"].count("<li>"), 2)
-        self.assertLess(wp.calls[1][0]["content"].index("11.35 WIB hingga"),
-                        wp.calls[1][0]["content"].index("11.05 WIB hingga"))
+        self.assertLess(wp.calls[1][0]["content"].index("pukul 11.30 WIB</strong>"),
+                        wp.calls[1][0]["content"].index("pukul 11.00 WIB</strong>"))
 
     def test_changed_event_accepts_previous_bot_headline(self):
         first = example()
@@ -476,6 +504,8 @@ class WeatherTests(unittest.TestCase):
         process([second], "live", now, wp, state)
         self.assertEqual(wp.calls[-1][1]["post_id"], 123)
         self.assertIn("BMKG: Peringatan Hujan Lebat dan Petir di Jawa Barat",
+                      wp.calls[-1][1]["bot_previous_titles"])
+        self.assertIn("Peringatan Dini Cuaca Jawa Barat 22 November 2026 Pagi - BMKG",
                       wp.calls[-1][1]["bot_previous_titles"])
 
     def test_jabodetabek_existing_period_article_accepts_previous_bot_title(self):
