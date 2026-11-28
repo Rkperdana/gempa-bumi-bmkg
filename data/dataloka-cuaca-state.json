@@ -2567,6 +2567,22 @@
       "urgency": "Immediate",
       "certainty": "Observed",
       "sender": "Badan Meteorologi Klimatologi dan Geofisika"
+    },
+    "d307ebcde6face93": {
+      "key": "d307ebcde6face93",
+      "identifier": "2.49.0.1.360.0.2026.11.28.17.19.008",
+      "url": "https://www.bmkg.go.id/alerts/nowcast/id/CBB20261128008_alert.xml",
+      "event": "Hujan Lebat dan Petir",
+      "headline": "Hujan Lebat disertai Petir di Kep. Bangka Belitung",
+      "description": "Hujan lebat disertai petir akan terjadi pada 29 November 2026, 00:30 WIB di sebagian wilayah Kep. Bangka Belitung, khususnya di SIMPANG RIMBA. Kondisi ini berpotensi menimbulkan dampak berupa jarak pandang berkurang, angin kencang, dan banjir lokal. Masyarakat dihimbau untuk tetap waspada, mengurangi aktivitas di luar ruangan, serta mengambil langkah-langkah pencegahan yang diperlukan guna menjaga keselamatan. Kondisi diperkirakan dapat berlangsung hingga 29 November 2026, 03:00 WIB.",
+      "region": "Kep. Bangka Belitung",
+      "issued": "2026-11-29T00:15:00+07:00",
+      "effective": "2026-11-29T00:30:00+07:00",
+      "expires": "2026-11-29T03:00:00+07:00",
+      "severity": "Moderate",
+      "urgency": "Immediate",
+      "certainty": "Observed",
+      "sender": "Badan Meteorologi Klimatologi dan Geofisika"
     }
   },
   "skipped": {
@@ -2819,10 +2835,20 @@
       "region": "Jawa Barat",
       "expires": "2026-11-28T23:45:00+07:00",
       "reason": "expired"
+    },
+    "564d951e58852034": {
+      "region": "Sulawesi Barat",
+      "expires": "2026-11-29T01:30:00+08:00",
+      "reason": "expired"
+    },
+    "8929ff6770342ad8": {
+      "region": "Jawa Timur",
+      "expires": "2026-11-29T00:30:00+07:00",
+      "reason": "expired"
     }
   },
   "unread_urls": [],
-  "last_checked_at": "2026-11-28T17:28:37.983151+00:00",
+  "last_checked_at": "2026-11-28T17:38:35.901920+00:00",
   "last_served": {
     "Bali": "2026-11-28T06:11:07.653059+00:00",
     "Sumatera Utara": "2026-11-28T17:19:47.628213+00:00",
