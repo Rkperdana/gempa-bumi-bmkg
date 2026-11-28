@@ -2020,6 +2020,38 @@
       "urgency": "Immediate",
       "certainty": "Observed",
       "sender": "Badan Meteorologi Klimatologi dan Geofisika"
+    },
+    "ec9477d7f1f932af": {
+      "key": "ec9477d7f1f932af",
+      "identifier": "2.49.0.1.360.0.2026.11.28.15.15.005",
+      "url": "https://www.bmkg.go.id/alerts/nowcast/id/CJI20261128005_alert.xml",
+      "event": "Hujan Lebat dan Petir",
+      "headline": "Hujan Lebat disertai Petir di Jambi",
+      "description": "Hujan lebat disertai petir akan terjadi pada 28 November 2026, 23:12 WIB di sebagian wilayah Jambi, khususnya di BAJUBANG, BERBAK, DENDANG, GERAGAI, JAMBI LUAR KOTA, KUMPEH, KUMPEH ULU, MARO SEBO, MENDAHARA ULU, MESTONG, MUARA BULIAN, MUARA SABAK TIMUR, PEMAYUNG, RANTAU RASAU, SADU, SEKERNAN, SUNGAI GELAM, TAMAN RAJO. Kondisi ini berpotensi menimbulkan dampak berupa jarak pandang berkurang, angin kencang, dan banjir lokal. Masyarakat dihimbau untuk tetap waspada, mengurangi aktivitas di luar ruangan, serta mengambil langkah-langkah pencegahan yang diperlukan guna menjaga keselamatan. Kondisi diperkirakan dapat berlangsung hingga 29 November 2026, 01:12 WIB.",
+      "region": "Jambi",
+      "issued": "2026-11-28T22:42:00+07:00",
+      "effective": "2026-11-28T23:12:00+07:00",
+      "expires": "2026-11-29T01:12:00+07:00",
+      "severity": "Moderate",
+      "urgency": "Immediate",
+      "certainty": "Observed",
+      "sender": "Badan Meteorologi Klimatologi dan Geofisika"
+    },
+    "7b95abf0243d43b5": {
+      "key": "7b95abf0243d43b5",
+      "identifier": "2.49.0.1.360.0.2026.11.28.15.19.007",
+      "url": "https://www.bmkg.go.id/alerts/nowcast/id/CBB20261128007_alert.xml",
+      "event": "Hujan Lebat dan Petir",
+      "headline": "Hujan Lebat disertai Petir di Kep. Bangka Belitung",
+      "description": "Hujan lebat disertai petir akan terjadi pada 28 November 2026, 22:45 WIB di sebagian wilayah Kep. Bangka Belitung, khususnya di TOBOALI. Kondisi ini berpotensi menimbulkan dampak berupa jarak pandang berkurang, angin kencang, dan banjir lokal. Masyarakat dihimbau untuk tetap waspada, mengurangi aktivitas di luar ruangan, serta mengambil langkah-langkah pencegahan yang diperlukan guna menjaga keselamatan. Kondisi diperkirakan dapat berlangsung hingga 29 November 2026, 01:00 WIB.",
+      "region": "Kep. Bangka Belitung",
+      "issued": "2026-11-28T22:35:00+07:00",
+      "effective": "2026-11-28T22:45:00+07:00",
+      "expires": "2026-11-29T01:00:00+07:00",
+      "severity": "Moderate",
+      "urgency": "Immediate",
+      "certainty": "Observed",
+      "sender": "Badan Meteorologi Klimatologi dan Geofisika"
     }
   },
   "skipped": {
@@ -2247,10 +2279,15 @@
       "region": "Jawa Tengah",
       "expires": "2026-11-28T22:30:00+07:00",
       "reason": "expired"
+    },
+    "5abed15188d3b5da": {
+      "region": "Jambi",
+      "expires": "2026-11-28T22:42:00+07:00",
+      "reason": "expired"
     }
   },
   "unread_urls": [],
-  "last_checked_at": "2026-11-28T15:38:42.893005+00:00",
+  "last_checked_at": "2026-11-28T15:48:45.789427+00:00",
   "last_served": {
     "Bali": "2026-11-28T06:11:07.653059+00:00",
     "Sumatera Utara": "2026-11-28T15:30:52.663173+00:00",
