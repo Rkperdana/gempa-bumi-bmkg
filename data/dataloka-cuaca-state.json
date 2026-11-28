@@ -1562,7 +1562,8 @@
       "yoast_meta_digest": "4f4fc39224947202f255792f4e3a58854de5be95b258172b5cb911d7ab755c8a",
       "status": "publish",
       "last_payload_digest": "c9e2ef3d5cac0aba9ccd95aeeb704b686ea2c147b14bae653b8d779cbd7cf369",
-      "marker_key": "d14db5bba7c73d0b"
+      "marker_key": "d14db5bba7c73d0b",
+      "featured_tag_removed": true
     },
     "e9389af19c97da57": {
       "fingerprint": "a39b9cfa403866de439b46f14d9f73673c79c937f8472a0477e7cf09875bf6d9",
@@ -2109,25 +2110,74 @@
       "status": "publish",
       "last_payload_digest": "3458a5c62400d636f5338023005865cd1c98eb6eaf43fd16b277ecc380fc3418",
       "marker_key": "d9bea78374612a78"
+    },
+    "33505e277014808b": {
+      "fingerprint": "af3b8d502243b6f04771fc714eec63f12223651281d56629a5b8a26b425d8b59",
+      "editorial_version": 5,
+      "province_period_key": "8db48b5068528f60b8e9",
+      "expires": "2026-11-29T01:00:00+08:00",
+      "post_id": 9783,
+      "media_id": 9782,
+      "last_wp_digest": "df6a507c435eb95866d38f2b8a37852376f208efc93b70bc6a44edebfdaad59d",
+      "yoast_meta_digest": "3dfbf65042e052159e173e364ea0419c234d13c0c2f90aa7bbe767c5e7d705a9",
+      "status": "publish",
+      "last_payload_digest": "ef76a408ca71785c67a26501f97392acf2ac84539b0cdbc79c00c2c5bcf2f66f",
+      "marker_key": "ccb3328c207b5865"
+    },
+    "7b73665e06ae8abe": {
+      "fingerprint": "d58b8b8a436725daae9448fa54422398891de82944b45e97f09c7660e3cd87ca",
+      "editorial_version": 5,
+      "province_period_key": "82f5646fdd0783f3a695",
+      "expires": "2026-11-29T02:00:00+07:00",
+      "post_id": 9786,
+      "media_id": 9785,
+      "last_wp_digest": "fc4fb17aca2384715f334fbe31718f8277635afa34f4e93146668309c9802bfb",
+      "yoast_meta_digest": "6b0f42541c5edb9f44887425ec21c14e37a35f0de102efd796a04a223aadc9a6",
+      "status": "publish",
+      "last_payload_digest": "be53b23a110a2432621b6b8615c7d7155679f36c53dff030a020f29fccf85d6e",
+      "marker_key": "2cb3a118d6ccca4c"
+    },
+    "781cb97488497a45": {
+      "fingerprint": "910b2497f9f677feeb03d648a7be789f4fc938d32e77421d9a91a633ff9fa9eb",
+      "editorial_version": 5,
+      "province_period_key": "5ffd9fe99b687a2fc82b",
+      "expires": "2026-11-29T00:30:00+07:00",
+      "post_id": 9789,
+      "media_id": 9788,
+      "last_wp_digest": "8d95add4175bbcc32d16a2d8923d27420612bd0073eccc8281a474ff9edbaa9c",
+      "yoast_meta_digest": "b9ab289412165879a0421d2f71099f2630eb4bf2f9ae10c6a355cd31eb33c05a",
+      "status": "publish",
+      "last_payload_digest": "d60a9a5284438b2f482002c6e4ccb777fd17c2fc9a0d7c15c985137d3a294050",
+      "marker_key": "b866043b422e1a02"
+    },
+    "a70fca9323d6c96a": {
+      "fingerprint": "f000a49d7d08b3825b549f0637d35e73e6e014ea7f3564b43d85d2f895166103",
+      "editorial_version": 5,
+      "province_period_key": "e3aada1e982a0c9ff955",
+      "expires": "2026-11-29T02:00:00+08:00",
+      "post_id": 9792,
+      "media_id": 9791,
+      "last_wp_digest": "e49f71470df5d06d89786b1ce038ba03fa00d0673750445c9632fdd60543dea7",
+      "yoast_meta_digest": "f27391adbf594375f8f3c0f57177b5661560054335305676a547280df3fb9b91",
+      "status": "publish",
+      "last_payload_digest": "c8d5786d89e3f92325acda94f499eb790356c39cc9ec15a348e6a590474ae12b",
+      "marker_key": "6de6f4a9a647a8e2"
+    },
+    "a6302a74cbc227a5": {
+      "fingerprint": "e24846dfeeeb67e20bb7bfe3839ee52e695da9272a9971a966fdf6e5250c479b",
+      "editorial_version": 5,
+      "province_period_key": "36e1712418988a04ad11",
+      "expires": "2026-11-28T23:45:00+07:00",
+      "post_id": 9804,
+      "media_id": 9803,
+      "last_wp_digest": "1bd967d81463dfb1a87a74a320650d345a23ae8fd7df2ec865ca2ea552cd1968",
+      "yoast_meta_digest": "df7397dc177b79a24dabd929e7e56912171d943bef1932939e5398cf3661b773",
+      "status": "publish",
+      "last_payload_digest": "395cde39ace164e20c5bb6993fca5cf23749d1114b0c1dce63269328f9cf73f7",
+      "marker_key": "3851b959aaf3ee43"
     }
   },
   "pending": {
-    "7b73665e06ae8abe": {
-      "key": "7b73665e06ae8abe",
-      "identifier": "2.49.0.1.360.0.2026.11.28.16.17.005",
-      "url": "https://www.bmkg.go.id/alerts/nowcast/id/CBK20261128005_alert.xml",
-      "event": "Hujan Lebat dan Petir",
-      "headline": "Hujan Lebat disertai Petir di Bengkulu",
-      "description": "Hujan lebat disertai petir akan terjadi pada 28 November 2026, 23:00 WIB di sebagian wilayah Bengkulu, khususnya di AIR PERIUKAN, ILIR TALO, SEMIDANG ALAS, SEMIDANG ALAS MARAS, SUKARAJA, TALO, TALO KECIL. Kondisi ini berpotensi menimbulkan dampak berupa jarak pandang berkurang, angin kencang, dan banjir lokal. Masyarakat dihimbau untuk tetap waspada, mengurangi aktivitas di luar ruangan, serta mengambil langkah-langkah pencegahan yang diperlukan guna menjaga keselamatan. Kondisi diperkirakan dapat berlangsung hingga 29 November 2026, 02:00 WIB.",
-      "region": "Bengkulu",
-      "issued": "2026-11-28T22:50:00+07:00",
-      "effective": "2026-11-28T23:00:00+07:00",
-      "expires": "2026-11-29T02:00:00+07:00",
-      "severity": "Moderate",
-      "urgency": "Immediate",
-      "certainty": "Observed",
-      "sender": "Badan Meteorologi Klimatologi dan Geofisika"
-    },
     "2f71e7c151c31d3a": {
       "key": "2f71e7c151c31d3a",
       "identifier": "2.49.0.1.360.0.2026.11.28.16.15.005",
@@ -2208,22 +2258,6 @@
       "certainty": "Observed",
       "sender": "Badan Meteorologi Klimatologi dan Geofisika"
     },
-    "a70fca9323d6c96a": {
-      "key": "a70fca9323d6c96a",
-      "identifier": "2.49.0.1.360.0.2026.11.28.16.52.007",
-      "url": "https://www.bmkg.go.id/alerts/nowcast/id/CNB20261128007_alert.xml",
-      "event": "Hujan Lebat dan Petir",
-      "headline": "Hujan Lebat disertai Petir di Nusa Tenggara Barat",
-      "description": "Hujan lebat disertai petir akan terjadi pada 28 November 2026, 23:00 WITA di sebagian wilayah Nusa Tenggara Barat, khususnya di MARONGE, SAMBELIA. Kondisi ini berpotensi menimbulkan dampak berupa jarak pandang berkurang, angin kencang, dan banjir lokal. Masyarakat dihimbau untuk tetap waspada, mengurangi aktivitas di luar ruangan, serta mengambil langkah-langkah pencegahan yang diperlukan guna menjaga keselamatan. Kondisi diperkirakan dapat berlangsung hingga 29 November 2026, 02:00 WITA.",
-      "region": "Nusa Tenggara Barat",
-      "issued": "2026-11-28T22:58:00+08:00",
-      "effective": "2026-11-28T23:00:00+08:00",
-      "expires": "2026-11-29T02:00:00+08:00",
-      "severity": "Moderate",
-      "urgency": "Immediate",
-      "certainty": "Observed",
-      "sender": "Badan Meteorologi Klimatologi dan Geofisika"
-    },
     "bfada71e82883aec": {
       "key": "bfada71e82883aec",
       "identifier": "2.49.0.1.360.0.2026.11.28.16.12.004",
@@ -2251,54 +2285,6 @@
       "issued": "2026-11-28T21:10:00+07:00",
       "effective": "2026-11-28T21:30:00+07:00",
       "expires": "2026-11-29T00:00:00+07:00",
-      "severity": "Moderate",
-      "urgency": "Immediate",
-      "certainty": "Observed",
-      "sender": "Badan Meteorologi Klimatologi dan Geofisika"
-    },
-    "781cb97488497a45": {
-      "key": "781cb97488497a45",
-      "identifier": "2.49.0.1.360.0.2026.11.28.16.35.010",
-      "url": "https://www.bmkg.go.id/alerts/nowcast/id/CJT20261128010_alert.xml",
-      "event": "Hujan Lebat dan Petir",
-      "headline": "Hujan Lebat disertai Petir di Jawa Timur",
-      "description": "Hujan lebat disertai petir akan terjadi pada 28 November 2026, 21:20 WIB di sebagian wilayah Jawa Timur, khususnya di AMPELGADING, BANTUR, DAMPIT, GEDANGAN, KEMBANGBAHU, LAMONGAN, PRONOJIWO, PUCUK, SUGIO, SUKODADI, SUMBERMANJING WETAN, TEMPURSARI, TIKUNG, TIRTOYUDO. Kondisi ini berpotensi menimbulkan dampak berupa jarak pandang berkurang, angin kencang, dan banjir lokal. Masyarakat dihimbau untuk tetap waspada, mengurangi aktivitas di luar ruangan, serta mengambil langkah-langkah pencegahan yang diperlukan guna menjaga keselamatan. Kondisi diperkirakan dapat berlangsung hingga 29 November 2026, 00:30 WIB.",
-      "region": "Jawa Timur",
-      "issued": "2026-11-28T21:10:00+07:00",
-      "effective": "2026-11-28T21:20:00+07:00",
-      "expires": "2026-11-29T00:30:00+07:00",
-      "severity": "Moderate",
-      "urgency": "Immediate",
-      "certainty": "Observed",
-      "sender": "Badan Meteorologi Klimatologi dan Geofisika"
-    },
-    "33505e277014808b": {
-      "key": "33505e277014808b",
-      "identifier": "2.49.0.1.360.0.2026.11.28.16.72.004",
-      "url": "https://www.bmkg.go.id/alerts/nowcast/id/CSG20261128004_alert.xml",
-      "event": "Hujan Lebat dan Petir",
-      "headline": "Hujan Lebat disertai Petir di Sulawesi Tengah",
-      "description": "Hujan lebat disertai petir akan terjadi pada 28 November 2026, 22:00 WITA di sebagian wilayah Sulawesi Tengah, khususnya di KULAWI SELATAN, MORI ATAS, PAMONA SELATAN, PAMONA TENGGARA. Kondisi ini berpotensi menimbulkan dampak berupa jarak pandang berkurang, angin kencang, dan banjir lokal. Masyarakat dihimbau untuk tetap waspada, mengurangi aktivitas di luar ruangan, serta mengambil langkah-langkah pencegahan yang diperlukan guna menjaga keselamatan. Kondisi diperkirakan dapat berlangsung hingga 29 November 2026, 01:00 WITA.",
-      "region": "Sulawesi Tengah",
-      "issued": "2026-11-28T21:46:00+08:00",
-      "effective": "2026-11-28T22:00:00+08:00",
-      "expires": "2026-11-29T01:00:00+08:00",
-      "severity": "Moderate",
-      "urgency": "Immediate",
-      "certainty": "Observed",
-      "sender": "Badan Meteorologi Klimatologi dan Geofisika"
-    },
-    "a6302a74cbc227a5": {
-      "key": "a6302a74cbc227a5",
-      "identifier": "2.49.0.1.360.0.2026.11.28.16.32.006",
-      "url": "https://www.bmkg.go.id/alerts/nowcast/id/CJB20261128006_alert.xml",
-      "event": "Hujan Lebat dan Petir",
-      "headline": "Hujan Lebat disertai Petir di Jawa Barat",
-      "description": "Hujan lebat disertai petir akan terjadi pada 28 November 2026, 20:55 WIB di sebagian wilayah Jawa Barat, khususnya di BANTARGADUNG, BATUJAYA, BLANAKAN, CARINGIN, CICURUG, CIDAHU, CIKALONG, CILAMAYA KULON, CILAMAYA WETAN, CIPATUJAH, KADUDAMPIT, KARANGNUNGGAL, PAKISJAYA, PARAKANSALAK, RAWAMERTA, SUKABUMI, TEMPURAN. Kondisi ini berpotensi menimbulkan dampak berupa jarak pandang berkurang, angin kencang, dan banjir lokal. Masyarakat dihimbau untuk tetap waspada, mengurangi aktivitas di luar ruangan, serta mengambil langkah-langkah pencegahan yang diperlukan guna menjaga keselamatan. Kondisi diperkirakan dapat berlangsung hingga 28 November 2026, 23:45 WIB.",
-      "region": "Jawa Barat",
-      "issued": "2026-11-28T20:45:00+07:00",
-      "effective": "2026-11-28T20:55:00+07:00",
-      "expires": "2026-11-28T23:45:00+07:00",
       "severity": "Moderate",
       "urgency": "Immediate",
       "certainty": "Observed",
@@ -2587,16 +2573,16 @@
     "Kep. Riau": "2026-11-28T05:59:31.135490+00:00",
     "Kep. Bangka Belitung": "2026-11-28T15:50:03.429790+00:00",
     "Kalimantan Utara": "2026-11-28T03:09:34.404315+00:00",
-    "Bengkulu": "2026-11-28T15:20:10.947712+00:00",
+    "Bengkulu": "2026-11-28T16:19:08.374511+00:00",
     "Sumatera Barat": "2026-11-28T06:30:03.264404+00:00",
-    "Jawa Timur": "2026-11-28T15:20:44.147785+00:00",
+    "Jawa Timur": "2026-11-28T16:19:21.344356+00:00",
     "Aceh": "2026-11-28T16:11:50.567538+00:00",
     "Papua": "2026-11-28T05:21:19.789512+00:00",
     "Papua Barat": "2026-11-28T15:39:24.748435+00:00",
     "Riau": "2026-11-28T15:40:11.366160+00:00",
-    "Sulawesi Tengah": "2026-11-28T15:19:31.764215+00:00",
+    "Sulawesi Tengah": "2026-11-28T16:18:56.656112+00:00",
     "Kalimantan Barat": "2026-11-28T15:31:25.955974+00:00",
-    "Nusa Tenggara Barat": "2026-11-28T15:21:10.596725+00:00",
+    "Nusa Tenggara Barat": "2026-11-28T16:19:34.430074+00:00",
     "Kalimantan Tengah": "2026-11-28T15:49:53.855962+00:00",
     "Sulawesi Utara": "2026-11-28T06:29:26.187264+00:00",
     "Jawa Tengah": "2026-11-28T15:21:32.399509+00:00",
@@ -2611,7 +2597,7 @@
     "Sulawesi Selatan": "2026-11-28T06:41:56.939175+00:00",
     "Jakarta": "2026-11-28T14:31:28.647294+00:00",
     "Banten": "2026-11-28T14:38:57.599970+00:00",
-    "Jawa Barat": "2026-11-28T15:30:15.541807+00:00",
+    "Jawa Barat": "2026-11-28T16:19:46.097877+00:00",
     "Maluku Utara": "2026-11-28T06:20:03.635030+00:00",
     "Maluku": "2026-11-28T06:39:34.602903+00:00",
     "Jambi": "2026-11-28T15:49:37.879219+00:00",
@@ -3777,16 +3763,32 @@
     "8db48b5068528f60b8e9": {
       "post_id": 9783,
       "media_id": 9782,
-      "last_wp_digest": "3d29bb1b40eeb5def5450cdebe557317db90ccb7f00b159cde03d69936bb7576",
-      "yoast_meta_digest": "f2403203ae49dde2651f17ae04257f1e3dd8104739d3cbb3f6c1e2b1b5ecdbf0",
+      "last_wp_digest": "df6a507c435eb95866d38f2b8a37852376f208efc93b70bc6a44edebfdaad59d",
+      "yoast_meta_digest": "3dfbf65042e052159e173e364ea0419c234d13c0c2f90aa7bbe767c5e7d705a9",
       "status": "publish",
-      "last_payload_digest": "44cfcda48b5c27808920d285f538d06fb7a96893d24d7e1c0026eeb325738c34",
+      "last_payload_digest": "ef76a408ca71785c67a26501f97392acf2ac84539b0cdbc79c00c2c5bcf2f66f",
       "marker_key": "ccb3328c207b5865",
       "region": "Sulawesi Tengah",
       "day": "2026-11-28",
       "period": "Malam",
-      "latest_key": "ccb3328c207b5865",
+      "latest_key": "33505e277014808b",
       "entries": [
+        {
+          "key": "33505e277014808b",
+          "identifier": "2.49.0.1.360.0.2026.11.28.16.72.004",
+          "url": "https://www.bmkg.go.id/alerts/nowcast/id/CSG20261128004_alert.xml",
+          "event": "Hujan Lebat dan Petir",
+          "headline": "Hujan Lebat disertai Petir di Sulawesi Tengah",
+          "description": "Hujan lebat disertai petir akan terjadi pada 28 November 2026, 22:00 WITA di sebagian wilayah Sulawesi Tengah, khususnya di KULAWI SELATAN, MORI ATAS, PAMONA SELATAN, PAMONA TENGGARA. Kondisi ini berpotensi menimbulkan dampak berupa jarak pandang berkurang, angin kencang, dan banjir lokal. Masyarakat dihimbau untuk tetap waspada, mengurangi aktivitas di luar ruangan, serta mengambil langkah-langkah pencegahan yang diperlukan guna menjaga keselamatan. Kondisi diperkirakan dapat berlangsung hingga 29 November 2026, 01:00 WITA.",
+          "region": "Sulawesi Tengah",
+          "issued": "2026-11-28T21:46:00+08:00",
+          "effective": "2026-11-28T22:00:00+08:00",
+          "expires": "2026-11-29T01:00:00+08:00",
+          "severity": "Moderate",
+          "urgency": "Immediate",
+          "certainty": "Observed",
+          "sender": "Badan Meteorologi Klimatologi dan Geofisika"
+        },
         {
           "key": "ccb3328c207b5865",
           "identifier": "2.49.0.1.360.0.2026.11.28.15.72.004",
@@ -3804,20 +3806,20 @@
           "sender": "Badan Meteorologi Klimatologi dan Geofisika"
         }
       ],
-      "editorial_version": 4
+      "editorial_version": 5
     },
     "82f5646fdd0783f3a695": {
       "post_id": 9786,
       "media_id": 9785,
-      "last_wp_digest": "5dc5cb6f9499172c872c6c8cafde7b82d2833a9831e2881b91b28734c381f0fa",
-      "yoast_meta_digest": "58bac40cd400ca1f5210ddee24945a531f0b13788769a61f6e6c8d61ee48f0e7",
+      "last_wp_digest": "fc4fb17aca2384715f334fbe31718f8277635afa34f4e93146668309c9802bfb",
+      "yoast_meta_digest": "6b0f42541c5edb9f44887425ec21c14e37a35f0de102efd796a04a223aadc9a6",
       "status": "publish",
-      "last_payload_digest": "6897008d3502e0e644ea085e658c0dea49647e619980370ed67f417c79f2e393",
+      "last_payload_digest": "be53b23a110a2432621b6b8615c7d7155679f36c53dff030a020f29fccf85d6e",
       "marker_key": "2cb3a118d6ccca4c",
       "region": "Bengkulu",
       "day": "2026-11-28",
       "period": "Malam",
-      "latest_key": "2cb3a118d6ccca4c",
+      "latest_key": "7b73665e06ae8abe",
       "entries": [
         {
           "key": "2cb3a118d6ccca4c",
@@ -3834,23 +3836,55 @@
           "urgency": "Immediate",
           "certainty": "Observed",
           "sender": "Badan Meteorologi Klimatologi dan Geofisika"
+        },
+        {
+          "key": "7b73665e06ae8abe",
+          "identifier": "2.49.0.1.360.0.2026.11.28.16.17.005",
+          "url": "https://www.bmkg.go.id/alerts/nowcast/id/CBK20261128005_alert.xml",
+          "event": "Hujan Lebat dan Petir",
+          "headline": "Hujan Lebat disertai Petir di Bengkulu",
+          "description": "Hujan lebat disertai petir akan terjadi pada 28 November 2026, 23:00 WIB di sebagian wilayah Bengkulu, khususnya di AIR PERIUKAN, ILIR TALO, SEMIDANG ALAS, SEMIDANG ALAS MARAS, SUKARAJA, TALO, TALO KECIL. Kondisi ini berpotensi menimbulkan dampak berupa jarak pandang berkurang, angin kencang, dan banjir lokal. Masyarakat dihimbau untuk tetap waspada, mengurangi aktivitas di luar ruangan, serta mengambil langkah-langkah pencegahan yang diperlukan guna menjaga keselamatan. Kondisi diperkirakan dapat berlangsung hingga 29 November 2026, 02:00 WIB.",
+          "region": "Bengkulu",
+          "issued": "2026-11-28T22:50:00+07:00",
+          "effective": "2026-11-28T23:00:00+07:00",
+          "expires": "2026-11-29T02:00:00+07:00",
+          "severity": "Moderate",
+          "urgency": "Immediate",
+          "certainty": "Observed",
+          "sender": "Badan Meteorologi Klimatologi dan Geofisika"
         }
       ],
-      "editorial_version": 4
+      "editorial_version": 5
     },
     "5ffd9fe99b687a2fc82b": {
       "post_id": 9789,
       "media_id": 9788,
-      "last_wp_digest": "e5e3c1f85212c187b3312b5e21a53e1f7ec06e8f32012ea000633eb56788f129",
-      "yoast_meta_digest": "db61eef166cf56efb51905aa0cc00f1f94adb3db23d52ba5a39326ef3972a604",
+      "last_wp_digest": "8d95add4175bbcc32d16a2d8923d27420612bd0073eccc8281a474ff9edbaa9c",
+      "yoast_meta_digest": "b9ab289412165879a0421d2f71099f2630eb4bf2f9ae10c6a355cd31eb33c05a",
       "status": "publish",
-      "last_payload_digest": "6c14af7fd4fe23a2fa7dcc4c4f7f4f28db7a92bd06e425a4cc3ffa9c0d75793a",
+      "last_payload_digest": "d60a9a5284438b2f482002c6e4ccb777fd17c2fc9a0d7c15c985137d3a294050",
       "marker_key": "b866043b422e1a02",
       "region": "Jawa Timur",
       "day": "2026-11-28",
       "period": "Malam",
-      "latest_key": "b866043b422e1a02",
+      "latest_key": "781cb97488497a45",
       "entries": [
+        {
+          "key": "781cb97488497a45",
+          "identifier": "2.49.0.1.360.0.2026.11.28.16.35.010",
+          "url": "https://www.bmkg.go.id/alerts/nowcast/id/CJT20261128010_alert.xml",
+          "event": "Hujan Lebat dan Petir",
+          "headline": "Hujan Lebat disertai Petir di Jawa Timur",
+          "description": "Hujan lebat disertai petir akan terjadi pada 28 November 2026, 21:20 WIB di sebagian wilayah Jawa Timur, khususnya di AMPELGADING, BANTUR, DAMPIT, GEDANGAN, KEMBANGBAHU, LAMONGAN, PRONOJIWO, PUCUK, SUGIO, SUKODADI, SUMBERMANJING WETAN, TEMPURSARI, TIKUNG, TIRTOYUDO. Kondisi ini berpotensi menimbulkan dampak berupa jarak pandang berkurang, angin kencang, dan banjir lokal. Masyarakat dihimbau untuk tetap waspada, mengurangi aktivitas di luar ruangan, serta mengambil langkah-langkah pencegahan yang diperlukan guna menjaga keselamatan. Kondisi diperkirakan dapat berlangsung hingga 29 November 2026, 00:30 WIB.",
+          "region": "Jawa Timur",
+          "issued": "2026-11-28T21:10:00+07:00",
+          "effective": "2026-11-28T21:20:00+07:00",
+          "expires": "2026-11-29T00:30:00+07:00",
+          "severity": "Moderate",
+          "urgency": "Immediate",
+          "certainty": "Observed",
+          "sender": "Badan Meteorologi Klimatologi dan Geofisika"
+        },
         {
           "key": "b866043b422e1a02",
           "identifier": "2.49.0.1.360.0.2026.11.28.15.35.010",
@@ -3868,20 +3902,20 @@
           "sender": "Badan Meteorologi Klimatologi dan Geofisika"
         }
       ],
-      "editorial_version": 4
+      "editorial_version": 5
     },
     "e3aada1e982a0c9ff955": {
       "post_id": 9792,
       "media_id": 9791,
-      "last_wp_digest": "9784b36bf798b84be7f74438dad2b2190d767f6a8b1ef0f13b3c5a9d414f31e7",
-      "yoast_meta_digest": "7972769e301fb2d55efe48dd5697bc5d39015c313bfc0067fa5e58a4961f8fc8",
+      "last_wp_digest": "e49f71470df5d06d89786b1ce038ba03fa00d0673750445c9632fdd60543dea7",
+      "yoast_meta_digest": "f27391adbf594375f8f3c0f57177b5661560054335305676a547280df3fb9b91",
       "status": "publish",
-      "last_payload_digest": "d47d1a0f1b802254f60fc28c4f3614f14da6d0b0bc1e9f0947fe7a49484fb671",
+      "last_payload_digest": "c8d5786d89e3f92325acda94f499eb790356c39cc9ec15a348e6a590474ae12b",
       "marker_key": "6de6f4a9a647a8e2",
       "region": "Nusa Tenggara Barat",
       "day": "2026-11-28",
       "period": "Malam",
-      "latest_key": "6de6f4a9a647a8e2",
+      "latest_key": "a70fca9323d6c96a",
       "entries": [
         {
           "key": "6de6f4a9a647a8e2",
@@ -3898,9 +3932,25 @@
           "urgency": "Immediate",
           "certainty": "Observed",
           "sender": "Badan Meteorologi Klimatologi dan Geofisika"
+        },
+        {
+          "key": "a70fca9323d6c96a",
+          "identifier": "2.49.0.1.360.0.2026.11.28.16.52.007",
+          "url": "https://www.bmkg.go.id/alerts/nowcast/id/CNB20261128007_alert.xml",
+          "event": "Hujan Lebat dan Petir",
+          "headline": "Hujan Lebat disertai Petir di Nusa Tenggara Barat",
+          "description": "Hujan lebat disertai petir akan terjadi pada 28 November 2026, 23:00 WITA di sebagian wilayah Nusa Tenggara Barat, khususnya di MARONGE, SAMBELIA. Kondisi ini berpotensi menimbulkan dampak berupa jarak pandang berkurang, angin kencang, dan banjir lokal. Masyarakat dihimbau untuk tetap waspada, mengurangi aktivitas di luar ruangan, serta mengambil langkah-langkah pencegahan yang diperlukan guna menjaga keselamatan. Kondisi diperkirakan dapat berlangsung hingga 29 November 2026, 02:00 WITA.",
+          "region": "Nusa Tenggara Barat",
+          "issued": "2026-11-28T22:58:00+08:00",
+          "effective": "2026-11-28T23:00:00+08:00",
+          "expires": "2026-11-29T02:00:00+08:00",
+          "severity": "Moderate",
+          "urgency": "Immediate",
+          "certainty": "Observed",
+          "sender": "Badan Meteorologi Klimatologi dan Geofisika"
         }
       ],
-      "editorial_version": 4
+      "editorial_version": 5
     },
     "d1006351a4243a99d5d9": {
       "post_id": 9795,
@@ -4017,15 +4067,15 @@
     "36e1712418988a04ad11": {
       "post_id": 9804,
       "media_id": 9803,
-      "last_wp_digest": "44985f43943bf8dc6affc4c0c945aac0a92a9f1d36bc2c96ee9e4b8fd39304b0",
-      "yoast_meta_digest": "a3af972808045465d490356229be1440935a871c8354ae9f773b55f750118e59",
+      "last_wp_digest": "1bd967d81463dfb1a87a74a320650d345a23ae8fd7df2ec865ca2ea552cd1968",
+      "yoast_meta_digest": "df7397dc177b79a24dabd929e7e56912171d943bef1932939e5398cf3661b773",
       "status": "publish",
-      "last_payload_digest": "1569c16bb3302f249260d9ba1ad41186a34a9fce286d8db1b41f0d46d8b8908d",
+      "last_payload_digest": "395cde39ace164e20c5bb6993fca5cf23749d1114b0c1dce63269328f9cf73f7",
       "marker_key": "3851b959aaf3ee43",
       "region": "Jawa Barat",
       "day": "2026-11-28",
       "period": "Malam",
-      "latest_key": "3851b959aaf3ee43",
+      "latest_key": "a6302a74cbc227a5",
       "entries": [
         {
           "key": "3851b959aaf3ee43",
@@ -4042,9 +4092,25 @@
           "urgency": "Immediate",
           "certainty": "Observed",
           "sender": "Badan Meteorologi Klimatologi dan Geofisika"
+        },
+        {
+          "key": "a6302a74cbc227a5",
+          "identifier": "2.49.0.1.360.0.2026.11.28.16.32.006",
+          "url": "https://www.bmkg.go.id/alerts/nowcast/id/CJB20261128006_alert.xml",
+          "event": "Hujan Lebat dan Petir",
+          "headline": "Hujan Lebat disertai Petir di Jawa Barat",
+          "description": "Hujan lebat disertai petir akan terjadi pada 28 November 2026, 20:55 WIB di sebagian wilayah Jawa Barat, khususnya di BANTARGADUNG, BATUJAYA, BLANAKAN, CARINGIN, CICURUG, CIDAHU, CIKALONG, CILAMAYA KULON, CILAMAYA WETAN, CIPATUJAH, KADUDAMPIT, KARANGNUNGGAL, PAKISJAYA, PARAKANSALAK, RAWAMERTA, SUKABUMI, TEMPURAN. Kondisi ini berpotensi menimbulkan dampak berupa jarak pandang berkurang, angin kencang, dan banjir lokal. Masyarakat dihimbau untuk tetap waspada, mengurangi aktivitas di luar ruangan, serta mengambil langkah-langkah pencegahan yang diperlukan guna menjaga keselamatan. Kondisi diperkirakan dapat berlangsung hingga 28 November 2026, 23:45 WIB.",
+          "region": "Jawa Barat",
+          "issued": "2026-11-28T20:45:00+07:00",
+          "effective": "2026-11-28T20:55:00+07:00",
+          "expires": "2026-11-28T23:45:00+07:00",
+          "severity": "Moderate",
+          "urgency": "Immediate",
+          "certainty": "Observed",
+          "sender": "Badan Meteorologi Klimatologi dan Geofisika"
         }
       ],
-      "editorial_version": 4
+      "editorial_version": 5
     },
     "cfc8c5ba38a1ab51552d": {
       "post_id": 9807,
