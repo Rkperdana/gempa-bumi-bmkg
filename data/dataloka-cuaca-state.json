@@ -1169,6 +1169,22 @@
       "urgency": "Immediate",
       "certainty": "Observed",
       "sender": "Badan Meteorologi Klimatologi dan Geofisika"
+    },
+    "fca3067d2d1e596b": {
+      "key": "fca3067d2d1e596b",
+      "identifier": "2.49.0.1.360.0.2026.11.28.05.63.001",
+      "url": "https://www.bmkg.go.id/alerts/nowcast/id/CKS20261128001_alert.xml",
+      "event": "Hujan Lebat dan Petir",
+      "headline": "Hujan Lebat disertai Petir di Kalimantan Selatan",
+      "description": "Hujan lebat disertai petir akan terjadi pada 28 November 2026, 12:40 WITA di sebagian wilayah Kalimantan Selatan, khususnya di ARANIO, BATANG ALAI TIMUR, PULAULAUT BARAT, SUNGAIDURIAN. Kondisi ini berpotensi menimbulkan dampak berupa jarak pandang berkurang, angin kencang, dan banjir lokal. Masyarakat dihimbau untuk tetap waspada, mengurangi aktivitas di luar ruangan, serta mengambil langkah-langkah pencegahan yang diperlukan guna menjaga keselamatan. Kondisi diperkirakan dapat berlangsung hingga 28 November 2026, 14:00 WITA.",
+      "region": "Kalimantan Selatan",
+      "issued": "2026-11-28T12:30:00+08:00",
+      "effective": "2026-11-28T12:40:00+08:00",
+      "expires": "2026-11-28T14:00:00+08:00",
+      "severity": "Moderate",
+      "urgency": "Immediate",
+      "certainty": "Observed",
+      "sender": "Badan Meteorologi Klimatologi dan Geofisika"
     }
   },
   "skipped": {
@@ -1246,15 +1262,10 @@
       "region": "Papua Barat",
       "expires": "2026-11-28T13:48:00+09:00",
       "reason": "expired"
-    },
-    "fca3067d2d1e596b": {
-      "region": "Kalimantan Selatan",
-      "expires": "2026-11-28T14:00:00+08:00",
-      "reason": "withdrawn"
     }
   },
   "unread_urls": [],
-  "last_checked_at": "2026-11-28T05:18:31.143837+00:00",
+  "last_checked_at": "2026-11-28T05:28:30.202352+00:00",
   "last_served": {
     "Bali": "2026-11-28T05:09:51.927831+00:00",
     "Sumatera Utara": "2026-11-28T00:35:24.538457+00:00",
