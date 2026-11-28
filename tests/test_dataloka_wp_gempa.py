@@ -405,7 +405,9 @@ assert str(root) in sys.path
         event = self.event()
         fields = p.article(event)
         self.assertIn("Gempa M5,6 di Selatan Jawa", fields["title"])
-        self.assertIn("BMKG", fields["title"])
+        self.assertTrue(fields["title"].startswith("BMKG: Gempa"))
+        self.assertTrue(fields["yoast_meta"]["_yoast_wpseo_title"].startswith("BMKG: Gempa"))
+        self.assertEqual(fields["title"].count("BMKG:"), 1)
         self.assertRegex(
             fields["slug"],
             r"^gempa-selatan-jawa-2026-11-17-[0-9a-f]{8}$",
@@ -429,7 +431,7 @@ assert str(root) in sys.path
             fields["yoast_meta"]["_yoast_wpseo_title"], fields["title"]
         )
         self.assertIn("2026", fields["yoast_meta"]["_yoast_wpseo_title"])
-        self.assertIn("BMKG: Tidak Berpotensi Tsunami", fields["title"])
+        self.assertIn("Tidak Berpotensi Tsunami", fields["title"])
         self.assertEqual(
             fields["yoast_meta"]["_yoast_wpseo_metadesc"],
             fields["excerpt"]
@@ -511,7 +513,7 @@ assert str(root) in sys.path
         result = p.article(event)
         self.assertEqual(
             result["title"],
-            "Gempa M4,8 di Ruteng, Manggarai, Terasa hingga III MMI")
+            "BMKG: Gempa M4,8 di Ruteng, Manggarai, Terasa hingga III MMI")
         self.assertTrue(result["content"].startswith("<p><strong>Dataloka.id</strong> - "))
         self.assertNotIn("Pusat gempa berada", result["title"])
         self.assertIn("Pusat gempa berada", result["content"])
@@ -743,7 +745,7 @@ assert str(root) in sys.path
         self.assertEqual(len(calls), 1)
         self.assertEqual(calls[0][1], {})  # Create new, never update post 9500
         self.assertIn("-pembaruan-", calls[0][0]["slug"])
-        self.assertIn("Pembaruan BMKG:", calls[0][0]["title"])
+        self.assertTrue(calls[0][0]["title"].startswith("BMKG: Pembaruan Gempa"))
         self.assertIn(":revision:", calls[0][3])
         self.assertEqual(saved["events"][0]["post_id"], 9500)
         self.assertEqual(len(saved["events"][0]["published_versions"]), 2)
