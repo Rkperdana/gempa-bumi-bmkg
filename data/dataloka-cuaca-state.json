@@ -2307,6 +2307,38 @@
       "urgency": "Immediate",
       "certainty": "Observed",
       "sender": "Badan Meteorologi Klimatologi dan Geofisika"
+    },
+    "65c1532a486435aa": {
+      "key": "65c1532a486435aa",
+      "identifier": "2.49.0.1.360.0.2026.11.28.16.32.007",
+      "url": "https://www.bmkg.go.id/alerts/nowcast/id/CJB20261128007_alert.xml",
+      "event": "Hujan Lebat dan Petir",
+      "headline": "Hujan Lebat disertai Petir di Jawa Barat",
+      "description": "Hujan lebat disertai petir akan terjadi pada 28 November 2026, 23:24 WIB di sebagian wilayah Jawa Barat, khususnya di CIKALONG, CIMERAK. Kondisi ini berpotensi menimbulkan dampak berupa jarak pandang berkurang, angin kencang, dan banjir lokal. Masyarakat dihimbau untuk tetap waspada, mengurangi aktivitas di luar ruangan, serta mengambil langkah-langkah pencegahan yang diperlukan guna menjaga keselamatan. Kondisi diperkirakan dapat berlangsung hingga 29 November 2026, 02:14 WIB.",
+      "region": "Jawa Barat",
+      "issued": "2026-11-28T23:14:00+07:00",
+      "effective": "2026-11-28T23:24:00+07:00",
+      "expires": "2026-11-29T02:14:00+07:00",
+      "severity": "Moderate",
+      "urgency": "Immediate",
+      "certainty": "Observed",
+      "sender": "Badan Meteorologi Klimatologi dan Geofisika"
+    },
+    "c71493faa275212b": {
+      "key": "c71493faa275212b",
+      "identifier": "2.49.0.1.360.0.2026.11.28.16.16.009",
+      "url": "https://www.bmkg.go.id/alerts/nowcast/id/CSS20261128009_alert.xml",
+      "event": "Hujan Lebat dan Petir",
+      "headline": "Hujan Lebat disertai Petir di Sumatera Selatan",
+      "description": "Hujan lebat disertai petir akan terjadi pada 28 November 2026, 23:20 WIB di sebagian wilayah Sumatera Selatan, khususnya di AIR KUMBANG, AIR SUGIHAN, ALANG-ALANG LEBAR, BANYUASIN I, BANYUASIN II, BANYUASIN III, BATANG HARI LEKO, BAYUNG LENCIR, BELIDA DARAT, BUKIT KECIL, CAMBAI, CEMPAKA, GANDUS, GELUMBANG, ILIR BARAT I, ILIR BARAT II, ILIR TIMUR I, ILIR TIMUR II, INDRALAYA, INDRALAYA SELATAN, INDRALAYA UTARA, JEJAWI, KALIDONI, KANDIS, KAYU AGUNG, KELEKAR, KEMUNING, KERTAPATI, LEMBAK, LUBAI, LUBUK KELIAT, MUARA BELIDA, MUARA KUANG, PAMPANGAN, PANGKALAN LAMPAM, PAYARAMAN, PEDAMARAN, PEMULUTAN, PEMULUTAN BARAT, PEMULUTAN SELATAN, PENUKAL, PENUKAL UTARA, PLAJU, PRABUMULIH BARAT, PRABUMULIH SELATAN, PULAU RIMAU, RAMBANG, RAMBANG DANGKU, RAMBANG KPK TENGAH, RAMBANG KUANG, RAMBUTAN, RANTAU ALAI, RANTAU BAYUR, RANTAU PANJANG, SAKO, SEBERANG ULU I, SEBERANG ULU II, SEMATANG BORANG, SEMBAWA, SIRAH PULAU PADANG, SUKARAMI, SUNGAI PINANG, SUNGAI ROTAN, TALANG KELAPA, TALANG UBI, TANJUNG BATU, TANJUNG LAGO, TANJUNG LUBUK, TANJUNG RAJA, TELUK GELAM, TULUNG SELAPAN. Kondisi ini berpotensi menimbulkan dampak berupa jarak pandang berkurang, angin kencang, dan banjir lokal. Masyarakat dihimbau untuk tetap waspada, mengurangi aktivitas di luar ruangan, serta mengambil langkah-langkah pencegahan yang diperlukan guna menjaga keselamatan. Kondisi diperkirakan dapat berlangsung hingga 29 November 2026, 01:20 WIB.",
+      "region": "Sumatera Selatan",
+      "issued": "2026-11-28T22:50:00+07:00",
+      "effective": "2026-11-28T23:20:00+07:00",
+      "expires": "2026-11-29T01:20:00+07:00",
+      "severity": "Moderate",
+      "urgency": "Immediate",
+      "certainty": "Observed",
+      "sender": "Badan Meteorologi Klimatologi dan Geofisika"
     }
   },
   "skipped": {
@@ -2549,10 +2581,15 @@
       "region": "Papua Tengah",
       "expires": "2026-11-29T01:15:00+09:00",
       "reason": "expired"
+    },
+    "567c46f7fe6f58e9": {
+      "region": "Lampung",
+      "expires": "2026-11-28T23:30:00+07:00",
+      "reason": "expired"
     }
   },
   "unread_urls": [],
-  "last_checked_at": "2026-11-28T16:28:38.086041+00:00",
+  "last_checked_at": "2026-11-28T16:38:39.975656+00:00",
   "last_served": {
     "Bali": "2026-11-28T06:11:07.653059+00:00",
     "Sumatera Utara": "2026-11-28T16:28:58.424859+00:00",
