@@ -2859,26 +2859,23 @@
       "status": "publish",
       "last_payload_digest": "0b572bfbe34d5eb5b17f37b1e0cbcde1e5c7e3b397eafcb989ff304a2de60c35",
       "marker_key": "7bc47b0a6654ad4e"
-    }
-  },
-  "pending": {
+    },
     "33e6ad92320e8d93": {
-      "key": "33e6ad92320e8d93",
-      "identifier": "2.49.0.1.360.0.2026.11.28.19.21.006",
-      "url": "https://www.bmkg.go.id/alerts/nowcast/id/CKR20261128006_alert.xml",
-      "event": "Hujan Lebat dan Petir",
-      "headline": "Hujan Lebat disertai Petir di Kep. Riau",
-      "description": "Hujan lebat disertai petir akan terjadi pada 29 November 2026, 02:30 WIB di sebagian wilayah Kep. Riau, khususnya di SINGKEP, SINGKEP BARAT, SINGKEP SELATAN. Kondisi ini berpotensi menimbulkan dampak berupa jarak pandang berkurang, angin kencang, dan banjir lokal. Masyarakat dihimbau untuk tetap waspada, mengurangi aktivitas di luar ruangan, serta mengambil langkah-langkah pencegahan yang diperlukan guna menjaga keselamatan. Kondisi diperkirakan dapat berlangsung hingga 29 November 2026, 04:00 WIB.",
-      "region": "Kep. Riau",
-      "issued": "2026-11-29T02:20:00+07:00",
-      "effective": "2026-11-29T02:30:00+07:00",
+      "fingerprint": "285711a1d6cc778460a27c7346d1ac313b75632e898ae5e1822b58040a729544",
+      "editorial_version": 5,
+      "province_period_key": "6067e40537653428ff17",
       "expires": "2026-11-29T04:00:00+07:00",
-      "severity": "Moderate",
-      "urgency": "Immediate",
-      "certainty": "Observed",
-      "sender": "Badan Meteorologi Klimatologi dan Geofisika"
+      "post_id": 9916,
+      "media_id": 9915,
+      "last_wp_digest": "2b6cc256515b2faf56695439825ef9c44e0aa29dee26135cf1ef2b1601190b16",
+      "yoast_meta_digest": "a01ec726b782ff0763892415b2c51998d990a1fe709ad25797059768c9b00bae",
+      "status": "publish",
+      "last_payload_digest": "1ea34697a8235ab16b5e905c12761563d0b0c77eff699f45ac0c1edc20042a38",
+      "marker_key": "33e6ad92320e8d93",
+      "featured_tag_removed": true
     }
   },
+  "pending": {},
   "skipped": {
     "16876fd4b23bb830": {
       "region": "Sumatera Barat",
@@ -3181,7 +3178,7 @@
   "last_served": {
     "Bali": "2026-11-28T06:11:07.653059+00:00",
     "Sumatera Utara": "2026-11-28T18:09:42.178536+00:00",
-    "Kep. Riau": "2026-11-28T05:59:31.135490+00:00",
+    "Kep. Riau": "2026-11-28T19:39:14.181579+00:00",
     "Kep. Bangka Belitung": "2026-11-28T19:18:43.815455+00:00",
     "Kalimantan Utara": "2026-11-28T03:09:34.404315+00:00",
     "Bengkulu": "2026-11-28T18:09:08.101066+00:00",
@@ -5994,6 +5991,38 @@
           "region": "DI Yogyakarta",
           "issued": "2026-11-29T01:45:00+07:00",
           "effective": "2026-11-29T01:55:00+07:00",
+          "expires": "2026-11-29T04:00:00+07:00",
+          "severity": "Moderate",
+          "urgency": "Immediate",
+          "certainty": "Observed",
+          "sender": "Badan Meteorologi Klimatologi dan Geofisika"
+        }
+      ],
+      "editorial_version": 5
+    },
+    "6067e40537653428ff17": {
+      "post_id": 9916,
+      "media_id": 9915,
+      "last_wp_digest": "2b6cc256515b2faf56695439825ef9c44e0aa29dee26135cf1ef2b1601190b16",
+      "yoast_meta_digest": "a01ec726b782ff0763892415b2c51998d990a1fe709ad25797059768c9b00bae",
+      "status": "publish",
+      "last_payload_digest": "1ea34697a8235ab16b5e905c12761563d0b0c77eff699f45ac0c1edc20042a38",
+      "marker_key": "33e6ad92320e8d93",
+      "region": "Kep. Riau",
+      "day": "2026-11-28",
+      "period": "Malam",
+      "latest_key": "33e6ad92320e8d93",
+      "entries": [
+        {
+          "key": "33e6ad92320e8d93",
+          "identifier": "2.49.0.1.360.0.2026.11.28.19.21.006",
+          "url": "https://www.bmkg.go.id/alerts/nowcast/id/CKR20261128006_alert.xml",
+          "event": "Hujan Lebat dan Petir",
+          "headline": "Hujan Lebat disertai Petir di Kep. Riau",
+          "description": "Hujan lebat disertai petir akan terjadi pada 29 November 2026, 02:30 WIB di sebagian wilayah Kep. Riau, khususnya di SINGKEP, SINGKEP BARAT, SINGKEP SELATAN. Kondisi ini berpotensi menimbulkan dampak berupa jarak pandang berkurang, angin kencang, dan banjir lokal. Masyarakat dihimbau untuk tetap waspada, mengurangi aktivitas di luar ruangan, serta mengambil langkah-langkah pencegahan yang diperlukan guna menjaga keselamatan. Kondisi diperkirakan dapat berlangsung hingga 29 November 2026, 04:00 WIB.",
+          "region": "Kep. Riau",
+          "issued": "2026-11-29T02:20:00+07:00",
+          "effective": "2026-11-29T02:30:00+07:00",
           "expires": "2026-11-29T04:00:00+07:00",
           "severity": "Moderate",
           "urgency": "Immediate",
