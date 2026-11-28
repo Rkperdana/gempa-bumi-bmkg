@@ -2030,6 +2030,22 @@
       "urgency": "Immediate",
       "certainty": "Observed",
       "sender": "Badan Meteorologi Klimatologi dan Geofisika"
+    },
+    "0aba7d44c06489e2": {
+      "key": "0aba7d44c06489e2",
+      "identifier": "2.49.0.1.360.0.2026.11.28.15.12.004",
+      "url": "https://www.bmkg.go.id/alerts/nowcast/id/CSU20261128004_alert.xml",
+      "event": "Hujan Lebat dan Petir",
+      "headline": "Hujan Lebat disertai Petir di Sumatera Utara",
+      "description": "Hujan lebat disertai petir akan terjadi pada 28 November 2026, 22:10 WIB di sebagian wilayah Sumatera Utara, khususnya di ANDAM DEWI, BARUS, BARUS UTARA, BATAHAN, DANAU TOBA, FANAYAMA, KOLANG, KUALUH HULU, KUALUH LEIDONG, KUALUH SELATAN, MANDUAMAS, ONOLALU, PAGINDAR, PARMONANGAN, PASARIBU TOBING, SIMANGAMBAT, SIMANGAMBAT, SIRANDORUNG, SITELU TALI URANG JEHE, SORKAM, SORKAM BARAT, SOSOR GADONG, TELUK DALAM. Kondisi ini berpotensi menimbulkan dampak berupa jarak pandang berkurang, angin kencang, dan banjir lokal. Masyarakat dihimbau untuk tetap waspada, mengurangi aktivitas di luar ruangan, serta mengambil langkah-langkah pencegahan yang diperlukan guna menjaga keselamatan. Kondisi diperkirakan dapat berlangsung hingga 29 November 2026, 02:00 WIB.",
+      "region": "Sumatera Utara",
+      "issued": "2026-11-28T21:50:00+07:00",
+      "effective": "2026-11-28T22:10:00+07:00",
+      "expires": "2026-11-29T02:00:00+07:00",
+      "severity": "Moderate",
+      "urgency": "Immediate",
+      "certainty": "Observed",
+      "sender": "Badan Meteorologi Klimatologi dan Geofisika"
     }
   },
   "skipped": {
@@ -2235,7 +2251,7 @@
     }
   },
   "unread_urls": [],
-  "last_checked_at": "2026-11-28T15:08:36.836367+00:00",
+  "last_checked_at": "2026-11-28T15:18:39.498018+00:00",
   "last_served": {
     "Bali": "2026-11-28T06:11:07.653059+00:00",
     "Sumatera Utara": "2026-11-28T14:39:35.547280+00:00",
