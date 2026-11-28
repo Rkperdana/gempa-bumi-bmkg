@@ -698,22 +698,6 @@
     }
   },
   "pending": {
-    "636564c477be3038": {
-      "key": "636564c477be3038",
-      "identifier": "2.49.0.1.360.0.2026.11.28.04.61.001",
-      "url": "https://www.bmkg.go.id/alerts/nowcast/id/CKB20261128001_alert.xml",
-      "event": "Hujan Lebat dan Petir",
-      "headline": "Hujan Lebat disertai Petir di Kalimantan Barat",
-      "description": "Hujan lebat disertai petir akan terjadi pada 28 November 2026, 10:50 WIB di sebagian wilayah Kalimantan Barat, khususnya di SAYAN, TUMBANG TITI. Kondisi ini berpotensi menimbulkan dampak berupa jarak pandang berkurang, angin kencang, dan banjir lokal. Masyarakat dihimbau untuk tetap waspada, mengurangi aktivitas di luar ruangan, serta mengambil langkah-langkah pencegahan yang diperlukan guna menjaga keselamatan. Kondisi diperkirakan dapat berlangsung hingga 28 November 2026, 13:00 WIB.",
-      "region": "Kalimantan Barat",
-      "issued": "2026-11-28T10:40:00+07:00",
-      "effective": "2026-11-28T10:50:00+07:00",
-      "expires": "2026-11-28T13:00:00+07:00",
-      "severity": "Moderate",
-      "urgency": "Immediate",
-      "certainty": "Observed",
-      "sender": "Badan Meteorologi Klimatologi dan Geofisika"
-    },
     "361066f3a052c720": {
       "key": "361066f3a052c720",
       "identifier": "2.49.0.1.360.0.2026.11.28.04.72.001",
@@ -793,6 +777,38 @@
       "urgency": "Immediate",
       "certainty": "Observed",
       "sender": "Badan Meteorologi Klimatologi dan Geofisika"
+    },
+    "cbf8b6954d6eae01": {
+      "key": "cbf8b6954d6eae01",
+      "identifier": "2.49.0.1.360.0.2026.11.28.04.33.001",
+      "url": "https://www.bmkg.go.id/alerts/nowcast/id/CJH20261128001_alert.xml",
+      "event": "Hujan Lebat dan Petir",
+      "headline": "Hujan Lebat disertai Petir di Jawa Tengah",
+      "description": "Hujan lebat disertai petir akan terjadi pada 28 November 2026, 11:15 WIB di sebagian wilayah Jawa Tengah, khususnya di AMPELGADING, BODEH, JATINEGARA, KALINYAMATAN, KEDUNG, KERJO, LEBAKBARANG, MOJOGEDANG, PECANGAAN, PETUNGKRIYONO, RANDUDONGKAL, SUKOLILO, WEDUNG. Kondisi ini berpotensi menimbulkan dampak berupa jarak pandang berkurang, angin kencang, dan banjir lokal. Masyarakat dihimbau untuk tetap waspada, mengurangi aktivitas di luar ruangan, serta mengambil langkah-langkah pencegahan yang diperlukan guna menjaga keselamatan. Kondisi diperkirakan dapat berlangsung hingga 28 November 2026, 14:00 WIB.",
+      "region": "Jawa Tengah",
+      "issued": "2026-11-28T11:05:00+07:00",
+      "effective": "2026-11-28T11:15:00+07:00",
+      "expires": "2026-11-28T14:00:00+07:00",
+      "severity": "Moderate",
+      "urgency": "Immediate",
+      "certainty": "Observed",
+      "sender": "Badan Meteorologi Klimatologi dan Geofisika"
+    },
+    "ced06de296909a3a": {
+      "key": "ced06de296909a3a",
+      "identifier": "2.49.0.1.360.0.2026.11.28.04.35.002",
+      "url": "https://www.bmkg.go.id/alerts/nowcast/id/CJT20261128002_alert.xml",
+      "event": "Hujan Lebat dan Petir",
+      "headline": "Hujan Lebat disertai Petir di Jawa Timur",
+      "description": "Hujan lebat disertai petir akan terjadi pada 28 November 2026, 11:20 WIB di sebagian wilayah Jawa Timur, khususnya di BENDUNGAN, GONDANGLEGI, JENANGAN, PAGERWOJO, PULUNG, TUREN, WAJAK. Kondisi ini berpotensi menimbulkan dampak berupa jarak pandang berkurang, angin kencang, dan banjir lokal. Masyarakat dihimbau untuk tetap waspada, mengurangi aktivitas di luar ruangan, serta mengambil langkah-langkah pencegahan yang diperlukan guna menjaga keselamatan. Kondisi diperkirakan dapat berlangsung hingga 28 November 2026, 13:30 WIB.",
+      "region": "Jawa Timur",
+      "issued": "2026-11-28T10:50:00+07:00",
+      "effective": "2026-11-28T11:20:00+07:00",
+      "expires": "2026-11-28T13:30:00+07:00",
+      "severity": "Moderate",
+      "urgency": "Immediate",
+      "certainty": "Observed",
+      "sender": "Badan Meteorologi Klimatologi dan Geofisika"
     }
   },
   "skipped": {
@@ -865,10 +881,15 @@
       "region": "Aceh",
       "expires": "2026-11-28T11:07:00+07:00",
       "reason": "expired"
+    },
+    "636564c477be3038": {
+      "region": "Kalimantan Barat",
+      "expires": "2026-11-28T13:00:00+07:00",
+      "reason": "withdrawn"
     }
   },
   "unread_urls": [],
-  "last_checked_at": "2026-11-28T04:08:18.643578+00:00",
+  "last_checked_at": "2026-11-28T04:18:20.206449+00:00",
   "last_served": {
     "Bali": "2026-11-28T00:34:39.520093+00:00",
     "Sumatera Utara": "2026-11-28T00:35:24.538457+00:00",
