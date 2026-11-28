@@ -383,26 +383,21 @@
       "editorial_version": 2,
       "featured_tag_removed": true,
       "expires": "2026-11-28T11:07:00+07:00"
-    }
-  },
-  "pending": {
+    },
     "0f70f71e72f7785e": {
-      "key": "0f70f71e72f7785e",
-      "identifier": "2.49.0.1.360.0.2026.11.28.01.21.001",
-      "url": "https://www.bmkg.go.id/alerts/nowcast/id/CKR20261128001_alert.xml",
-      "event": "Hujan Lebat dan Petir",
-      "headline": "Hujan Lebat disertai Petir di Kep. Riau",
-      "description": "Hujan lebat disertai petir akan terjadi pada 28 November 2026, 08:30 WIB di sebagian wilayah Kep. Riau, khususnya di BUNGURAN SELATAN, BUNGURAN TENGAH, BUNGURAN TIMUR, BUNGURAN TIMUR LAUT, BUNGURAN UTARA, SERASAN, SUBI, TAMBELAN. Kondisi ini berpotensi menimbulkan dampak berupa jarak pandang berkurang, angin kencang, dan banjir lokal. Masyarakat dihimbau untuk tetap waspada, mengurangi aktivitas di luar ruangan, serta mengambil langkah-langkah pencegahan yang diperlukan guna menjaga keselamatan. Kondisi diperkirakan dapat berlangsung hingga 28 November 2026, 10:30 WIB.",
-      "region": "Kep. Riau",
-      "issued": "2026-11-28T08:20:00+07:00",
-      "effective": "2026-11-28T08:30:00+07:00",
-      "expires": "2026-11-28T10:30:00+07:00",
-      "severity": "Moderate",
-      "urgency": "Immediate",
-      "certainty": "Observed",
-      "sender": "Badan Meteorologi Klimatologi dan Geofisika"
+      "post_id": 9425,
+      "media_id": 9424,
+      "last_wp_digest": "dd1cea101c5071bfdd20148abba33793267c971eb5f60e8b8b38747f7634d4f1",
+      "yoast_meta_digest": "659566c303ef5a84580621ef6c33a188324a6f1fb2e18c11e015c3dc033ae3e1",
+      "status": "publish",
+      "last_payload_digest": "8cfce71388a6c580283916b9a998482e595ba1a96ca210eee93a25111823d356",
+      "fingerprint": "b97fa3f2c7774898cdb984622e30443ed6c35c970851e42830203c1eebf0c3e9",
+      "editorial_version": 2,
+      "featured_tag_removed": true,
+      "expires": "2026-11-28T10:30:00+07:00"
     }
   },
+  "pending": {},
   "skipped": {
     "16876fd4b23bb830": {
       "region": "Sumatera Barat",
@@ -450,7 +445,7 @@
   "last_served": {
     "Bali": "2026-11-28T00:34:39.520093+00:00",
     "Sumatera Utara": "2026-11-28T00:35:24.538457+00:00",
-    "Kep. Riau": "2026-11-28T01:10:24.355944+00:00",
+    "Kep. Riau": "2026-11-28T01:37:42.865654+00:00",
     "Kep. Bangka Belitung": "2026-11-28T01:17:56.934775+00:00",
     "Kalimantan Utara": "2026-11-28T01:18:40.905389+00:00",
     "Bengkulu": "2026-11-28T01:07:41.744552+00:00",
