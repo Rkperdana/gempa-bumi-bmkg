@@ -493,7 +493,40 @@
       "expires": "2026-11-28T14:39:00+09:00"
     }
   },
-  "pending": {},
+  "pending": {
+    "a28ca48659abae4e": {
+      "key": "a28ca48659abae4e",
+      "identifier": "2.49.0.1.360.0.2026.11.28.02.13.003",
+      "url": "https://www.bmkg.go.id/alerts/nowcast/id/CSB20261128003_alert.xml",
+      "event": "Hujan Lebat dan Petir",
+      "headline": "Hujan Lebat disertai Petir di Sumatera Barat",
+      "description": "Hujan lebat disertai petir akan terjadi pada 28 November 2026, 09:30 WIB di sebagian wilayah Sumatera Barat, khususnya di AMPEK NAGARI, BATANG ANAI, BATANG GASAN, BAYANG, BUNGUS TELUK KABUNG, ENAM LINGKUNG, IV KOTO AUR MALINTANG, KOTO TANGAH, KOTO XI TARUSAN, KURANJI, LUBUK ALUNG, LUBUK BASUNG, LUBUK BEGALUNG, NAN SABARIS, NANGGALO, PADANG BARAT, PADANG SAGO, PADANG SELATAN, PADANG TIMUR, PADANG UTARA, PAGAI UTARA, PARIAMAN SELATAN, PARIAMAN TENGAH, PARIAMAN TIMUR, PARIAMAN UTARA, PELEMBAYAN, SIBERUT BARAT, SIBERUT UTARA, SINTUAK TOBOH GADANG, SIPORA SELATAN, SIPORA UTARA, SUNGAI GARINGGING, SUNGAI LIMAU, TANJUNG MUTIARA, TIGO NAGARI, ULAKAN TAPAKIH, V KOTO KAMPUNG DALAM, V KOTO TIMUR, VII KOTO SUNGAI SARIK. Kondisi ini berpotensi menimbulkan dampak berupa jarak pandang berkurang, angin kencang, dan banjir lokal. Masyarakat dihimbau untuk tetap waspada, mengurangi aktivitas di luar ruangan, serta mengambil langkah-langkah pencegahan yang diperlukan guna menjaga keselamatan. Kondisi diperkirakan dapat berlangsung hingga 28 November 2026, 12:00 WIB.",
+      "region": "Sumatera Barat",
+      "issued": "2026-11-28T09:20:00+07:00",
+      "effective": "2026-11-28T09:30:00+07:00",
+      "expires": "2026-11-28T12:00:00+07:00",
+      "severity": "Moderate",
+      "urgency": "Immediate",
+      "certainty": "Observed",
+      "sender": "Badan Meteorologi Klimatologi dan Geofisika"
+    },
+    "7393254fc3e5d19f": {
+      "key": "7393254fc3e5d19f",
+      "identifier": "2.49.0.1.360.0.2026.11.28.02.92.001",
+      "url": "https://www.bmkg.go.id/alerts/nowcast/id/CPB20261128001_alert.xml",
+      "event": "Hujan Lebat dan Petir",
+      "headline": "Hujan Lebat disertai Petir di Papua Barat",
+      "description": "Hujan lebat disertai petir akan terjadi pada 28 November 2026, 11:48 WIT di sebagian wilayah Papua Barat, khususnya di CATUBOUW, MASNI, SIDEY. Kondisi ini berpotensi menimbulkan dampak berupa jarak pandang berkurang, angin kencang, dan banjir lokal. Masyarakat dihimbau untuk tetap waspada, mengurangi aktivitas di luar ruangan, serta mengambil langkah-langkah pencegahan yang diperlukan guna menjaga keselamatan. Kondisi diperkirakan dapat berlangsung hingga 28 November 2026, 13:48 WIT.",
+      "region": "Papua Barat",
+      "issued": "2026-11-28T11:18:00+09:00",
+      "effective": "2026-11-28T11:48:00+09:00",
+      "expires": "2026-11-28T13:48:00+09:00",
+      "severity": "Moderate",
+      "urgency": "Immediate",
+      "certainty": "Observed",
+      "sender": "Badan Meteorologi Klimatologi dan Geofisika"
+    }
+  },
   "skipped": {
     "16876fd4b23bb830": {
       "region": "Sumatera Barat",
@@ -539,10 +572,20 @@
       "region": "Bengkulu",
       "expires": "2026-11-28T09:23:00+07:00",
       "reason": "expired"
+    },
+    "b6cb131ec7ee9a51": {
+      "region": "Sumatera Barat",
+      "expires": "2026-11-28T09:30:00+07:00",
+      "reason": "expired"
+    },
+    "d528ffe0874dc27c": {
+      "region": "Jawa Timur",
+      "expires": "2026-11-28T09:30:00+07:00",
+      "reason": "expired"
     }
   },
   "unread_urls": [],
-  "last_checked_at": "2026-11-28T02:26:52.436714+00:00",
+  "last_checked_at": "2026-11-28T02:36:53.202523+00:00",
   "last_served": {
     "Bali": "2026-11-28T00:34:39.520093+00:00",
     "Sumatera Utara": "2026-11-28T00:35:24.538457+00:00",
