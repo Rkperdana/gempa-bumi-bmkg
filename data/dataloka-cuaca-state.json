@@ -611,42 +611,33 @@
       "editorial_version": 2,
       "featured_tag_removed": true,
       "expires": "2026-11-28T12:30:00+07:00"
-    }
-  },
-  "pending": {
-    "0afaa3eb2888f3a7": {
-      "key": "0afaa3eb2888f3a7",
-      "identifier": "2.49.0.1.360.0.2026.11.28.03.61.001",
-      "url": "https://www.bmkg.go.id/alerts/nowcast/id/CKB20261128001_alert.xml",
-      "event": "Hujan Lebat dan Petir",
-      "headline": "Hujan Lebat disertai Petir di Kalimantan Barat",
-      "description": "Hujan lebat disertai petir akan terjadi pada 28 November 2026, 10:50 WIB di sebagian wilayah Kalimantan Barat, khususnya di SAYAN, TUMBANG TITI. Kondisi ini berpotensi menimbulkan dampak berupa jarak pandang berkurang, angin kencang, dan banjir lokal. Masyarakat dihimbau untuk tetap waspada, mengurangi aktivitas di luar ruangan, serta mengambil langkah-langkah pencegahan yang diperlukan guna menjaga keselamatan. Kondisi diperkirakan dapat berlangsung hingga 28 November 2026, 13:00 WIB.",
-      "region": "Kalimantan Barat",
-      "issued": "2026-11-28T10:40:00+07:00",
-      "effective": "2026-11-28T10:50:00+07:00",
-      "expires": "2026-11-28T13:00:00+07:00",
-      "severity": "Moderate",
-      "urgency": "Immediate",
-      "certainty": "Observed",
-      "sender": "Badan Meteorologi Klimatologi dan Geofisika"
     },
     "f51cab0ba96644ed": {
-      "key": "f51cab0ba96644ed",
-      "identifier": "2.49.0.1.360.0.2026.11.28.03.72.001",
-      "url": "https://www.bmkg.go.id/alerts/nowcast/id/CSG20261128001_alert.xml",
-      "event": "Hujan Lebat dan Petir",
-      "headline": "Hujan Lebat disertai Petir di Sulawesi Tengah",
-      "description": "Hujan lebat disertai petir akan terjadi pada 28 November 2026, 11:44 WITA di sebagian wilayah Sulawesi Tengah, khususnya di AMPIBABO, LABUAN, LORE UTARA, PARIGI, PARIGI BARAT, PARIGI SELATAN, PARIGI TENGAH, PARIGI UTARA, SINIU, TANANTOVEA, TORIBULU. Kondisi ini berpotensi menimbulkan dampak berupa jarak pandang berkurang, angin kencang, dan banjir lokal. Masyarakat dihimbau untuk tetap waspada, mengurangi aktivitas di luar ruangan, serta mengambil langkah-langkah pencegahan yang diperlukan guna menjaga keselamatan. Kondisi diperkirakan dapat berlangsung hingga 28 November 2026, 13:30 WITA.",
-      "region": "Sulawesi Tengah",
-      "issued": "2026-11-28T11:32:00+08:00",
-      "effective": "2026-11-28T11:44:00+08:00",
-      "expires": "2026-11-28T13:30:00+08:00",
-      "severity": "Moderate",
-      "urgency": "Immediate",
-      "certainty": "Observed",
-      "sender": "Badan Meteorologi Klimatologi dan Geofisika"
+      "post_id": 9495,
+      "media_id": 9494,
+      "last_wp_digest": "3d7d291b029fee95a15fc42c0dc072b831ebb0cb7fd4de5c4fbeae21e4baa3b3",
+      "yoast_meta_digest": "0af4f12017305d447c685b738d23b03c61563fb5495e14f1b3db91717286b431",
+      "status": "publish",
+      "last_payload_digest": "ae9b0cdc48db8a64f1f73ff1c13378ea13ec2aa427956eccb2b7efd77ed551e0",
+      "fingerprint": "8a00425bcba1862136bdbfcf39f3fd8bb893207627b2279e25284f81ec972cdc",
+      "editorial_version": 2,
+      "featured_tag_removed": true,
+      "expires": "2026-11-28T13:30:00+08:00"
+    },
+    "0afaa3eb2888f3a7": {
+      "post_id": 9498,
+      "media_id": 9497,
+      "last_wp_digest": "cda370142f45109e186dcf576080799820af42da5d1e33ffa61209e5a98dafad",
+      "yoast_meta_digest": "17ade7b9c702144b2ee780a6a82d041a9793eef74f670604ab4151cfaedc3281",
+      "status": "publish",
+      "last_payload_digest": "b22c071f345ab2dfd549276ce64f42bfbfa0fe4649ff2f6fe6be3c23ee1862f9",
+      "fingerprint": "7465b19cf0dbb55b93cc0d3a67f80ff167b79ea04d900456e3704b9efdea485a",
+      "editorial_version": 2,
+      "featured_tag_removed": true,
+      "expires": "2026-11-28T13:00:00+07:00"
     }
   },
+  "pending": {},
   "skipped": {
     "16876fd4b23bb830": {
       "region": "Sumatera Barat",
@@ -723,6 +714,8 @@
     "Aceh": "2026-11-28T03:12:33.395307+00:00",
     "Papua": "2026-11-28T03:17:04.028936+00:00",
     "Papua Barat": "2026-11-28T03:17:59.048215+00:00",
-    "Riau": "2026-11-28T03:40:17.516403+00:00"
+    "Riau": "2026-11-28T03:40:17.516403+00:00",
+    "Sulawesi Tengah": "2026-11-28T03:50:55.279819+00:00",
+    "Kalimantan Barat": "2026-11-28T03:53:08.311167+00:00"
   }
 }
