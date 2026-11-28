@@ -382,24 +382,6 @@
       }
     },
     {
-      "key": "94080df9ac5701",
-      "data": {
-        "key": "94080df9ac5701",
-        "datetime": "2026-11-13T19:49:19Z",
-        "magnitude": 5.0,
-        "depth_km": 26.0,
-        "lat": -1.2,
-        "lon": 150.57,
-        "region": "New Ireland Region, Papua New Guinea",
-        "felt": false,
-        "felt_info": "",
-        "potential": "",
-        "sources": [
-          "realtime"
-        ]
-      }
-    },
-    {
       "key": "86bf2242952643",
       "data": {
         "key": "86bf2242952643",
@@ -869,5 +851,5 @@
       "last_payload_digest": "ba29b86e751455a28e3a0fe8559d7daecfafdb5d24466ae25222f0968cd731b8"
     }
   ],
-  "last_checked_at": "2026-11-28T19:39:53.065739Z"
+  "last_checked_at": "2026-11-28T19:49:52.703928Z"
 }
