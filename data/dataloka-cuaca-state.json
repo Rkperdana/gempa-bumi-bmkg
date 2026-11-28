@@ -3171,10 +3171,15 @@
       "region": "Papua Tengah",
       "expires": "2026-11-29T03:45:00+09:00",
       "reason": "expired"
+    },
+    "ad114fa13cc6efd0": {
+      "region": "Papua Barat",
+      "expires": "2026-11-29T04:47:00+09:00",
+      "reason": "expired"
     }
   },
   "unread_urls": [],
-  "last_checked_at": "2026-11-28T19:38:23.352353+00:00",
+  "last_checked_at": "2026-11-28T19:48:23.597062+00:00",
   "last_served": {
     "Bali": "2026-11-28T06:11:07.653059+00:00",
     "Sumatera Utara": "2026-11-28T18:09:42.178536+00:00",
