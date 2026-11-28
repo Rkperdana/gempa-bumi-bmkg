@@ -575,26 +575,21 @@
       "editorial_version": 2,
       "featured_tag_removed": true,
       "expires": "2026-11-28T13:48:00+09:00"
-    }
-  },
-  "pending": {
+    },
     "22193c63e87dd0ea": {
-      "key": "22193c63e87dd0ea",
-      "identifier": "2.49.0.1.360.0.2026.11.28.03.13.003",
-      "url": "https://www.bmkg.go.id/alerts/nowcast/id/CSB20261128003_alert.xml",
-      "event": "Hujan Lebat dan Petir",
-      "headline": "Hujan Lebat disertai Petir di Sumatera Barat",
-      "description": "Hujan lebat disertai petir akan terjadi pada 28 November 2026, 09:30 WIB di sebagian wilayah Sumatera Barat, khususnya di AMPEK NAGARI, BATANG ANAI, BATANG GASAN, BAYANG, BUNGUS TELUK KABUNG, ENAM LINGKUNG, IV KOTO AUR MALINTANG, KOTO TANGAH, KOTO XI TARUSAN, KURANJI, LUBUK ALUNG, LUBUK BASUNG, LUBUK BEGALUNG, NAN SABARIS, NANGGALO, PADANG BARAT, PADANG SAGO, PADANG SELATAN, PADANG TIMUR, PADANG UTARA, PAGAI UTARA, PARIAMAN SELATAN, PARIAMAN TENGAH, PARIAMAN TIMUR, PARIAMAN UTARA, PELEMBAYAN, SIBERUT BARAT, SIBERUT UTARA, SINTUAK TOBOH GADANG, SIPORA SELATAN, SIPORA UTARA, SUNGAI GARINGGING, SUNGAI LIMAU, TANJUNG MUTIARA, TIGO NAGARI, ULAKAN TAPAKIH, V KOTO KAMPUNG DALAM, V KOTO TIMUR, VII KOTO SUNGAI SARIK. Kondisi ini berpotensi menimbulkan dampak berupa jarak pandang berkurang, angin kencang, dan banjir lokal. Masyarakat dihimbau untuk tetap waspada, mengurangi aktivitas di luar ruangan, serta mengambil langkah-langkah pencegahan yang diperlukan guna menjaga keselamatan. Kondisi diperkirakan dapat berlangsung hingga 28 November 2026, 12:00 WIB.",
-      "region": "Sumatera Barat",
-      "issued": "2026-11-28T09:20:00+07:00",
-      "effective": "2026-11-28T09:30:00+07:00",
-      "expires": "2026-11-28T12:00:00+07:00",
-      "severity": "Moderate",
-      "urgency": "Immediate",
-      "certainty": "Observed",
-      "sender": "Badan Meteorologi Klimatologi dan Geofisika"
+      "post_id": 9486,
+      "media_id": 9485,
+      "last_wp_digest": "6f64a37b005f941f520a67d5f113b702d580890445e02417df11992ac519b81b",
+      "yoast_meta_digest": "acf2df8ddc696364d53d4c8b9e4e0b38a9d40edb9eee8d07535cc34a496b7083",
+      "status": "publish",
+      "last_payload_digest": "2e6f408cb08234cfc6cd227168db1420a8b6cace6a95557ebd3502e8053691da",
+      "fingerprint": "c11069c25ffd9ee7a9acf7cda3fe87897670388ae25222e5e2917d313ac974a9",
+      "editorial_version": 2,
+      "featured_tag_removed": true,
+      "expires": "2026-11-28T12:00:00+07:00"
     }
   },
+  "pending": {},
   "skipped": {
     "16876fd4b23bb830": {
       "region": "Sumatera Barat",
@@ -661,7 +656,7 @@
     "Kep. Bangka Belitung": "2026-11-28T01:17:56.934775+00:00",
     "Kalimantan Utara": "2026-11-28T03:09:34.404315+00:00",
     "Bengkulu": "2026-11-28T02:08:22.808462+00:00",
-    "Sumatera Barat": "2026-11-28T02:39:04.540456+00:00",
+    "Sumatera Barat": "2026-11-28T03:18:46.685905+00:00",
     "Jawa Timur": "2026-11-28T02:10:01.215208+00:00",
     "Aceh": "2026-11-28T03:12:33.395307+00:00",
     "Papua": "2026-11-28T03:17:04.028936+00:00",
