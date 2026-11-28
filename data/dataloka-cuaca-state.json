@@ -2749,22 +2749,6 @@
       "certainty": "Observed",
       "sender": "Badan Meteorologi Klimatologi dan Geofisika"
     },
-    "9e3b0a04afb9a179": {
-      "key": "9e3b0a04afb9a179",
-      "identifier": "2.49.0.1.360.0.2026.11.28.18.15.005",
-      "url": "https://www.bmkg.go.id/alerts/nowcast/id/CJI20261128005_alert.xml",
-      "event": "Hujan Lebat dan Petir",
-      "headline": "Hujan Lebat disertai Petir di Jambi",
-      "description": "Hujan lebat disertai petir akan terjadi pada 28 November 2026, 23:12 WIB di sebagian wilayah Jambi, khususnya di BAJUBANG, BERBAK, DENDANG, GERAGAI, JAMBI LUAR KOTA, KUMPEH, KUMPEH ULU, MARO SEBO, MENDAHARA ULU, MESTONG, MUARA BULIAN, MUARA SABAK TIMUR, PEMAYUNG, RANTAU RASAU, SADU, SEKERNAN, SUNGAI GELAM, TAMAN RAJO. Kondisi ini berpotensi menimbulkan dampak berupa jarak pandang berkurang, angin kencang, dan banjir lokal. Masyarakat dihimbau untuk tetap waspada, mengurangi aktivitas di luar ruangan, serta mengambil langkah-langkah pencegahan yang diperlukan guna menjaga keselamatan. Kondisi diperkirakan dapat berlangsung hingga 29 November 2026, 01:12 WIB.",
-      "region": "Jambi",
-      "issued": "2026-11-28T22:42:00+07:00",
-      "effective": "2026-11-28T23:12:00+07:00",
-      "expires": "2026-11-29T01:12:00+07:00",
-      "severity": "Moderate",
-      "urgency": "Immediate",
-      "certainty": "Observed",
-      "sender": "Badan Meteorologi Klimatologi dan Geofisika"
-    },
     "90ddf2e54970ef33": {
       "key": "90ddf2e54970ef33",
       "identifier": "2.49.0.1.360.0.2026.11.28.18.14.006",
@@ -3052,10 +3036,15 @@
       "region": "Sulawesi Tenggara",
       "expires": "2026-11-29T01:50:00+08:00",
       "reason": "expired"
+    },
+    "9e3b0a04afb9a179": {
+      "region": "Jambi",
+      "expires": "2026-11-29T01:12:00+07:00",
+      "reason": "expired"
     }
   },
   "unread_urls": [],
-  "last_checked_at": "2026-11-28T18:08:29.423508+00:00",
+  "last_checked_at": "2026-11-28T18:18:29.583704+00:00",
   "last_served": {
     "Bali": "2026-11-28T06:11:07.653059+00:00",
     "Sumatera Utara": "2026-11-28T18:09:42.178536+00:00",
