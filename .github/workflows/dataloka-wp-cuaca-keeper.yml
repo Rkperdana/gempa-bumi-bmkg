@@ -42,7 +42,7 @@ jobs:
       - name: Check Python and shell syntax
         run: |
           python -m py_compile scripts/dataloka_wp_cuaca.py scripts/dataloka_cuaca_image.py
-          bash -n scripts/save-cuaca-state.sh scripts/run-cuaca-cycle.sh scripts/dataloka-cuaca-keeper.sh
+          for script in scripts/save-cuaca-state.sh scripts/run-cuaca-cycle.sh scripts/dataloka-cuaca-keeper.sh; do bash -n "$script" || exit 1; done
       - name: Run isolated weather tests
         run: python -m unittest discover -s tests -p 'test_dataloka_wp_cuaca.py' -v
       - name: Check BMKG and WordPress every 10 minutes
