@@ -1,0 +1,53 @@
+name: Dataloka | Maritim (pilot preview)
+on:
+  pull_request:
+    paths:
+      - 'scripts/dataloka_maritim.py'
+      - 'tests/test_dataloka_maritim.py'
+      - '.github/workflows/dataloka-maritim-preview.yml'
+  workflow_dispatch:
+  schedule:
+    - cron: '12,42 * * * *'
+permissions:
+  contents: read
+concurrency:
+  group: dataloka-maritim-preview-${{ github.event_name == 'pull_request' && github.event.pull_request.number || 'main' }}
+  cancel-in-progress: false
+jobs:
+  offline:
+    if: github.event_name != 'schedule'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+      - run: python -m pip install "Pillow==12.0.0"
+      - run: python -m py_compile scripts/dataloka_maritim.py
+      - run: python -m unittest discover -s tests -p test_dataloka_maritim.py -v
+      - run: python scripts/dataloka_maritim.py
+      - uses: actions/upload-artifact@v4
+        with:
+          name: maritim-featured-images
+          path: maritim-preview/
+          retention-days: 7
+  authorized-preview:
+    if: github.event_name != 'pull_request' && vars.BMKG_MARITIM_AUTHORIZED == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    env:
+      BMKG_MARITIM_AUTHORIZED: ${{ vars.BMKG_MARITIM_AUTHORIZED }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+      - run: python -m pip install "Pillow==12.0.0"
+      - run: python scripts/dataloka_maritim.py --authorized-wave
+      - uses: actions/upload-artifact@v4
+        with:
+          name: wave-editorial-previews
+          path: maritim-preview/
+          retention-days: 7
+      - name: Inspect rob schema (no publication)
+        run: python scripts/dataloka_maritim.py --inspect-rob
