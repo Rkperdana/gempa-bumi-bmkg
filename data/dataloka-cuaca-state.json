@@ -587,42 +587,33 @@
       "editorial_version": 2,
       "featured_tag_removed": true,
       "expires": "2026-11-28T12:00:00+07:00"
-    }
-  },
-  "pending": {
-    "1cee98c30b6103ba": {
-      "key": "1cee98c30b6103ba",
-      "identifier": "2.49.0.1.360.0.2026.11.28.03.19.001",
-      "url": "https://www.bmkg.go.id/alerts/nowcast/id/CBB20261128001_alert.xml",
-      "event": "Hujan Lebat dan Petir",
-      "headline": "Hujan Lebat disertai Petir di Kep. Bangka Belitung",
-      "description": "Hujan lebat disertai petir akan terjadi pada 28 November 2026, 10:30 WIB di sebagian wilayah Kep. Bangka Belitung, khususnya di TANJUNG PANDAN. Kondisi ini berpotensi menimbulkan dampak berupa jarak pandang berkurang, angin kencang, dan banjir lokal. Masyarakat dihimbau untuk tetap waspada, mengurangi aktivitas di luar ruangan, serta mengambil langkah-langkah pencegahan yang diperlukan guna menjaga keselamatan. Kondisi diperkirakan dapat berlangsung hingga 28 November 2026, 12:30 WIB.",
-      "region": "Kep. Bangka Belitung",
-      "issued": "2026-11-28T10:20:00+07:00",
-      "effective": "2026-11-28T10:30:00+07:00",
-      "expires": "2026-11-28T12:30:00+07:00",
-      "severity": "Moderate",
-      "urgency": "Immediate",
-      "certainty": "Observed",
-      "sender": "Badan Meteorologi Klimatologi dan Geofisika"
     },
     "ae74ef689445dbf5": {
-      "key": "ae74ef689445dbf5",
-      "identifier": "2.49.0.1.360.0.2026.11.28.03.14.001",
-      "url": "https://www.bmkg.go.id/alerts/nowcast/id/CRU20261128001_alert.xml",
-      "event": "Hujan Lebat dan Petir",
-      "headline": "Hujan Lebat disertai Petir di Riau",
-      "description": "Hujan lebat disertai petir akan terjadi pada 28 November 2026, 10:00 WIB di sebagian wilayah Riau, khususnya di BANGKO, SINABOI. Kondisi ini berpotensi menimbulkan dampak berupa jarak pandang berkurang, angin kencang, dan banjir lokal. Masyarakat dihimbau untuk tetap waspada, mengurangi aktivitas di luar ruangan, serta mengambil langkah-langkah pencegahan yang diperlukan guna menjaga keselamatan. Kondisi diperkirakan dapat berlangsung hingga 28 November 2026, 12:00 WIB.",
-      "region": "Riau",
-      "issued": "2026-11-28T09:50:00+07:00",
-      "effective": "2026-11-28T10:00:00+07:00",
-      "expires": "2026-11-28T12:00:00+07:00",
-      "severity": "Moderate",
-      "urgency": "Immediate",
-      "certainty": "Observed",
-      "sender": "Badan Meteorologi Klimatologi dan Geofisika"
+      "post_id": 9489,
+      "media_id": 9488,
+      "last_wp_digest": "35f0c0457887064f800393c5affe58bf04a3cfd217cd8f9b95badac7527b972a",
+      "yoast_meta_digest": "b59ba4f23ca9c531be1a68854800a07731aa9accd6f5ad0f00cb0ad72559a762",
+      "status": "publish",
+      "last_payload_digest": "f156386f41cd2511e1ba79bb49e780f94a86e3e73ae1b2dc0a420ba9cb644276",
+      "fingerprint": "abe87dcb81f96ea36bb78f662272c7ebf3d8279b5cd245e860d6925def41170d",
+      "editorial_version": 2,
+      "featured_tag_removed": true,
+      "expires": "2026-11-28T12:00:00+07:00"
+    },
+    "1cee98c30b6103ba": {
+      "post_id": 9492,
+      "media_id": 9491,
+      "last_wp_digest": "518328079224e7b8854ebd33d94164e48a6bbbaba1d3864d00f03d7089bea8ca",
+      "yoast_meta_digest": "c67a7552e3a5a8757e21d1d543227e931ad428161fd9e8423c48ef001093a730",
+      "status": "publish",
+      "last_payload_digest": "cbf0db240168b96eedd6618fc03e286edf84ca6a739fc7a721823d9593601ebe",
+      "fingerprint": "d421e853493c8b8386aaeff727ce70fc6e755845e549e13d1f7bd8178143f618",
+      "editorial_version": 2,
+      "featured_tag_removed": true,
+      "expires": "2026-11-28T12:30:00+07:00"
     }
   },
+  "pending": {},
   "skipped": {
     "16876fd4b23bb830": {
       "region": "Sumatera Barat",
@@ -691,13 +682,14 @@
     "Bali": "2026-11-28T00:34:39.520093+00:00",
     "Sumatera Utara": "2026-11-28T00:35:24.538457+00:00",
     "Kep. Riau": "2026-11-28T03:14:30.421037+00:00",
-    "Kep. Bangka Belitung": "2026-11-28T01:17:56.934775+00:00",
+    "Kep. Bangka Belitung": "2026-11-28T03:41:55.075065+00:00",
     "Kalimantan Utara": "2026-11-28T03:09:34.404315+00:00",
     "Bengkulu": "2026-11-28T02:08:22.808462+00:00",
     "Sumatera Barat": "2026-11-28T03:18:46.685905+00:00",
     "Jawa Timur": "2026-11-28T02:10:01.215208+00:00",
     "Aceh": "2026-11-28T03:12:33.395307+00:00",
     "Papua": "2026-11-28T03:17:04.028936+00:00",
-    "Papua Barat": "2026-11-28T03:17:59.048215+00:00"
+    "Papua Barat": "2026-11-28T03:17:59.048215+00:00",
+    "Riau": "2026-11-28T03:40:17.516403+00:00"
   }
 }
