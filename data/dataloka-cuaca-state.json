@@ -1948,10 +1948,15 @@
       "region": "Sulawesi Selatan",
       "expires": "2026-11-28T22:15:00+08:00",
       "reason": "expired"
+    },
+    "2296b23f73b26927": {
+      "region": "Sumatera Utara",
+      "expires": "2026-11-28T21:40:00+07:00",
+      "reason": "expired"
     }
   },
   "unread_urls": [],
-  "last_checked_at": "2026-11-28T14:38:39.539709+00:00",
+  "last_checked_at": "2026-11-28T14:48:37.826392+00:00",
   "last_served": {
     "Bali": "2026-11-28T06:11:07.653059+00:00",
     "Sumatera Utara": "2026-11-28T14:39:35.547280+00:00",
