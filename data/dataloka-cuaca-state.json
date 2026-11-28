@@ -2574,7 +2574,24 @@
       "marker_key": "f0675f1d16f56c46"
     }
   },
-  "pending": {},
+  "pending": {
+    "a5ea23578dd7d52c": {
+      "key": "a5ea23578dd7d52c",
+      "identifier": "2.49.0.1.360.0.2026.11.28.17.32.008",
+      "url": "https://www.bmkg.go.id/alerts/nowcast/id/CJB20261128008_alert.xml",
+      "event": "Hujan Lebat dan Petir",
+      "headline": "Hujan Lebat disertai Petir di Jawa Barat",
+      "description": "Hujan lebat disertai petir akan terjadi pada 29 November 2026, 00:49 WIB di sebagian wilayah Jawa Barat, khususnya di CIJULANG, CIMERAK, CINEAM, GUNUNG TANJUNG, KALIPUCANG, KAPETAKAN, PANCATENGAH, PANGANDARAN, PARIGI, SALOPA, SIDAMULIH, SURANENGGALA. Kondisi ini berpotensi menimbulkan dampak berupa jarak pandang berkurang, angin kencang, dan banjir lokal. Masyarakat dihimbau untuk tetap waspada, mengurangi aktivitas di luar ruangan, serta mengambil langkah-langkah pencegahan yang diperlukan guna menjaga keselamatan. Kondisi diperkirakan dapat berlangsung hingga 29 November 2026, 03:39 WIB.",
+      "region": "Jawa Barat",
+      "issued": "2026-11-29T00:39:00+07:00",
+      "effective": "2026-11-29T00:49:00+07:00",
+      "expires": "2026-11-29T03:39:00+07:00",
+      "severity": "Moderate",
+      "urgency": "Immediate",
+      "certainty": "Observed",
+      "sender": "Badan Meteorologi Klimatologi dan Geofisika"
+    }
+  },
   "skipped": {
     "16876fd4b23bb830": {
       "region": "Sumatera Barat",
@@ -2835,10 +2852,15 @@
       "region": "Jawa Timur",
       "expires": "2026-11-29T00:30:00+07:00",
       "reason": "expired"
+    },
+    "483844b7e4638a19": {
+      "region": "Aceh",
+      "expires": "2026-11-29T00:45:00+07:00",
+      "reason": "expired"
     }
   },
   "unread_urls": [],
-  "last_checked_at": "2026-11-28T17:38:35.901920+00:00",
+  "last_checked_at": "2026-11-28T17:48:40.615661+00:00",
   "last_served": {
     "Bali": "2026-11-28T06:11:07.653059+00:00",
     "Sumatera Utara": "2026-11-28T17:19:47.628213+00:00",
