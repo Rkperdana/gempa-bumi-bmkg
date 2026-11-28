@@ -249,14 +249,31 @@ class WeatherTests(unittest.TestCase):
                     "content": payload["content"],
                 })
 
-    def test_only_one_new_alert_per_run(self):
+    def test_five_regions_then_resume_older_active_warning(self):
         first = example()
-        second = dict(first, key="1234567890abcdef", identifier="ANOTHER")
+        now = dt.datetime(2026, 11, 22, 5, 0, tzinfo=UTC)
+        entries = [dict(first, key=str(i), identifier=f"warning{i}", region=region,
+                        issued=(now - dt.timedelta(minutes=100)).isoformat())
+                   for i, region in enumerate(["Bali", "Bali", "Jawa Barat",
+                                               "Aceh", "Sumatera Barat", "Kalimantan Utara"])]
         state = {"version": 1, "alerts": {}}
         wp = DummyWP()
+        self.assertEqual(process(entries, "live", now, wp, state), 5)
+        self.assertEqual(len(set(call[0]["title"] for call in wp.calls)), 5)
+        self.assertEqual(len(state["pending"]), 1)
+        self.assertEqual(process(entries, "live", now, wp, state), 1)
+        self.assertEqual(process(entries, "live", now, wp, state), 0)
+
+    def test_cancelled_and_withdrawn_queue_entries(self):
+        first = example()
+        second = dict(first, key="second", identifier="other")
+        state = {"version": 1, "alerts": {}}
         now = dt.datetime(2026, 11, 22, 5, 0, tzinfo=UTC)
-        self.assertEqual(process([first, second], "live", now, wp, state), 1)
-        self.assertEqual(len(wp.calls), 1)
+        pub.collect([first, second], state, now)
+        pub.collect([first], state, now, cancelled={first["identifier"]})
+        self.assertFalse(state["pending"])
+        self.assertEqual(state["skipped"][first["key"]]["reason"], "cancelled")
+        self.assertEqual(state["skipped"]["second"]["reason"], "withdrawn")
 
     def test_wordpress_timeout_stops_following_alerts(self):
         first = example()

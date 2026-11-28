@@ -16,6 +16,7 @@ import os
 from pathlib import Path
 import re
 import sys
+import time
 import urllib.parse
 import urllib.request
 import xml.etree.ElementTree as ET
@@ -32,8 +33,8 @@ MONTHS = ("Januari", "Februari", "Maret", "April", "Mei", "Juni",
           "Juli", "Agustus", "September", "Oktober", "November", "Desember")
 MARKER = "dataloka-nowcast:"
 EDITORIAL_VERSION = 2  # Editorial HTML unchanged; tag cleanup must not republish content
-MAX_ALERTS_PER_RUN = 1
-MAX_NEW_ALERT_AGE_MINUTES = 90
+MAX_ALERTS_PER_RUN = 5
+_last_request = 0.0
 MAX_BYTES = 600_000
 
 
@@ -54,6 +55,9 @@ def fetch_xml(url):
         "User-Agent": "DatalokaNowcastEditorial/0.1 (BMKG official CAP)",
         "Accept": "application/xml,text/xml,application/rss+xml",
     })
+    global _last_request
+    time.sleep(max(0, 1.1 - (time.monotonic() - _last_request)))
+    _last_request = time.monotonic()
     with urllib.request.urlopen(req, timeout=20) as response:
         if response.status != 200:
             raise RuntimeError(f"BMKG API responded HTTP {response.status}")
@@ -267,6 +271,9 @@ class WeatherWordPress(WordPress):
                 raise RuntimeError("Weather post is not a verified draft; refusing publication")
             if not int(draft.get("featured_media") or 0):
                 raise RuntimeError("Weather featured image missing on draft; refusing publication")
+        if (method == "POST" and (payload or {}).get("status") == "publish"
+                and getattr(self, "current_alert", None)):
+            verify_current(self.current_alert)
         try:
             return super().call(method, route, params=params, payload=payload)
         except RuntimeError as exc:
@@ -354,32 +361,111 @@ def load_state():
     return loaded
 
 
+def write_state(state):
+    tmp = STATE.with_suffix(".tmp")
+    STATE.parent.mkdir(parents=True, exist_ok=True)
+    tmp.write_text(json.dumps(state, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+    tmp.replace(STATE)
+
+
+class AlertChanged(ValueError):
+    pass
+
+
+def cancelled_ids(raw):
+    root = ET.fromstring(raw)
+    if (root.tag != CAP_NS+"alert" or text(root, CAP_NS+"msgType") != "Cancel"
+            or text(root, CAP_NS+"status") != "Actual" or text(root, CAP_NS+"scope") != "Public"):
+        return set()
+    return {ref.split(",")[1] for ref in text(root, CAP_NS+"references").split()
+            if len(ref.split(",")) == 3}
+
+
+def verify_current(entry):
+    urls = {item["url"] for item in parse_rss(fetch_rss())}
+    if entry["url"] not in urls:
+        raise AlertChanged("Alert has left the active BMKG feed")
+    raw = fetch_xml(entry["url"])
+    try:
+        current = parse_cap(raw, entry["url"])
+    except ValueError as exc:
+        raise AlertChanged(str(exc)) from exc
+    if fingerprint(current) != fingerprint(entry) or not active(current, dt.datetime.now(UTC)):
+        raise AlertChanged("BMKG revised or expired this alert")
+
+
+def collect(entries, state, now, failed_urls=(), cancelled=()):
+    pending = state.setdefault("pending", {})
+    history = state.setdefault("skipped", {})
+    newest = {}
+    for entry in entries:
+        key = entry["key"]
+        if key not in newest or instant(entry["issued"]) >= instant(newest[key]["issued"]):
+            newest[key] = entry
+    cancelled_keys = {hashlib.sha256(identifier.encode()).hexdigest()[:16] for identifier in cancelled}
+    for key, entry in list(pending.items()):
+        if key in cancelled_keys or entry["identifier"] in cancelled:
+            history[key] = {"region": entry["region"], "expires": entry["expires"], "reason": "cancelled"}
+            del pending[key]
+            continue
+        if key not in newest and (entry["url"] not in failed_urls or instant(entry["expires"]) <= now):
+            history[key] = {"region": entry["region"], "expires": entry["expires"],
+                            "reason": "expired" if instant(entry["expires"]) <= now else "withdrawn"}
+            del pending[key]
+    for key, entry in newest.items():
+        old = state["alerts"].get(key, {})
+        if key in cancelled_keys or entry["identifier"] in cancelled:
+            history[key] = {"region": entry["region"], "expires": entry["expires"], "reason": "cancelled"}
+            pending.pop(key, None)
+        elif history.get(key, {}).get("fingerprint") == fingerprint(entry):
+            pending.pop(key, None)
+        elif not active(entry, now):
+            history[key] = {"region": entry["region"], "expires": entry["expires"],
+                            "reason": "expired" if instant(entry["expires"]) <= now else "inactive"}
+            pending.pop(key, None)
+        elif old.get("fingerprint") == fingerprint(entry) and old.get("editorial_version") == EDITORIAL_VERSION:
+            pending.pop(key, None)
+        else:
+            pending[key] = entry
+            history.pop(key, None)
+    state["unread_urls"] = sorted(failed_urls)
+    if not failed_urls:
+        state["last_checked_at"] = now.isoformat()
+
+
 def process(entries, mode, now=None, wp=None, state=None):
     if mode not in ("fixture", "dry-run", "live"):
         raise ValueError("Unsupported mode")
-    now = now or dt.datetime.now(UTC)
-    injected_state = state is not None  # offline tests never touch the real ledger
+    def clock():
+        return now or dt.datetime.now(UTC)
+    persistent = mode == "live" and state is None
     state = state if state is not None else load_state()
-    suitable = [x for x in entries if active(x, now)]
-    suitable.sort(key=lambda x: instant(x["issued"]), reverse=True)
+    if entries is not None:
+        collect(entries, state, clock())
+    pending = state.setdefault("pending", {})
+    last_served = state.setdefault("last_served", {})
+    candidates = [e for e in pending.values() if e["url"] not in state.get("unread_urls", [])]
+    served = {}
     updated = 0
     failures = []
-    for entry in suitable:
-        old = state["alerts"].get(entry["key"], {})
-        if (old.get("fingerprint") == fingerprint(entry) and
-                old.get("editorial_version") == EDITORIAL_VERSION):
+    while candidates and updated < MAX_ALERTS_PER_RUN:
+        entry = min(candidates, key=lambda e: (served.get(e["region"], 0),
+                    last_served.get(e["region"], ""), instant(e["expires"]), e["key"]))
+        candidates.remove(entry)
+        region, key = entry["region"], entry["key"]
+        served[region] = served.get(region, 0) + 1
+        if not active(entry, clock()):
+            state["skipped"][key] = {"region": region, "expires": entry["expires"], "reason": "expired"}
+            del pending[key]
             continue
-        age_minutes = (now - instant(entry["issued"]).astimezone(UTC)).total_seconds()/60
-        if not old.get("post_id") and age_minutes > MAX_NEW_ALERT_AGE_MINUTES:
-            continue
+        old = state["alerts"].get(key, {})
         payload = article(entry)
         print(f"{mode}: {payload['title']} | {entry['url']}", flush=True)
         if mode != "live":
             updated += 1
-            if updated >= MAX_ALERTS_PER_RUN:
-                break
             continue
         try:
+            wp.current_alert = entry
             mapping = wp.save(
                 payload, old, "publish",
                 f"<!-- {MARKER}{entry['key']} -->",
@@ -390,10 +476,19 @@ def process(entries, mode, now=None, wp=None, state=None):
                 "featured_tag_removed": (not bool(old.get("post_id")) or
                                          bool(old.get("featured_tag_removed"))),
                 "expires": entry["expires"]}
+            del pending[key]
+            last_served[region] = clock().isoformat()
+            if persistent:
+                write_state(state)
             updated += 1
-            if updated >= MAX_ALERTS_PER_RUN:
-                break
+        except AlertChanged as exc:
+            print(f"SKIP {region}: {exc}", file=sys.stderr)
+            del pending[key]
+            state["skipped"][key] = {"region": region, "expires": entry["expires"], "reason": str(exc)}
         except EditorialConflict as exc:
+            del pending[key]
+            state["skipped"][key] = {"region": region, "expires": entry["expires"],
+                                     "reason": "editorial conflict", "fingerprint": fingerprint(entry)}
             print(f"SKIP: editorial revision protected: {exc}", file=sys.stderr)
         except (RuntimeError, OSError, ValueError, KeyError) as exc:
             print(f"ERROR: failed to publish weather alert {entry['key']}: {exc}",
@@ -401,10 +496,9 @@ def process(entries, mode, now=None, wp=None, state=None):
             failures.append(entry["key"])
             # Avoid flooding WordPress after the first failed write.
             break
-    if mode == "live" and not injected_state:
-        STATE.parent.mkdir(parents=True, exist_ok=True)
-        STATE.write_text(json.dumps(state, indent=2, ensure_ascii=False)+"\n",
-                         encoding="utf-8")
+    if persistent:
+        write_state(state)
+    print(f"Queue: {len(pending)} pending, {updated} processed")
     if failures:
         raise RuntimeError(f"Failed live weather alerts: {','.join(failures)}")
     return updated
@@ -439,7 +533,7 @@ def cleanup_existing_featured(wp, state=None):
 
 def main():
     p = argparse.ArgumentParser()
-    p.add_argument("--mode", choices=("fixture", "dry-run", "live"),
+    p.add_argument("--mode", choices=("fixture", "dry-run", "collect", "publish-queue", "live"),
                    default="fixture")
     args = p.parse_args()
     if args.mode == "fixture":
@@ -450,22 +544,37 @@ def main():
         jpg = __import__("dataloka_cuaca_image").render(doc)
         print(f"BMKG fixture parsed and 1200x675 cover generated ({len(jpg)} bytes)")
         return
-    if args.mode == "live" and os.environ.get("BMKG_NOWCAST_AUTHORIZED") != "true":
+    if args.mode in ("live", "publish-queue") and os.environ.get("BMKG_NOWCAST_AUTHORIZED") != "true":
         raise RuntimeError("BMKG written authorization not confirmed for live WordPress publication")
-    rss = parse_rss(fetch_rss())
-    entries = []
-    for item in rss[:45]:
-        try:
-            entries.append(parse_cap(fetch_xml(item["url"]), item["url"]))
-        except (ValueError, ET.ParseError, OSError, RuntimeError) as exc:
-            print(f"WARNING: skipped CAP detail: {exc}", file=sys.stderr)
-    if rss and not entries:
-        raise RuntimeError("Official BMKG RSS returned no valid CAP details")
-    wp = (WeatherWordPress(os.getenv("WP_USERNAME"), os.getenv("WP_APP_PASSWORD"))
-          if args.mode == "live" else None)
-    count = process(entries, args.mode, wp=wp)
-    if args.mode == "live":
-        cleanup_existing_featured(wp)
+    if args.mode != "publish-queue":
+        urls = dict.fromkeys(item["url"] for item in parse_rss(fetch_rss()))
+        entries, failed, cancelled = [], [], set()
+        for url in urls:
+            try:
+                raw = fetch_xml(url)
+                root = ET.fromstring(raw)
+                cancelled.update(cancelled_ids(raw))
+                if text(root, CAP_NS+"msgType") in ("Cancel", "Ack", "Error"):
+                    continue
+                entries.append(parse_cap(raw, url))
+            except (ValueError, ET.ParseError, OSError, RuntimeError) as exc:
+                failed.append(url)
+                print(f"WARNING: could not validate {url}: {exc}", file=sys.stderr)
+        state = load_state()
+        collect(entries, state, dt.datetime.now(UTC), failed, cancelled)
+        print(f"BMKG: {len(urls)} URLs, {len(entries)} parsed, {len(failed)} unread, "
+              f"{len(state['pending'])} queued")
+        if args.mode == "dry-run":
+            process(None, "dry-run", state=state)
+            return
+        write_state(state)
+        if failed and not entries:
+            raise RuntimeError("No readable CAP details this cycle")
+        if args.mode == "collect":
+            return
+    wp = WeatherWordPress(os.getenv("WP_USERNAME"), os.getenv("WP_APP_PASSWORD"))
+    count = process(None, "live", wp=wp)
+    cleanup_existing_featured(wp)
     print(f"{count} weather alerts processed in {args.mode} mode")
 
 

@@ -70,7 +70,7 @@ jobs:
       github.event_name != 'pull_request' &&
       vars.BMKG_NOWCAST_PAUSED != 'true'
     runs-on: ubuntu-latest
-    timeout-minutes: 12
+    timeout-minutes: 25
     permissions:
       contents: write
     env:
@@ -83,42 +83,38 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
+          ref: ${{ github.ref }}
           persist-credentials: true
       - uses: actions/setup-python@v6
         with:
           python-version: '3.12'
       - run: python -m pip install "Pillow==12.0.0"
+      - name: Collect all active BMKG alerts
+        if: env.MODE == 'live'
+        run: python scripts/dataloka_wp_cuaca.py --mode collect
+      - name: Save the queue before contacting WordPress
+        if: env.MODE == 'live'
+        run: bash scripts/save-cuaca-state.sh
+      - name: Confirm complete BMKG collection to monitor
+        if: env.MODE == 'live'
+        continue-on-error: true
+        env:
+          PING_URL: ${{ secrets.CUACA_HEALTHCHECK_URL }}
+        run: |
+          if [[ -n "$PING_URL" ]] && jq -e '.unread_urls == []' data/dataloka-cuaca-state.json >/dev/null; then
+            curl -fsS --max-time 10 -o /dev/null "$PING_URL"
+          fi
       - name: Require WordPress credentials for live
         if: env.MODE == 'live'
         run: |
           test -n "$WP_USERNAME" || { echo "Missing DATALOKA_WP_USERNAME"; exit 1; }
           test -n "$WP_APP_PASSWORD" || { echo "Missing DATALOKA_WP_APP_PASSWORD"; exit 1; }
-      - name: Run source validation and weather publication
+      - name: Publish queued alerts
+        if: env.MODE == 'live'
+        run: python scripts/dataloka_wp_cuaca.py --mode publish-queue
+      - name: Run requested preview
+        if: env.MODE != 'live'
         run: python scripts/dataloka_wp_cuaca.py --mode "$MODE"
-      - name: Persist separate weather state (not earthquake state)
+      - name: Save publication results
         if: ${{ always() && env.MODE == 'live' }}
-        shell: bash
-        run: |
-          set -euo pipefail
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          if [ ! -f data/dataloka-cuaca-state.json ]; then
-            echo "No weather ledger written; nothing to persist"
-            exit 0
-          fi
-          git add data/dataloka-cuaca-state.json
-          if git diff --cached --quiet; then
-            echo "No weather ledger changes"
-            exit 0
-          fi
-          git commit -m "data: update isolated Dataloka weather ledger"
-          for attempt in 1 2 3; do
-            git fetch origin main
-            if git rebase origin/main && git push origin HEAD:main; then
-              exit 0
-            fi
-            git rebase --abort || true
-            sleep "$attempt"
-          done
-          echo "Cannot persist ledger; WordPress slug lookup prevents duplicate posts"
-          exit 1
+        run: bash scripts/save-cuaca-state.sh
