@@ -36,7 +36,8 @@ def date_label(d):
     return f"{d.day} {MONTHS[d.month-1]} {d.year}"
 
 def key(data):
-    return hashlib.sha256(json.dumps(data, ensure_ascii=False, sort_keys=True).encode()).hexdigest()[:20]
+    identity = {k:v for k,v in data.items() if k != "synoptic"}
+    return hashlib.sha256(json.dumps(identity, ensure_ascii=False, sort_keys=True).encode()).hexdigest()[:20]
 
 def parse_wave(raw, now):
     if not isinstance(raw, dict) or not raw:
@@ -94,6 +95,8 @@ def article(a, now):
         period = f"{date_label(start)} pukul {start:%H.%M} {a['zone']} hingga {date_label(end)} pukul {end:%H.%M} {a['zone']}"
         highest = next(k for k in reversed(LEVELS) if a["groups"][k])
         title = f"BMKG: Waspada Gelombang {('Ekstrem' if highest == 'ekstrem' else 'Sangat Tinggi' if highest == 'sangat_tinggi' else 'Tinggi')} di {region} hingga {date_label(end)}"
+        if region == "Indonesia" and highest == "tinggi":
+            title = f"BMKG: Waspada Gelombang hingga 4 Meter di Perairan Indonesia hingga {date_label(end)}"
         topic = "gelombang tinggi"
         detail = "; ".join(LEVELS[k]+": "+", ".join(v) for k,v in a["groups"].items() if v)
         tags = ["BMKG","Cuaca","Gelombang Tinggi","Maritim"]
