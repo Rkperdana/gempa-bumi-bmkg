@@ -2566,6 +2566,38 @@
       "urgency": "Immediate",
       "certainty": "Observed",
       "sender": "Badan Meteorologi Klimatologi dan Geofisika"
+    },
+    "b09f6abc52308f19": {
+      "key": "b09f6abc52308f19",
+      "identifier": "2.49.0.1.360.0.2026.11.28.17.52.008",
+      "url": "https://www.bmkg.go.id/alerts/nowcast/id/CNB20261128008_alert.xml",
+      "event": "Hujan Lebat dan Petir",
+      "headline": "Hujan Lebat disertai Petir di Nusa Tenggara Barat",
+      "description": "Hujan lebat disertai petir akan terjadi pada 29 November 2026, 01:05 WITA di sebagian wilayah Nusa Tenggara Barat, khususnya di LABANGKA, PRAYA BARAT DAYA. Kondisi ini berpotensi menimbulkan dampak berupa jarak pandang berkurang, angin kencang, dan banjir lokal. Masyarakat dihimbau untuk tetap waspada, mengurangi aktivitas di luar ruangan, serta mengambil langkah-langkah pencegahan yang diperlukan guna menjaga keselamatan. Kondisi diperkirakan dapat berlangsung hingga 29 November 2026, 04:05 WITA.",
+      "region": "Nusa Tenggara Barat",
+      "issued": "2026-11-29T01:03:00+08:00",
+      "effective": "2026-11-29T01:05:00+08:00",
+      "expires": "2026-11-29T04:05:00+08:00",
+      "severity": "Moderate",
+      "urgency": "Immediate",
+      "certainty": "Observed",
+      "sender": "Badan Meteorologi Klimatologi dan Geofisika"
+    },
+    "4379b7b76f800bf1": {
+      "key": "4379b7b76f800bf1",
+      "identifier": "2.49.0.1.360.0.2026.11.28.17.11.005",
+      "url": "https://www.bmkg.go.id/alerts/nowcast/id/CAH20261128005_alert.xml",
+      "event": "Hujan Lebat dan Petir",
+      "headline": "Hujan Lebat disertai Petir di Aceh",
+      "description": "Hujan lebat disertai petir akan terjadi pada 29 November 2026, 00:10 WIB di sebagian wilayah Aceh, khususnya di DARUL HIKMAH, DARUL KAMAL, GUNUNG MERIAH, INDRAPURI, KOTA JANTHO, KRUENG SABEE, PANGA, PULAU BANYAK BARAT, SETIA BHAKTI, SINGKIL, SINGKIL UTARA, SUKA MAKMUE, TANOH ALAS. Kondisi ini berpotensi menimbulkan dampak berupa jarak pandang berkurang, angin kencang, dan banjir lokal. Masyarakat dihimbau untuk tetap waspada, mengurangi aktivitas di luar ruangan, serta mengambil langkah-langkah pencegahan yang diperlukan guna menjaga keselamatan. Kondisi diperkirakan dapat berlangsung hingga 29 November 2026, 04:31 WIB.",
+      "region": "Aceh",
+      "issued": "2026-11-29T00:00:00+07:00",
+      "effective": "2026-11-29T00:10:00+07:00",
+      "expires": "2026-11-29T04:31:00+07:00",
+      "severity": "Moderate",
+      "urgency": "Immediate",
+      "certainty": "Observed",
+      "sender": "Badan Meteorologi Klimatologi dan Geofisika"
     }
   },
   "skipped": {
@@ -2821,7 +2853,7 @@
     }
   },
   "unread_urls": [],
-  "last_checked_at": "2026-11-28T17:08:30.524608+00:00",
+  "last_checked_at": "2026-11-28T17:18:36.886850+00:00",
   "last_served": {
     "Bali": "2026-11-28T06:11:07.653059+00:00",
     "Sumatera Utara": "2026-11-28T16:28:58.424859+00:00",
