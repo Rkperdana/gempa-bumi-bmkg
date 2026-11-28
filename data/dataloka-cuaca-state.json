@@ -2705,22 +2705,6 @@
     }
   },
   "pending": {
-    "5f2cc77c351afd5b": {
-      "key": "5f2cc77c351afd5b",
-      "identifier": "2.49.0.1.360.0.2026.11.28.18.32.008",
-      "url": "https://www.bmkg.go.id/alerts/nowcast/id/CJB20261128008_alert.xml",
-      "event": "Hujan Lebat dan Petir",
-      "headline": "Hujan Lebat disertai Petir di Jawa Barat",
-      "description": "Hujan lebat disertai petir akan terjadi pada 29 November 2026, 00:49 WIB di sebagian wilayah Jawa Barat, khususnya di CIJULANG, CIMERAK, CINEAM, GUNUNG TANJUNG, KALIPUCANG, KAPETAKAN, PANCATENGAH, PANGANDARAN, PARIGI, SALOPA, SIDAMULIH, SURANENGGALA. Kondisi ini berpotensi menimbulkan dampak berupa jarak pandang berkurang, angin kencang, dan banjir lokal. Masyarakat dihimbau untuk tetap waspada, mengurangi aktivitas di luar ruangan, serta mengambil langkah-langkah pencegahan yang diperlukan guna menjaga keselamatan. Kondisi diperkirakan dapat berlangsung hingga 29 November 2026, 03:39 WIB.",
-      "region": "Jawa Barat",
-      "issued": "2026-11-29T00:39:00+07:00",
-      "effective": "2026-11-29T00:49:00+07:00",
-      "expires": "2026-11-29T03:39:00+07:00",
-      "severity": "Moderate",
-      "urgency": "Immediate",
-      "certainty": "Observed",
-      "sender": "Badan Meteorologi Klimatologi dan Geofisika"
-    },
     "232c80836ebd86dc": {
       "key": "232c80836ebd86dc",
       "identifier": "2.49.0.1.360.0.2026.11.28.18.19.008",
@@ -3029,10 +3013,20 @@
       "region": "Jambi",
       "expires": "2026-11-29T01:12:00+07:00",
       "reason": "expired"
+    },
+    "5f2cc77c351afd5b": {
+      "region": "Jawa Barat",
+      "expires": "2026-11-29T03:39:00+07:00",
+      "reason": "withdrawn"
+    },
+    "d5ff4847d0a1d192": {
+      "region": "Sumatera Selatan",
+      "expires": "2026-11-29T01:20:00+07:00",
+      "reason": "expired"
     }
   },
   "unread_urls": [],
-  "last_checked_at": "2026-11-28T18:18:29.583704+00:00",
+  "last_checked_at": "2026-11-28T18:28:29.560715+00:00",
   "last_served": {
     "Bali": "2026-11-28T06:11:07.653059+00:00",
     "Sumatera Utara": "2026-11-28T18:09:42.178536+00:00",
