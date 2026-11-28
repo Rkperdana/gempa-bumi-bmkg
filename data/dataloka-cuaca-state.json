@@ -613,7 +613,40 @@
       "expires": "2026-11-28T12:30:00+07:00"
     }
   },
-  "pending": {},
+  "pending": {
+    "0afaa3eb2888f3a7": {
+      "key": "0afaa3eb2888f3a7",
+      "identifier": "2.49.0.1.360.0.2026.11.28.03.61.001",
+      "url": "https://www.bmkg.go.id/alerts/nowcast/id/CKB20261128001_alert.xml",
+      "event": "Hujan Lebat dan Petir",
+      "headline": "Hujan Lebat disertai Petir di Kalimantan Barat",
+      "description": "Hujan lebat disertai petir akan terjadi pada 28 November 2026, 10:50 WIB di sebagian wilayah Kalimantan Barat, khususnya di SAYAN, TUMBANG TITI. Kondisi ini berpotensi menimbulkan dampak berupa jarak pandang berkurang, angin kencang, dan banjir lokal. Masyarakat dihimbau untuk tetap waspada, mengurangi aktivitas di luar ruangan, serta mengambil langkah-langkah pencegahan yang diperlukan guna menjaga keselamatan. Kondisi diperkirakan dapat berlangsung hingga 28 November 2026, 13:00 WIB.",
+      "region": "Kalimantan Barat",
+      "issued": "2026-11-28T10:40:00+07:00",
+      "effective": "2026-11-28T10:50:00+07:00",
+      "expires": "2026-11-28T13:00:00+07:00",
+      "severity": "Moderate",
+      "urgency": "Immediate",
+      "certainty": "Observed",
+      "sender": "Badan Meteorologi Klimatologi dan Geofisika"
+    },
+    "f51cab0ba96644ed": {
+      "key": "f51cab0ba96644ed",
+      "identifier": "2.49.0.1.360.0.2026.11.28.03.72.001",
+      "url": "https://www.bmkg.go.id/alerts/nowcast/id/CSG20261128001_alert.xml",
+      "event": "Hujan Lebat dan Petir",
+      "headline": "Hujan Lebat disertai Petir di Sulawesi Tengah",
+      "description": "Hujan lebat disertai petir akan terjadi pada 28 November 2026, 11:44 WITA di sebagian wilayah Sulawesi Tengah, khususnya di AMPIBABO, LABUAN, LORE UTARA, PARIGI, PARIGI BARAT, PARIGI SELATAN, PARIGI TENGAH, PARIGI UTARA, SINIU, TANANTOVEA, TORIBULU. Kondisi ini berpotensi menimbulkan dampak berupa jarak pandang berkurang, angin kencang, dan banjir lokal. Masyarakat dihimbau untuk tetap waspada, mengurangi aktivitas di luar ruangan, serta mengambil langkah-langkah pencegahan yang diperlukan guna menjaga keselamatan. Kondisi diperkirakan dapat berlangsung hingga 28 November 2026, 13:30 WITA.",
+      "region": "Sulawesi Tengah",
+      "issued": "2026-11-28T11:32:00+08:00",
+      "effective": "2026-11-28T11:44:00+08:00",
+      "expires": "2026-11-28T13:30:00+08:00",
+      "severity": "Moderate",
+      "urgency": "Immediate",
+      "certainty": "Observed",
+      "sender": "Badan Meteorologi Klimatologi dan Geofisika"
+    }
+  },
   "skipped": {
     "16876fd4b23bb830": {
       "region": "Sumatera Barat",
@@ -677,7 +710,7 @@
     }
   },
   "unread_urls": [],
-  "last_checked_at": "2026-11-28T03:38:13.701663+00:00",
+  "last_checked_at": "2026-11-28T03:48:16.246001+00:00",
   "last_served": {
     "Bali": "2026-11-28T00:34:39.520093+00:00",
     "Sumatera Utara": "2026-11-28T00:35:24.538457+00:00",
