@@ -456,24 +456,6 @@
       }
     },
     {
-      "key": "a3ac1fd38a31ab",
-      "data": {
-        "key": "a3ac1fd38a31ab",
-        "datetime": "2026-11-13T02:55:14Z",
-        "magnitude": 5.0,
-        "depth_km": 313.0,
-        "lat": 18.57,
-        "lon": 145.4,
-        "region": "Mariana Islands",
-        "felt": false,
-        "felt_info": "",
-        "potential": "",
-        "sources": [
-          "realtime"
-        ]
-      }
-    },
-    {
       "key": "86bf2242952643",
       "data": {
         "key": "86bf2242952643",
@@ -943,5 +925,5 @@
       "last_payload_digest": "ba29b86e751455a28e3a0fe8559d7daecfafdb5d24466ae25222f0968cd731b8"
     }
   ],
-  "last_checked_at": "2026-11-28T02:49:01.979227Z"
+  "last_checked_at": "2026-11-28T02:59:01.519885Z"
 }
