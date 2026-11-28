@@ -2853,10 +2853,15 @@
       "region": "Aceh",
       "expires": "2026-11-29T00:45:00+07:00",
       "reason": "expired"
+    },
+    "b1469039186b515a": {
+      "region": "Sulawesi Tenggara",
+      "expires": "2026-11-29T01:50:00+08:00",
+      "reason": "expired"
     }
   },
   "unread_urls": [],
-  "last_checked_at": "2026-11-28T17:48:40.615661+00:00",
+  "last_checked_at": "2026-11-28T17:58:41.154989+00:00",
   "last_served": {
     "Bali": "2026-11-28T06:11:07.653059+00:00",
     "Sumatera Utara": "2026-11-28T17:19:47.628213+00:00",
