@@ -2861,7 +2861,24 @@
       "marker_key": "7bc47b0a6654ad4e"
     }
   },
-  "pending": {},
+  "pending": {
+    "33e6ad92320e8d93": {
+      "key": "33e6ad92320e8d93",
+      "identifier": "2.49.0.1.360.0.2026.11.28.19.21.006",
+      "url": "https://www.bmkg.go.id/alerts/nowcast/id/CKR20261128006_alert.xml",
+      "event": "Hujan Lebat dan Petir",
+      "headline": "Hujan Lebat disertai Petir di Kep. Riau",
+      "description": "Hujan lebat disertai petir akan terjadi pada 29 November 2026, 02:30 WIB di sebagian wilayah Kep. Riau, khususnya di SINGKEP, SINGKEP BARAT, SINGKEP SELATAN. Kondisi ini berpotensi menimbulkan dampak berupa jarak pandang berkurang, angin kencang, dan banjir lokal. Masyarakat dihimbau untuk tetap waspada, mengurangi aktivitas di luar ruangan, serta mengambil langkah-langkah pencegahan yang diperlukan guna menjaga keselamatan. Kondisi diperkirakan dapat berlangsung hingga 29 November 2026, 04:00 WIB.",
+      "region": "Kep. Riau",
+      "issued": "2026-11-29T02:20:00+07:00",
+      "effective": "2026-11-29T02:30:00+07:00",
+      "expires": "2026-11-29T04:00:00+07:00",
+      "severity": "Moderate",
+      "urgency": "Immediate",
+      "certainty": "Observed",
+      "sender": "Badan Meteorologi Klimatologi dan Geofisika"
+    }
+  },
   "skipped": {
     "16876fd4b23bb830": {
       "region": "Sumatera Barat",
@@ -3160,7 +3177,7 @@
     }
   },
   "unread_urls": [],
-  "last_checked_at": "2026-11-28T19:28:22.483323+00:00",
+  "last_checked_at": "2026-11-28T19:38:23.352353+00:00",
   "last_served": {
     "Bali": "2026-11-28T06:11:07.653059+00:00",
     "Sumatera Utara": "2026-11-28T18:09:42.178536+00:00",
