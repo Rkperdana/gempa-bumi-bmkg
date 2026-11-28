@@ -1,0 +1,47 @@
+{
+  "checked_at": "2026-11-28T02:22:00Z",
+  "source": "https://maritim.bmkg.go.id/marine2026-data/warning/warnings.json",
+  "bulletin": {
+    "Indonesia": {
+      "data": {
+        "region": "Indonesia",
+        "synoptic": "BMKG memperkirakan angin di utara ekuator bertiup dari barat laut hingga timur laut dengan kecepatan 7–14 knot. Di selatan ekuator, angin bergerak dari tenggara hingga barat daya dengan kecepatan 10–20 knot.",
+        "valid_from": "2026-11-28T07:00",
+        "valid_until": "2026-12-01T07:00",
+        "time_zone": "WIB",
+        "warning": {
+          "sedang": [
+            "Samudra Hindia barat Aceh",
+            "Samudra Hindia barat Kep. Nias",
+            "Samudra Hindia barat Kep. Mentawai",
+            "Samudra Hindia barat Bengkulu",
+            "Samudra Hindia barat Lampung",
+            "Samudra Hindia selatan Banten",
+            "Samudra Hindia selatan Jawa Barat",
+            "Samudra Hindia selatan Bali",
+            "Samudra Hindia selatan NTB",
+            "Samudra Hindia selatan NTT",
+            "Laut Natuna Utara",
+            "Selat Karimata bagian utara",
+            "Laut Jawa bagian barat",
+            "Selat Makassar bagian tengah",
+            "Selat Makassar bagian selatan",
+            "Laut Maluku",
+            "Laut Arafuru bagian barat",
+            "Samudra Pasifik utara Maluku",
+            "Samudra Pasifik utara Papua Barat Daya",
+            "Samudra Pasifik utara Papua Barat",
+            "Samudra Pasifik utara Papua"
+          ],
+          "tinggi": [
+            "Samudra Hindia selatan DI Yogyakarta",
+            "Samudra Hindia selatan Jawa Tengah",
+            "Samudra Hindia selatan Jawa Timur"
+          ],
+          "sangat_tinggi": [],
+          "ekstrem": []
+        }
+      }
+    }
+  }
+}
