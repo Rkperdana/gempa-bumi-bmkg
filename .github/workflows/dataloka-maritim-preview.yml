@@ -51,3 +51,35 @@ jobs:
           retention-days: 7
       - name: Inspect rob schema (no publication)
         run: python scripts/dataloka_maritim.py --inspect-rob
+
+  schema-diagnostic:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+      - name: Inspect authorized BMKG sources (read only, no secrets)
+        run: |
+          python - <<'PY'
+          import json, urllib.request
+          def shape(v,depth=0):
+              if depth>7: return type(v).__name__
+              if isinstance(v,dict): return {k:shape(x,depth+1) for k,x in list(v.items())[:12]}
+              if isinstance(v,list): return [shape(v[0],depth+1)] if v else []
+              return type(v).__name__
+          base="https://maritim.bmkg.go.id/marine2026-data/"
+          for path in ["w-banjirob/banjirrob_combine.json","w-banjirob/31.json","warning/warnings.json"]:
+              try:
+                  req=urllib.request.Request(base+path,headers={"User-Agent":"DatalokaMaritimEditorial/1.0","Accept":"application/json"})
+                  with urllib.request.urlopen(req,timeout=20) as r:
+                      data=json.loads(r.read(5000000))
+                  print(path,json.dumps(shape(data),ensure_ascii=False)[:12000],flush=True)
+                  if "banjirob" in path:
+                      # Inspect representative field values, not the entire bulletin.
+                      print("Sample:",json.dumps(data,ensure_ascii=False)[:2200],flush=True)
+              except Exception as exc:
+                  print(path,type(exc).__name__,str(exc),flush=True)
+          PY
