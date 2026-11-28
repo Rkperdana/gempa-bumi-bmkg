@@ -371,6 +371,8 @@ class WeatherTests(unittest.TestCase):
         self.assertEqual(len(wp.calls), 2)
         self.assertEqual(wp.calls[1][1]["post_id"], 123)
         self.assertEqual(wp.calls[1][0]["content"].count("<li>"), 2)
+        self.assertLess(wp.calls[1][0]["content"].index("11.35 WIB hingga"),
+                        wp.calls[1][0]["content"].index("11.05 WIB hingga"))
 
     def test_jabodetabek_existing_daily_article_accepts_previous_bot_title(self):
         first = dict(example(), region="Jakarta",

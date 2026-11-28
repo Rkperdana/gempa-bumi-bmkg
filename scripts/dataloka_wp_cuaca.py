@@ -249,7 +249,7 @@ def article(entries, marker_key=None):
         f'<li><strong>{html.escape(item["event"], quote=True)}</strong> — '
         f'{time_label(item["effective"])} hingga {time_label(item["expires"])}: '
         f'{html.escape(item["description"], quote=True)}</li>'
-        for item in entries
+        for item in reversed(entries)
     )
     source_urls = sorted({item["url"] for item in entries})
     links = ", ".join(
