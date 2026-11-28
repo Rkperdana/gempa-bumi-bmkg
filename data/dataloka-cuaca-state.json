@@ -698,10 +698,15 @@
       "region": "Kep. Riau",
       "expires": "2026-11-28T10:30:00+07:00",
       "reason": "expired"
+    },
+    "089450f146bfa726": {
+      "region": "Kalimantan Utara",
+      "expires": "2026-11-28T11:50:00+08:00",
+      "reason": "expired"
     }
   },
   "unread_urls": [],
-  "last_checked_at": "2026-11-28T03:48:16.246001+00:00",
+  "last_checked_at": "2026-11-28T03:58:15.128564+00:00",
   "last_served": {
     "Bali": "2026-11-28T00:34:39.520093+00:00",
     "Sumatera Utara": "2026-11-28T00:35:24.538457+00:00",
