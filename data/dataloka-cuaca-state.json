@@ -2572,10 +2572,15 @@
       "region": "Lampung",
       "expires": "2026-11-28T23:30:00+07:00",
       "reason": "expired"
+    },
+    "a6302a74cbc227a5": {
+      "region": "Jawa Barat",
+      "expires": "2026-11-28T23:45:00+07:00",
+      "reason": "expired"
     }
   },
   "unread_urls": [],
-  "last_checked_at": "2026-11-28T16:38:39.975656+00:00",
+  "last_checked_at": "2026-11-28T16:48:41.600517+00:00",
   "last_served": {
     "Bali": "2026-11-28T06:11:07.653059+00:00",
     "Sumatera Utara": "2026-11-28T16:28:58.424859+00:00",
