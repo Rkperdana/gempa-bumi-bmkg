@@ -1209,6 +1209,54 @@
       "urgency": "Immediate",
       "certainty": "Observed",
       "sender": "Badan Meteorologi Klimatologi dan Geofisika"
+    },
+    "1c6f29bbd538339f": {
+      "key": "1c6f29bbd538339f",
+      "identifier": "2.49.0.1.360.0.2026.11.28.05.17.001",
+      "url": "https://www.bmkg.go.id/alerts/nowcast/id/CBK20261128001_alert.xml",
+      "event": "Hujan Lebat dan Petir",
+      "headline": "Hujan Lebat disertai Petir di Bengkulu",
+      "description": "Hujan lebat disertai petir akan terjadi pada 28 November 2026, 12:45 WIB di sebagian wilayah Bengkulu, khususnya di KAUR UTARA, KOTA PADANG, MUARA SAHUNG, PADANG GUCI HILIR, PADANG GUCI HULU, SEMIDANG ALAS, SINDANG BELITI ILIR, SINDANG BELITI ULU. Kondisi ini berpotensi menimbulkan dampak berupa jarak pandang berkurang, angin kencang, dan banjir lokal. Masyarakat dihimbau untuk tetap waspada, mengurangi aktivitas di luar ruangan, serta mengambil langkah-langkah pencegahan yang diperlukan guna menjaga keselamatan. Kondisi diperkirakan dapat berlangsung hingga 28 November 2026, 16:00 WIB.",
+      "region": "Bengkulu",
+      "issued": "2026-11-28T12:40:00+07:00",
+      "effective": "2026-11-28T12:45:00+07:00",
+      "expires": "2026-11-28T16:00:00+07:00",
+      "severity": "Moderate",
+      "urgency": "Immediate",
+      "certainty": "Observed",
+      "sender": "Badan Meteorologi Klimatologi dan Geofisika"
+    },
+    "fb3b1702902a478d": {
+      "key": "fb3b1702902a478d",
+      "identifier": "2.49.0.1.360.0.2026.11.28.05.75.002",
+      "url": "https://www.bmkg.go.id/alerts/nowcast/id/CGT20261128002_alert.xml",
+      "event": "Hujan Lebat dan Petir",
+      "headline": "Hujan Lebat disertai Petir di Gorontalo",
+      "description": "Hujan lebat disertai petir akan terjadi pada 28 November 2026, 13:55 WITA di sebagian wilayah Gorontalo, khususnya di BONE, BONE RAYA, PINOGU, SUMALATA TIMUR, SUWAWA TIMUR, TALUDITI, TOLANGOHULA. Kondisi ini berpotensi menimbulkan dampak berupa jarak pandang berkurang, angin kencang, dan banjir lokal. Masyarakat dihimbau untuk tetap waspada, mengurangi aktivitas di luar ruangan, serta mengambil langkah-langkah pencegahan yang diperlukan guna menjaga keselamatan. Kondisi diperkirakan dapat berlangsung hingga 28 November 2026, 15:55 WITA.",
+      "region": "Gorontalo",
+      "issued": "2026-11-28T13:35:00+08:00",
+      "effective": "2026-11-28T13:55:00+08:00",
+      "expires": "2026-11-28T15:55:00+08:00",
+      "severity": "Moderate",
+      "urgency": "Immediate",
+      "certainty": "Observed",
+      "sender": "Badan Meteorologi Klimatologi dan Geofisika"
+    },
+    "2f8eec48295480bb": {
+      "key": "2f8eec48295480bb",
+      "identifier": "2.49.0.1.360.0.2026.11.28.05.73.002",
+      "url": "https://www.bmkg.go.id/alerts/nowcast/id/CSL20261128002_alert.xml",
+      "event": "Hujan Lebat dan Petir",
+      "headline": "Hujan Lebat disertai Petir di Sulawesi Selatan",
+      "description": "Hujan lebat disertai petir akan terjadi pada 28 November 2026, 13:50 WITA di sebagian wilayah Sulawesi Selatan, khususnya di BIRINGBULU, TINGGIMONCONG. Kondisi ini berpotensi menimbulkan dampak berupa jarak pandang berkurang, angin kencang, dan banjir lokal. Masyarakat dihimbau untuk tetap waspada, mengurangi aktivitas di luar ruangan, serta mengambil langkah-langkah pencegahan yang diperlukan guna menjaga keselamatan. Kondisi diperkirakan dapat berlangsung hingga 28 November 2026, 15:30 WITA.",
+      "region": "Sulawesi Selatan",
+      "issued": "2026-11-28T13:20:00+08:00",
+      "effective": "2026-11-28T13:50:00+08:00",
+      "expires": "2026-11-28T15:30:00+08:00",
+      "severity": "Moderate",
+      "urgency": "Immediate",
+      "certainty": "Observed",
+      "sender": "Badan Meteorologi Klimatologi dan Geofisika"
     }
   },
   "skipped": {
@@ -1296,10 +1344,15 @@
       "region": "Kep. Riau",
       "expires": "2026-11-28T12:30:00+07:00",
       "reason": "expired"
+    },
+    "424d5e0148c59925": {
+      "region": "Papua",
+      "expires": "2026-11-28T14:39:00+09:00",
+      "reason": "expired"
     }
   },
   "unread_urls": [],
-  "last_checked_at": "2026-11-28T05:38:35.409161+00:00",
+  "last_checked_at": "2026-11-28T05:48:38.562466+00:00",
   "last_served": {
     "Bali": "2026-11-28T05:09:51.927831+00:00",
     "Sumatera Utara": "2026-11-28T00:35:24.538457+00:00",
