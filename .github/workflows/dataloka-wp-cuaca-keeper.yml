@@ -3,7 +3,8 @@ name: Dataloka | Penjaga cuaca tiap 10 menit
 on:
   workflow_dispatch:
   schedule:
-    - cron: '7 3,8,13,18,23 * * *'
+    # Hourly recovery trigger; concurrency prevents simultaneous publishers.
+    - cron: '7 * * * *'
   push:
     branches: [main]
     paths:
