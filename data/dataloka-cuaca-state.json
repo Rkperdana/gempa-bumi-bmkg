@@ -1604,7 +1604,8 @@
       "yoast_meta_digest": "4977bb752434b23390f530c67ec2a3e2858507a57e9f6e72da402c9c0ba9a18f",
       "status": "publish",
       "last_payload_digest": "2eee0f6ad605cdcc125e785abaa458d3b86147a24fef9fa771bb5d1d713f4e89",
-      "marker_key": "8a0b7dd5a0e540fa"
+      "marker_key": "8a0b7dd5a0e540fa",
+      "featured_tag_removed": true
     },
     "a767b204fdb7aa7c": {
       "fingerprint": "5bd94bf3835fc4ce94c7fcfbce2cf9c6a14c30fb8f1762dc8089dffa991d8f8f",
@@ -2307,26 +2308,22 @@
       "status": "publish",
       "last_payload_digest": "302486d2496b70c6886c3b2c8198fa6124589bc51e427a4715128ac834ebc353",
       "marker_key": "b2855ac6066dca4e"
-    }
-  },
-  "pending": {
+    },
     "65c1532a486435aa": {
-      "key": "65c1532a486435aa",
-      "identifier": "2.49.0.1.360.0.2026.11.28.16.32.007",
-      "url": "https://www.bmkg.go.id/alerts/nowcast/id/CJB20261128007_alert.xml",
-      "event": "Hujan Lebat dan Petir",
-      "headline": "Hujan Lebat disertai Petir di Jawa Barat",
-      "description": "Hujan lebat disertai petir akan terjadi pada 28 November 2026, 23:24 WIB di sebagian wilayah Jawa Barat, khususnya di CIKALONG, CIMERAK. Kondisi ini berpotensi menimbulkan dampak berupa jarak pandang berkurang, angin kencang, dan banjir lokal. Masyarakat dihimbau untuk tetap waspada, mengurangi aktivitas di luar ruangan, serta mengambil langkah-langkah pencegahan yang diperlukan guna menjaga keselamatan. Kondisi diperkirakan dapat berlangsung hingga 29 November 2026, 02:14 WIB.",
-      "region": "Jawa Barat",
-      "issued": "2026-11-28T23:14:00+07:00",
-      "effective": "2026-11-28T23:24:00+07:00",
+      "fingerprint": "6f048e12225dd4caeb7917980687b53021723d9e5792b1e63b964fb7851e65a2",
+      "editorial_version": 5,
+      "province_period_key": "36e1712418988a04ad11",
       "expires": "2026-11-29T02:14:00+07:00",
-      "severity": "Moderate",
-      "urgency": "Immediate",
-      "certainty": "Observed",
-      "sender": "Badan Meteorologi Klimatologi dan Geofisika"
+      "post_id": 9804,
+      "media_id": 9803,
+      "last_wp_digest": "967a92485fc123392b30c5cdfd609b029891364e0e15f58387fef1f3bd83808d",
+      "yoast_meta_digest": "a32e2200adf81a19cd687aa8c778e1157ad22984ec6c4d98c46ac9921804481a",
+      "status": "publish",
+      "last_payload_digest": "cd5fa7d0c091673506a198ed5a14b4efc13a8cc6acb67cc3ac4f028a1bdbd794",
+      "marker_key": "3851b959aaf3ee43"
     }
   },
+  "pending": {},
   "skipped": {
     "16876fd4b23bb830": {
       "region": "Sumatera Barat",
@@ -2611,7 +2608,7 @@
     "Sulawesi Selatan": "2026-11-28T06:41:56.939175+00:00",
     "Jakarta": "2026-11-28T14:31:28.647294+00:00",
     "Banten": "2026-11-28T14:38:57.599970+00:00",
-    "Jawa Barat": "2026-11-28T16:19:46.097877+00:00",
+    "Jawa Barat": "2026-11-28T16:48:57.351519+00:00",
     "Maluku Utara": "2026-11-28T06:20:03.635030+00:00",
     "Maluku": "2026-11-28T06:39:34.602903+00:00",
     "Jambi": "2026-11-28T16:39:10.692051+00:00",
@@ -4097,15 +4094,15 @@
     "36e1712418988a04ad11": {
       "post_id": 9804,
       "media_id": 9803,
-      "last_wp_digest": "1bd967d81463dfb1a87a74a320650d345a23ae8fd7df2ec865ca2ea552cd1968",
-      "yoast_meta_digest": "df7397dc177b79a24dabd929e7e56912171d943bef1932939e5398cf3661b773",
+      "last_wp_digest": "967a92485fc123392b30c5cdfd609b029891364e0e15f58387fef1f3bd83808d",
+      "yoast_meta_digest": "a32e2200adf81a19cd687aa8c778e1157ad22984ec6c4d98c46ac9921804481a",
       "status": "publish",
-      "last_payload_digest": "395cde39ace164e20c5bb6993fca5cf23749d1114b0c1dce63269328f9cf73f7",
+      "last_payload_digest": "cd5fa7d0c091673506a198ed5a14b4efc13a8cc6acb67cc3ac4f028a1bdbd794",
       "marker_key": "3851b959aaf3ee43",
       "region": "Jawa Barat",
       "day": "2026-11-28",
       "period": "Malam",
-      "latest_key": "a6302a74cbc227a5",
+      "latest_key": "65c1532a486435aa",
       "entries": [
         {
           "key": "3851b959aaf3ee43",
@@ -4134,6 +4131,22 @@
           "issued": "2026-11-28T20:45:00+07:00",
           "effective": "2026-11-28T20:55:00+07:00",
           "expires": "2026-11-28T23:45:00+07:00",
+          "severity": "Moderate",
+          "urgency": "Immediate",
+          "certainty": "Observed",
+          "sender": "Badan Meteorologi Klimatologi dan Geofisika"
+        },
+        {
+          "key": "65c1532a486435aa",
+          "identifier": "2.49.0.1.360.0.2026.11.28.16.32.007",
+          "url": "https://www.bmkg.go.id/alerts/nowcast/id/CJB20261128007_alert.xml",
+          "event": "Hujan Lebat dan Petir",
+          "headline": "Hujan Lebat disertai Petir di Jawa Barat",
+          "description": "Hujan lebat disertai petir akan terjadi pada 28 November 2026, 23:24 WIB di sebagian wilayah Jawa Barat, khususnya di CIKALONG, CIMERAK. Kondisi ini berpotensi menimbulkan dampak berupa jarak pandang berkurang, angin kencang, dan banjir lokal. Masyarakat dihimbau untuk tetap waspada, mengurangi aktivitas di luar ruangan, serta mengambil langkah-langkah pencegahan yang diperlukan guna menjaga keselamatan. Kondisi diperkirakan dapat berlangsung hingga 29 November 2026, 02:14 WIB.",
+          "region": "Jawa Barat",
+          "issued": "2026-11-28T23:14:00+07:00",
+          "effective": "2026-11-28T23:24:00+07:00",
+          "expires": "2026-11-29T02:14:00+07:00",
           "severity": "Moderate",
           "urgency": "Immediate",
           "certainty": "Observed",
