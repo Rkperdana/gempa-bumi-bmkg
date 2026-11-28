@@ -43,8 +43,8 @@ Artikel peringatan dini cuaca tidak lagi memakai **tag `Featured`**. Tag yang te
 
 ## Jadwal 10 menit tanpa akses hosting
 
-Di Cloudflare Workers & Pages, hubungkan repositori GitHub ini, pilih branch main dan root directory `ops/weather-cron`. Deploy command: `npx wrangler deploy`. Konfigurasi mencakup Cron Trigger setiap 10 menit (144 kali sehari). Worker hanya mengirim permintaan GitHub Actions jika tidak ada eksekusi cuaca yang masih berjalan. GitHub menyimpan kredensial WordPress. Jadwal bawaan 15 menit berfungsi sebagai cadangan.
+Workflow `.github/workflows/dataloka-wp-cuaca-keeper.yml` menjalankan 34 siklus dengan jarak awal 10 menit, sehingga satu run menjaga pengambilan sekitar 5 jam 30 menit. GitHub menjadwalkan penjaga baru setiap lima jam. Concurrency yang sama mencegah dua penerbit WordPress berjalan bersamaan dan menahan satu run berikutnya sebagai penerus.
 
-Di GitHub, buat fine-grained personal access token yang terbatas ke `Rkperdana/gempa-bumi-bmkg` dengan izin Actions: Read and write. Masukkan token sebagai **secret** Worker bernama `DATALOKA_ACTIONS_TOKEN`. Setelah propagasi trigger, periksa riwayat Actions untuk event `workflow_dispatch` serta nilai `last_checked_at` di ledger.
+Penjaga memakai runner standar pada repositori publik. Tidak memerlukan Cloudflare, server, token tambahan, atau akses hosting. Setiap siklus mengambil semua peringatan aktif, menyimpan antrean, menerbitkan hingga lima provinsi, lalu menyimpan hasil. Jika satu siklus gagal, siklus berikutnya tetap mencoba lagi. Status akhir run mengikuti hasil siklus terakhir.
 
-Untuk notifikasi setelah 30 menit tanpa pengambilan lengkap, buat check di Healthchecks.io dengan period 10 menit dan grace time 20 menit. Pilih email penerima di sana dan simpan Ping URL sebagai repository secret `CUACA_HEALTHCHECK_URL`. Workflow mengirim ping setelah antrean tersimpan dan semua detail RSS berhasil diperiksa.
+Gunakan repository variable `BMKG_NOWCAST_PAUSED=true` untuk menghentikan penjaga dan penerbit cuaca. Workflow satu putaran `.github/workflows/dataloka-wp-cuaca.yml` tetap tersedia untuk fixture, dry-run, dan pemeriksaan manual.
