@@ -791,42 +791,33 @@
       "editorial_version": 2,
       "featured_tag_removed": true,
       "expires": "2026-11-28T13:00:00+07:00"
-    }
-  },
-  "pending": {
-    "77f6bf1abfa684f1": {
-      "key": "77f6bf1abfa684f1",
-      "identifier": "2.49.0.1.360.0.2026.11.28.04.72.002",
-      "url": "https://www.bmkg.go.id/alerts/nowcast/id/CSG20261128002_alert.xml",
-      "event": "Hujan Lebat dan Petir",
-      "headline": "Hujan Lebat disertai Petir di Sulawesi Tengah",
-      "description": "Hujan lebat disertai petir akan terjadi pada 28 November 2026, 12:32 WITA di sebagian wilayah Sulawesi Tengah, khususnya di AMPIBABO, DOLO, DOLO BARAT, DOLO SELATAN, KINOVARO, KULAWI, LABUAN, LINDU, LORE PIORE, LORE UTARA, MANTIKULORE, MARAWOLA BARAT, PALOLO, PARIGI, PARIGI BARAT, PARIGI SELATAN, PARIGI TENGAH, PARIGI UTARA, PINEMBANI, RIO PAKAVA, SIGI BIROMARU, SINDUE, SINIU, TANANTOVEA, TAWAELI, TORIBULU, TORUE. Kondisi ini berpotensi menimbulkan dampak berupa jarak pandang berkurang, angin kencang, dan banjir lokal. Masyarakat dihimbau untuk tetap waspada, mengurangi aktivitas di luar ruangan, serta mengambil langkah-langkah pencegahan yang diperlukan guna menjaga keselamatan. Kondisi diperkirakan dapat berlangsung hingga 28 November 2026, 14:30 WITA.",
-      "region": "Sulawesi Tengah",
-      "issued": "2026-11-28T12:20:00+08:00",
-      "effective": "2026-11-28T12:32:00+08:00",
-      "expires": "2026-11-28T14:30:00+08:00",
-      "severity": "Moderate",
-      "urgency": "Immediate",
-      "certainty": "Observed",
-      "sender": "Badan Meteorologi Klimatologi dan Geofisika"
     },
     "c3f2b00e528db035": {
-      "key": "c3f2b00e528db035",
-      "identifier": "2.49.0.1.360.0.2026.11.28.04.19.002",
-      "url": "https://www.bmkg.go.id/alerts/nowcast/id/CBB20261128002_alert.xml",
-      "event": "Hujan Lebat dan Petir",
-      "headline": "Hujan Lebat disertai Petir di Kep. Bangka Belitung",
-      "description": "Hujan lebat disertai petir akan terjadi pada 28 November 2026, 11:25 WIB di sebagian wilayah Kep. Bangka Belitung, khususnya di BADAU, SIJUK, TANJUNG PANDAN. Kondisi ini berpotensi menimbulkan dampak berupa jarak pandang berkurang, angin kencang, dan banjir lokal. Masyarakat dihimbau untuk tetap waspada, mengurangi aktivitas di luar ruangan, serta mengambil langkah-langkah pencegahan yang diperlukan guna menjaga keselamatan. Kondisi diperkirakan dapat berlangsung hingga 28 November 2026, 12:30 WIB.",
-      "region": "Kep. Bangka Belitung",
-      "issued": "2026-11-28T11:15:00+07:00",
-      "effective": "2026-11-28T11:25:00+07:00",
-      "expires": "2026-11-28T12:30:00+07:00",
-      "severity": "Moderate",
-      "urgency": "Immediate",
-      "certainty": "Observed",
-      "sender": "Badan Meteorologi Klimatologi dan Geofisika"
+      "post_id": 9540,
+      "media_id": 9539,
+      "last_wp_digest": "a44bd58051952ea63d0620010e31c040a64a187e0dae6fdd8ef28f1c5441e70b",
+      "yoast_meta_digest": "4378655d46bc285b357ecc69025ab6504e2979dbb004e8fcbd137980e3ad157f",
+      "status": "publish",
+      "last_payload_digest": "b2fa3dc2f4ba7e7acd7ed8588de9baa4d0078192c5daa8fa4c15789053503535",
+      "fingerprint": "da73004dfa6939595065e53181671557d37a86a62bfd73c58e7c45f456a37731",
+      "editorial_version": 2,
+      "featured_tag_removed": true,
+      "expires": "2026-11-28T12:30:00+07:00"
+    },
+    "77f6bf1abfa684f1": {
+      "post_id": 9543,
+      "media_id": 9542,
+      "last_wp_digest": "a32576c3c7baacbc4f3ff20584295f1dcf8cfa9a20ba321075225a77ed73465d",
+      "yoast_meta_digest": "0761f5fe1f83aa0984be68791adc838276197870cbed57d557b17eb673ba52c8",
+      "status": "publish",
+      "last_payload_digest": "53ecbbcd03288afa47baaf5a665db44e3932dc8d1628063cf2e0c6dc8335266a",
+      "fingerprint": "a7bbd7caf16af04158a1b39971e0125a15c48e8c154756e87c0fcbf754c02adf",
+      "editorial_version": 2,
+      "featured_tag_removed": true,
+      "expires": "2026-11-28T14:30:00+08:00"
     }
   },
+  "pending": {},
   "skipped": {
     "16876fd4b23bb830": {
       "region": "Sumatera Barat",
@@ -905,7 +896,7 @@
     "Bali": "2026-11-28T00:34:39.520093+00:00",
     "Sumatera Utara": "2026-11-28T00:35:24.538457+00:00",
     "Kep. Riau": "2026-11-28T04:11:12.588463+00:00",
-    "Kep. Bangka Belitung": "2026-11-28T04:29:15.401717+00:00",
+    "Kep. Bangka Belitung": "2026-11-28T04:39:07.532004+00:00",
     "Kalimantan Utara": "2026-11-28T03:09:34.404315+00:00",
     "Bengkulu": "2026-11-28T02:08:22.808462+00:00",
     "Sumatera Barat": "2026-11-28T04:21:08.341753+00:00",
@@ -914,7 +905,7 @@
     "Papua": "2026-11-28T04:11:52.558508+00:00",
     "Papua Barat": "2026-11-28T04:20:30.028096+00:00",
     "Riau": "2026-11-28T04:21:43.312841+00:00",
-    "Sulawesi Tengah": "2026-11-28T04:29:51.493438+00:00",
+    "Sulawesi Tengah": "2026-11-28T04:39:37.563821+00:00",
     "Kalimantan Barat": "2026-11-28T04:30:28.702586+00:00",
     "Nusa Tenggara Barat": "2026-11-28T04:09:11.049816+00:00",
     "Kalimantan Tengah": "2026-11-28T04:09:46.747888+00:00",
