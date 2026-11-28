@@ -33,7 +33,7 @@ WIB = dt.timezone(dt.timedelta(hours=7))
 MONTHS = ("Januari", "Februari", "Maret", "April", "Mei", "Juni",
           "Juli", "Agustus", "September", "Oktober", "November", "Desember")
 MARKER = "dataloka-nowcast:"
-EDITORIAL_VERSION = 3  # One article per province and WIB date; updates reuse its ledger
+EDITORIAL_VERSION = 4  # One article per province, local date, and time period
 MAX_ALERTS_PER_RUN = 5
 _last_request = 0.0
 MAX_BYTES = 600_000
@@ -200,7 +200,13 @@ def fingerprint(entry):
 
 
 def province_day_key(entry):
-    """Stable publication key: one article per province and Jakarta calendar day."""
+    """Legacy daily key retained for reading articles published before period mode."""
+    province = canonical_province(entry)
+    day = instant(entry["issued"]).astimezone(WIB).date().isoformat()
+    return hashlib.sha256(f"{province}|{day}".encode("utf-8")).hexdigest()[:20]
+
+
+def canonical_province(entry):
     province = " ".join(html.unescape(str(entry["region"])).split()).casefold()
     aliases = {
         "kep riau": "kepulauan riau", "kep. riau": "kepulauan riau",
@@ -212,9 +218,31 @@ def province_day_key(entry):
         "ntb": "nusa tenggara barat", "ntt": "nusa tenggara timur",
         "babel": "kepulauan bangka belitung",
     }
-    province = aliases.get(province, province)
-    day = instant(entry["issued"]).astimezone(WIB).date().isoformat()
-    return hashlib.sha256(f"{province}|{day}".encode("utf-8")).hexdigest()[:20]
+    return aliases.get(province, province)
+
+
+def period_details(entry):
+    """Use the CAP's local time; 00.00–05.59 belongs to the previous night."""
+    issued = instant(entry["issued"])
+    if issued.utcoffset() not in (dt.timedelta(hours=7), dt.timedelta(hours=8),
+                                  dt.timedelta(hours=9)):
+        issued = issued.astimezone(WIB)
+    hour = issued.hour
+    if hour < 6:
+        return (issued.date() - dt.timedelta(days=1), "Malam")
+    if hour < 12:
+        return (issued.date(), "Pagi")
+    if hour < 15:
+        return (issued.date(), "Siang")
+    if hour < 18:
+        return (issued.date(), "Sore")
+    return (issued.date(), "Malam")
+
+
+def province_period_key(entry):
+    day, period = period_details(entry)
+    value = f"{canonical_province(entry)}|{day.isoformat()}|{period.casefold()}"
+    return hashlib.sha256(value.encode("utf-8")).hexdigest()[:20]
 
 
 def display_region(entry):
@@ -227,7 +255,7 @@ def display_region(entry):
 
 
 def article(entries, marker_key=None):
-    """Build one daily provincial bulletin from its CAP warnings."""
+    """Build one provincial bulletin for a local time period with CAP warnings."""
     if isinstance(entries, dict):
         entries = [entries]
     entries = sorted(entries, key=lambda e: (instant(e["issued"]), e["key"]))
@@ -236,13 +264,14 @@ def article(entries, marker_key=None):
     latest = entries[-1]
     region = display_region(latest)
     event = latest["event"]
-    date = date_label(latest["issued"])
+    period_day, period = period_details(latest)
+    date = f"{period_day.day} {MONTHS[period_day.month-1]} {period_day.year}"
     issued = time_label(latest["issued"])
     start = time_label(latest["effective"])
     end = time_label(latest["expires"])
-    headline = f"BMKG: Peringatan {event} di {region}"
+    headline = f"Peringatan Dini Cuaca {region} {date} {period} - BMKG"
     if len(headline) > 125:
-        headline = f"BMKG Terbitkan Peringatan Dini Cuaca untuk {region}"
+        headline = f"Peringatan Dini Cuaca {region} {period} - BMKG"
 
     now = dt.datetime.now(UTC)
     item_html = "".join(
@@ -267,9 +296,10 @@ def article(entries, marker_key=None):
     content = (
         f'<p><strong>Dataloka.id</strong> - Badan Meteorologi, Klimatologi, '
         f'dan Geofisika (BMKG) mengeluarkan peringatan dini cuaca untuk '
-        f'{clean_region} pada {date}. Artikel ini memuat {len(entries)} '
-        f'peringatan yang diterbitkan pada tanggal tersebut.</p>'
-        f'<p>Pembaruan terakhir diterbitkan pukul {issued} terkait '
+        f'{clean_region} pada periode {period} {date}. Artikel ini memuat '
+        f'{len(entries)} peringatan BMKG yang diterbitkan pada periode tersebut.</p>'
+        f'<p>Pembaruan terakhir diterbitkan pada {date_label(latest["issued"])} '
+        f'pukul {issued} terkait '
         f'{clean_event}. Peringatan terbaru berlaku pukul {start} hingga {end}.</p>'
         f'<ul>{item_html}</ul>'
         f'{area_note}'
@@ -281,21 +311,20 @@ def article(entries, marker_key=None):
         f'<!-- {MARKER}{marker_key or latest["key"]} -->'
     )
     summary = (
-        f"Peringatan dini cuaca BMKG untuk {region} pada {date}. "
+        f"Peringatan dini cuaca BMKG untuk {region} periode {period} {date}. "
         f"Pembaruan terakhir: {event}, berlaku pukul {start}–{end}. "
         "Pantau rincian wilayah dan perkembangan terbaru."
     )
     if len(summary) > 280:
         summary = (
-            f"Peringatan dini cuaca BMKG untuk {region} pada {date}; "
+            f"Peringatan dini cuaca BMKG untuk {region} periode {period} {date}; "
             f"pembaruan terakhir berlaku hingga {end}. Pantau informasi resmi."
         )[:280]
-    title_seo = f"Peringatan Dini Cuaca {region} {date} - BMKG"
+    title_seo = headline
     focus = f"peringatan dini cuaca {region}"
-    issued_at = instant(latest["issued"]).astimezone(WIB)
-    day_slug = issued_at.date().isoformat()
-    # Keep the CAP's original label in the slug to reuse the existing daily post.
-    slug = f"peringatan-dini-cuaca-{slugify(latest['region'])[:45].rstrip('-')}-{day_slug}"
+    # Province aliases must resolve to the same permalink across CAP revisions.
+    slug = (f"peringatan-dini-cuaca-{slugify(canonical_province(latest))[:45].rstrip('-')}-"
+            f"{period_day.isoformat()}-{period.casefold()}")
     return {
         "title": html.escape(headline, quote=True),
         "content": content, "excerpt": html.escape(summary, quote=True),
@@ -387,7 +416,7 @@ class WeatherWordPress(WordPress):
 
     def cover_image(self, entry):
         from dataloka_cuaca_image import render
-        name = "dataloka-cuaca-" + entry.get("province_day_key", entry["key"])
+        name = "dataloka-cuaca-" + entry.get("province_period_key", entry["key"])
         if display_region(entry) != entry["region"]:
             name += "-jabodetabek"
         found = self.call("GET", "media", {
@@ -417,13 +446,16 @@ class WeatherWordPress(WordPress):
 
 def load_state():
     if not STATE.exists():
-        return {"version": 1, "alerts": {}, "province_days": {}}
+        return {"version": 1, "alerts": {}, "province_days": {}, "province_periods": {}}
     loaded = json.loads(STATE.read_text(encoding="utf-8"))
     if loaded.get("version") != 1 or not isinstance(loaded.get("alerts"), dict):
         raise ValueError("Invalid weather ledger; aborting")
     loaded.setdefault("province_days", {})
     if not isinstance(loaded["province_days"], dict):
         raise ValueError("Invalid provincial weather ledger; aborting")
+    loaded.setdefault("province_periods", {})
+    if not isinstance(loaded["province_periods"], dict):
+        raise ValueError("Invalid period weather ledger; aborting")
     return loaded
 
 def write_state(state):
@@ -488,7 +520,9 @@ def collect(entries, state, now, failed_urls=(), cancelled=()):
             history[key] = {"region": entry["region"], "expires": entry["expires"],
                             "reason": "expired" if instant(entry["expires"]) <= now else "inactive"}
             pending.pop(key, None)
-        elif old.get("fingerprint") == fingerprint(entry) and old.get("editorial_version") == EDITORIAL_VERSION:
+        elif (old.get("fingerprint") == fingerprint(entry)
+              and (old.get("post_id") or old.get("editorial_version") in (2, 3, 4))):
+            # A format rollout must not republish already-covered CAP messages.
             pending.pop(key, None)
         else:
             pending[key] = entry
@@ -508,12 +542,12 @@ def process(entries, mode, now=None, wp=None, state=None):
     if entries is not None:
         collect(entries, state, clock())
     pending = state.setdefault("pending", {})
-    province_days = state.setdefault("province_days", {})
+    province_periods = state.setdefault("province_periods", {})
     last_served = state.setdefault("last_served", {})
     candidates = [e for e in pending.values() if e["url"] not in state.get("unread_urls", [])]
     grouped = {}
     for entry in candidates:
-        grouped.setdefault(province_day_key(entry), []).append(entry)
+        grouped.setdefault(province_period_key(entry), []).append(entry)
     groups = list(grouped.items())
     served = {}
     updated = 0
@@ -541,15 +575,15 @@ def process(entries, mode, now=None, wp=None, state=None):
 
         entry = max(eligible, key=lambda e: (instant(e["issued"]), e["key"]))
         served[region] = served.get(region, 0) + 1
-        old = province_days.get(group_key, {})
+        old = province_periods.get(group_key, {})
         marker_key = old.get("marker_key")
         if not old:
-            # Reuse a verified bot-owned article from the per-alert ledger when possible.
+            # Recover only the same period; an earlier period needs a new post.
             for candidate in sorted(
                 eligible, key=lambda e: (instant(e["issued"]), e["key"]), reverse=True
             ):
                 prior = state["alerts"].get(candidate["key"], {})
-                if prior.get("post_id"):
+                if prior.get("post_id") and prior.get("province_period_key") == group_key:
                     old = prior
                     marker_key = prior.get("marker_key") or candidate["key"]
                     break
@@ -566,7 +600,7 @@ def process(entries, mode, now=None, wp=None, state=None):
 
         combined = {}
         for prior_entry in old.get("entries", []):
-            if province_day_key(prior_entry) == group_key:
+            if province_period_key(prior_entry) == group_key:
                 combined[prior_entry["key"]] = prior_entry
         for current_entry in eligible:
             combined[current_entry["key"]] = current_entry
@@ -583,18 +617,19 @@ def process(entries, mode, now=None, wp=None, state=None):
             updated += 1
             continue
 
-        article_entry = dict(entry, province_day_key=group_key)
+        article_entry = dict(entry, province_period_key=group_key)
         try:
             wp.current_alert = entry
             mapping = wp.save(
                 payload, old, "publish", f"{MARKER}{marker_key}", event=article_entry
             )
-            day = instant(entry["issued"]).astimezone(WIB).date().isoformat()
-            province_days[group_key] = {
+            period_day, period = period_details(entry)
+            province_periods[group_key] = {
                 **mapping,
                 "marker_key": marker_key,
                 "region": region,
-                "day": day,
+                "day": period_day.isoformat(),
+                "period": period,
                 "latest_key": entry["key"],
                 "entries": article_entries,
                 "editorial_version": EDITORIAL_VERSION,
@@ -611,12 +646,11 @@ def process(entries, mode, now=None, wp=None, state=None):
                 record.update({
                     "fingerprint": fingerprint(item),
                     "editorial_version": EDITORIAL_VERSION,
-                    "province_day_key": group_key,
+                    "province_period_key": group_key,
                     "expires": item["expires"],
                 })
-                if item["key"] == entry["key"]:
-                    record.update(mapping)
-                    record["marker_key"] = marker_key
+                record.update(mapping)
+                record["marker_key"] = marker_key
                 state["alerts"][item["key"]] = record
             last_served[region] = clock().isoformat()
             if persistent:
@@ -629,7 +663,7 @@ def process(entries, mode, now=None, wp=None, state=None):
                 "region": region, "expires": entry["expires"], "reason": str(exc)
             }
         except EditorialConflict as exc:
-            # Do not create a second article when the province's canonical post was edited.
+            # Never replace an editor's changes to a period's canonical post.
             for item in group_entries:
                 pending.pop(item["key"], None)
                 state.setdefault("skipped", {})[item["key"]] = {
@@ -645,7 +679,7 @@ def process(entries, mode, now=None, wp=None, state=None):
             break
     if persistent:
         write_state(state)
-    print(f"Queue: {len(pending)} pending, {updated} province article(s) processed")
+    print(f"Queue: {len(pending)} pending, {updated} province-period article(s) processed")
     if failures:
         raise RuntimeError(f"Failed live weather alerts: {','.join(failures)}")
     return updated

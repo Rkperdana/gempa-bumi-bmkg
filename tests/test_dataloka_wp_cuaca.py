@@ -36,7 +36,7 @@ class DummyWP:
         assert marker in payload["content"]
         assert event is not None
         self.calls.append((payload, dict(ledger)))
-        return {"post_id": 123, "status": "publish",
+        return {"post_id": ledger.get("post_id") or 122 + len(self.calls), "status": "publish",
                 "media_id": 456, "last_wp_digest": "abc",
                 "yoast_meta_digest": "xyz"}
 
@@ -116,19 +116,109 @@ class WeatherTests(unittest.TestCase):
         self.assertNotIn("(RK/D-1)", payload["content"])
         self.assertNotIn("Kecamatan C", payload["content"])
 
-    def test_jabodetabek_warning_keeps_existing_daily_slug(self):
+    def test_jabodetabek_warning_uses_stable_period_slug(self):
         entry = dict(example(), region="Jakarta",
                      url="https://www.bmkg.go.id/alerts/nowcast/id/CJK20261122001_alert.xml",
                      description="Hujan di sebagian wilayah Jakarta, khususnya di BOGOR SELATAN.")
         payload = article(entry)
-        self.assertIn("di Jabodetabek", payload["title"])
+        self.assertIn("Cuaca Jabodetabek", payload["title"])
         self.assertIn("di luar DKI Jakarta", payload["content"])
         self.assertIn("BOGOR SELATAN", payload["content"])
-        self.assertEqual(payload["slug"], "peringatan-dini-cuaca-jakarta-2026-11-22")
+        self.assertEqual(payload["slug"], "peringatan-dini-cuaca-jakarta-2026-11-22-pagi")
+        self.assertEqual(pub.province_period_key(entry), pub.province_period_key(
+            dict(entry, region="DKI Jakarta")))
         self.assertEqual(pub.province_day_key(entry), pub.province_day_key(
             dict(entry, url="https://www.bmkg.go.id/alerts/nowcast/id/CJK20261122002_alert.xml")))
         self.assertEqual(pub.province_day_key(entry), pub.province_day_key(
             dict(entry, region="DKI Jakarta")))
+
+    def test_period_boundaries_and_local_bmkg_time(self):
+        entry = example()
+        cases = [
+            ("2026-11-29T05:59:00+07:00", "2026-11-28", "Malam"),
+            ("2026-11-29T06:00:00+07:00", "2026-11-29", "Pagi"),
+            ("2026-11-29T11:59:00+07:00", "2026-11-29", "Pagi"),
+            ("2026-11-29T12:00:00+07:00", "2026-11-29", "Siang"),
+            ("2026-11-29T15:00:00+07:00", "2026-11-29", "Sore"),
+            ("2026-11-29T18:00:00+07:00", "2026-11-29", "Malam"),
+            ("2026-11-30T00:15:00+07:00", "2026-11-29", "Malam"),
+            ("2026-11-29T06:00:00+09:00", "2026-11-29", "Pagi"),
+        ]
+        for issued, day, period in cases:
+            with self.subTest(issued=issued):
+                warning = dict(entry, issued=issued)
+                self.assertEqual(pub.period_details(warning),
+                                 (dt.date.fromisoformat(day), period))
+                self.assertTrue(article(warning)["slug"].endswith(
+                    f"{day}-{period.lower()}"))
+        night = dict(entry, issued="2026-11-30T00:15:00+07:00")
+        self.assertIn("29 November 2026 Malam", article(night)["title"])
+        self.assertEqual(pub.province_period_key(night), pub.province_period_key(
+            dict(entry, issued="2026-11-29T20:00:00+07:00")))
+
+    def test_new_period_creates_new_post_and_second_warning_reuses_it(self):
+        morning = example()
+        noon = dict(morning, key="noon", identifier="NEW-NOON",
+                    issued="2026-11-22T12:05:00+07:00",
+                    effective="2026-11-22T12:10:00+07:00",
+                    expires="2026-11-22T14:00:00+07:00")
+        later = dict(noon, key="later", identifier="NEW-LATER",
+                     issued="2026-11-22T12:30:00+07:00",
+                     effective="2026-11-22T12:35:00+07:00")
+        state = {"version": 1, "alerts": {}}
+        wp = DummyWP()
+        self.assertEqual(process([morning], "live",
+            dt.datetime(2026, 11, 22, 4, 30, tzinfo=UTC), wp, state), 1)
+        # Crossing noon alone does not create a new article.
+        self.assertEqual(process([morning], "live",
+            dt.datetime(2026, 11, 22, 5, 5, tzinfo=UTC), wp, state), 0)
+        self.assertEqual(process([noon], "live",
+            dt.datetime(2026, 11, 22, 5, 15, tzinfo=UTC), wp, state), 1)
+        self.assertEqual(process([later], "live",
+            dt.datetime(2026, 11, 22, 5, 45, tzinfo=UTC), wp, state), 1)
+        self.assertEqual([call[1].get("post_id") for call in wp.calls],
+                         [None, None, 124])
+        self.assertEqual(len(state["province_periods"]), 2)
+        self.assertEqual({p["post_id"] for p in state["province_periods"].values()},
+                         {123, 124})
+        self.assertEqual(wp.calls[-1][0]["content"].count("<li>"), 2)
+        self.assertEqual(process([later], "live",
+            dt.datetime(2026, 11, 22, 5, 50, tzinfo=UTC), wp, state), 0)
+
+    def test_cap_revision_across_period_does_not_reuse_old_post(self):
+        first = example()
+        changed = dict(first, issued="2026-11-22T12:05:00+07:00",
+                       effective="2026-11-22T12:10:00+07:00",
+                       expires="2026-11-22T14:00:00+07:00",
+                       description=first["description"] + " Kondisi terbaru.")
+        state = {"version": 1, "alerts": {}}
+        wp = DummyWP()
+        process([first], "live", dt.datetime(2026, 11, 22, 4, 30, tzinfo=UTC), wp, state)
+        process([changed], "live", dt.datetime(2026, 11, 22, 5, 15, tzinfo=UTC), wp, state)
+        self.assertEqual(wp.calls[-1][1].get("post_id"), None)
+        self.assertEqual({p["post_id"] for p in state["province_periods"].values()},
+                         {123, 124})
+
+    def test_midnight_warning_stays_in_previous_night_article(self):
+        first = dict(example(), issued="2026-11-29T20:00:00+07:00",
+                     effective="2026-11-29T20:05:00+07:00",
+                     expires="2026-11-29T22:00:00+07:00")
+        later = dict(first, key="after-midnight", identifier="AFTER-MIDNIGHT",
+                     issued="2026-11-30T00:15:00+07:00",
+                     effective="2026-11-30T00:20:00+07:00",
+                     expires="2026-11-30T02:00:00+07:00")
+        state = {"version": 1, "alerts": {}}
+        wp = DummyWP()
+        self.assertEqual(process([first], "live",
+            dt.datetime(2026, 11, 29, 13, 30, tzinfo=UTC), wp, state), 1)
+        self.assertEqual(process([later], "live",
+            dt.datetime(2026, 11, 29, 17, 30, tzinfo=UTC), wp, state), 1)
+        self.assertEqual(wp.calls[-1][1]["post_id"], 123)
+        self.assertEqual(len(state["province_periods"]), 1)
+        self.assertEqual(next(iter(state["province_periods"].values()))["day"],
+                         "2026-11-29")
+        self.assertIn("30 November 2026 pukul 00.15 WIB",
+                      wp.calls[-1][0]["content"])
 
     def test_jabodetabek_update_reuses_bot_post_and_replaces_old_cover(self):
         entry = dict(example(), region="Jakarta",
@@ -301,12 +391,12 @@ class WeatherTests(unittest.TestCase):
         wp = DummyWP()
         self.assertEqual(process(entries, "live", now, wp, state), 5)
         self.assertEqual(len(set(call[0]["title"] for call in wp.calls)), 5)
-        self.assertEqual(len({pub.province_day_key(item)
+        self.assertEqual(len({pub.province_period_key(item)
                               for item in state["pending"].values()}), 1)
         self.assertEqual(process(entries, "live", now, wp, state), 1)
         self.assertEqual(process(entries, "live", now, wp, state), 0)
         self.assertEqual(len(wp.calls), 6)
-        bali = [call for call in wp.calls if "di Bali" in call[0]["title"]]
+        bali = [call for call in wp.calls if "Cuaca Bali" in call[0]["title"]]
         self.assertEqual(len(bali), 1)
         self.assertEqual(bali[0][0]["content"].count("<li>"), 2)
 
@@ -388,7 +478,7 @@ class WeatherTests(unittest.TestCase):
         self.assertIn("BMKG: Peringatan Hujan Lebat dan Petir di Jawa Barat",
                       wp.calls[-1][1]["bot_previous_titles"])
 
-    def test_jabodetabek_existing_daily_article_accepts_previous_bot_title(self):
+    def test_jabodetabek_existing_period_article_accepts_previous_bot_title(self):
         first = dict(example(), region="Jakarta",
                      url="https://www.bmkg.go.id/alerts/nowcast/id/CJK20261122001_alert.xml")
         next_warning = dict(first, key="second-cjk", identifier="ANOTHER",
@@ -402,22 +492,40 @@ class WeatherTests(unittest.TestCase):
         self.assertIn("BMKG: Peringatan Hujan Lebat dan Petir di Jakarta",
                       wp.calls[-1][1]["bot_previous_titles"])
 
-    def test_old_bot_owned_article_updates_editorial_format_once(self):
+    def test_rollout_does_not_republish_existing_daily_article(self):
         entry = example()
         old = {
             "post_id": 123, "status": "publish",
             "fingerprint": fingerprint(entry),
+            "editorial_version": 3,
             "last_wp_digest": "last-bot-written-content",
         }
-        state = {"version": 1, "alerts": {entry["key"]: old}}
+        old_key = pub.province_day_key(entry)
+        state = {"version": 1, "alerts": {entry["key"]: old},
+                 "province_days": {old_key: dict(old, region=entry["region"])}}
         wp = DummyWP()
         now = dt.datetime(2026, 11, 22, 5, 0, tzinfo=UTC)
-        self.assertEqual(process([entry], "live", now, wp, state), 1)
-        self.assertEqual(wp.calls[0][1]["post_id"], 123)
-        self.assertEqual(state["alerts"][entry["key"]]["editorial_version"],
-                         pub.EDITORIAL_VERSION)
         self.assertEqual(process([entry], "live", now, wp, state), 0)
-        self.assertEqual(len(wp.calls), 1)
+        self.assertFalse(wp.calls)
+        self.assertFalse(state["province_periods"])
+        self.assertEqual(state["province_days"][old_key]["post_id"], 123)
+
+    def test_new_alert_does_not_overwrite_legacy_daily_post(self):
+        old = example()
+        fresh = dict(old, key="new-cap", identifier="NEW-CAP",
+                     issued="2026-11-22T11:30:00+07:00",
+                     effective="2026-11-22T11:35:00+07:00")
+        daily = {"post_id": 900, "fingerprint": fingerprint(old),
+                 "editorial_version": 3}
+        daily_key = pub.province_day_key(old)
+        state = {"version": 1, "alerts": {old["key"]: daily},
+                 "province_days": {daily_key: dict(daily, region=old["region"])}}
+        wp = DummyWP()
+        self.assertEqual(process([old, fresh], "live",
+            dt.datetime(2026, 11, 22, 5, 0, tzinfo=UTC), wp, state), 1)
+        self.assertFalse(wp.calls[0][1].get("post_id"))
+        self.assertEqual(state["province_days"][daily_key]["post_id"], 900)
+        self.assertEqual(len(state["province_periods"]), 1)
 
     def test_only_explicit_live_mode_can_publish(self):
         with self.assertRaises(ValueError):
