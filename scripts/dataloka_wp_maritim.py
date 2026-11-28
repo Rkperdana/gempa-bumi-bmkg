@@ -117,5 +117,38 @@ def live_wave(now=None):
         persist(state)
         print("Verified maritime post",post,a["region"])
 
+def reviewed_wave(path):
+    # One editorially reviewed bulletin, not an alternate automated access mechanism.
+    if os.getenv("BMKG_MARITIM_REVIEWED_APPROVED") != "true":
+        raise PermissionError("Explicit reviewed publication approval required")
+    snapshot=json.loads(Path(path).read_text(encoding="utf-8"))
+    checked=dt.datetime.fromisoformat(snapshot["checked_at"].replace("Z","+00:00"))
+    if snapshot["source"] != WAVE or set(snapshot["bulletin"]) != {"Indonesia"}:
+        raise ValueError("Only the reviewed national BMKG bulletin is allowed")
+    def fresh(a=None):
+        now=dt.datetime.now(UTC)
+        if not dt.timedelta(0) <= now-checked <= dt.timedelta(minutes=30):
+            raise RuntimeError("Editorial review is older than 30 minutes; no publication")
+        current=parse_wave(snapshot["bulletin"],now)
+        if len(current)!=1 or (a is not None and key(current[0])!=key(a)):
+            raise RuntimeError("Reviewed bulletin is no longer valid")
+        return current[0]
+    a=fresh()
+    state=load_state()
+    if key(a) in state["published"]:
+        print("Reviewed bulletin already processed")
+        return
+    wp=MaritimeWP(os.getenv("WP_USERNAME"),os.getenv("WP_APP_PASSWORD"))
+    post=wp.publish_verified(a,fresh,checked)
+    state["published"][key(a)]={"post_id":post,"status":"publish","region":a["region"],
+        "end":a["end"],"reviewed_at":snapshot["checked_at"]}
+    persist(state)
+    print("Verified reviewed maritime publication: post",post)
+
 if __name__=="__main__":
-    live_wave()
+    import argparse
+    parser=argparse.ArgumentParser()
+    parser.add_argument("--reviewed",type=Path)
+    args=parser.parse_args()
+    if args.reviewed: reviewed_wave(args.reviewed)
+    else: live_wave()
