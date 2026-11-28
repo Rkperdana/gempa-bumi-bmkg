@@ -474,24 +474,6 @@
       }
     },
     {
-      "key": "3f20bc9e5842f9",
-      "data": {
-        "key": "3f20bc9e5842f9",
-        "datetime": "2026-11-13T00:05:10Z",
-        "magnitude": 5.5,
-        "depth_km": 91.0,
-        "lat": 34.75,
-        "lon": 24.97,
-        "region": "Crete, Greece",
-        "felt": false,
-        "felt_info": "",
-        "potential": "",
-        "sources": [
-          "realtime"
-        ]
-      }
-    },
-    {
       "key": "86bf2242952643",
       "data": {
         "key": "86bf2242952643",
@@ -961,5 +943,5 @@
       "last_payload_digest": "ba29b86e751455a28e3a0fe8559d7daecfafdb5d24466ae25222f0968cd731b8"
     }
   ],
-  "last_checked_at": "2026-11-27T22:12:18.195113Z"
+  "last_checked_at": "2026-11-28T00:34:16.024375Z"
 }
