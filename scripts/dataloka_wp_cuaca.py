@@ -417,6 +417,8 @@ def collect(entries, state, now, failed_urls=(), cancelled=()):
         if key in cancelled_keys or entry["identifier"] in cancelled:
             history[key] = {"region": entry["region"], "expires": entry["expires"], "reason": "cancelled"}
             pending.pop(key, None)
+        elif history.get(key, {}).get("fingerprint") == fingerprint(entry):
+            pending.pop(key, None)
         elif not active(entry, now):
             history[key] = {"region": entry["region"], "expires": entry["expires"],
                             "reason": "expired" if instant(entry["expires"]) <= now else "inactive"}
@@ -446,7 +448,7 @@ def process(entries, mode, now=None, wp=None, state=None):
     served = {}
     updated = 0
     failures = []
-    for attempt in range(min(MAX_ALERTS_PER_RUN, len(candidates))):
+    while candidates and updated < MAX_ALERTS_PER_RUN:
         entry = min(candidates, key=lambda e: (served.get(e["region"], 0),
                     last_served.get(e["region"], ""), instant(e["expires"]), e["key"]))
         candidates.remove(entry)
@@ -461,8 +463,6 @@ def process(entries, mode, now=None, wp=None, state=None):
         print(f"{mode}: {payload['title']} | {entry['url']}", flush=True)
         if mode != "live":
             updated += 1
-            if updated >= MAX_ALERTS_PER_RUN:
-                break
             continue
         try:
             wp.current_alert = entry
@@ -486,6 +486,9 @@ def process(entries, mode, now=None, wp=None, state=None):
             del pending[key]
             state["skipped"][key] = {"region": region, "expires": entry["expires"], "reason": str(exc)}
         except EditorialConflict as exc:
+            del pending[key]
+            state["skipped"][key] = {"region": region, "expires": entry["expires"],
+                                     "reason": "editorial conflict", "fingerprint": fingerprint(entry)}
             print(f"SKIP: editorial revision protected: {exc}", file=sys.stderr)
         except (RuntimeError, OSError, ValueError, KeyError) as exc:
             print(f"ERROR: failed to publish weather alert {entry['key']}: {exc}",

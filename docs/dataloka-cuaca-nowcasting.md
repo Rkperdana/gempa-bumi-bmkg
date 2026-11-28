@@ -41,14 +41,10 @@ Perubahan format editorial versi 2 dicoba satu kali untuk artikel lama yang masi
 
 Artikel peringatan dini cuaca tidak lagi memakai **tag `Featured`**. Tag yang tersisa: `BMKG`, `Cuaca`, dan `Peringatan`. **Featured image tetap wajib** sebelum publikasi, termasuk validasi Yoast. Khusus artikel cuaca lama yang masih ada dalam ledger bot, workflow akan menghapus tag Featured secara bertahap (maksimal satu artikel per siklus) setelah memeriksa kepemilikan bot dan hash konten; suntingan manual editor tidak ditimpa. Artikel gempa dan Pirsadata tidak diubah.
 
-## Pemicu eksternal tiap 10 menit
+## Jadwal 10 menit tanpa akses hosting
 
-Pada panel hosting yang mendukung cron, simpan `scripts/trigger-cuaca.py` di direktori privat di luar web root. Skrip hanya memerlukan Python 3. Simpan fine-grained GitHub token khusus repo ini dengan izin Actions: write dalam file privat `~/.config/dataloka/actions-token` (mode 600). Kredensial WordPress sudah tersimpan di GitHub Actions.
+Di Cloudflare Workers & Pages, hubungkan repositori GitHub ini, pilih branch main dan root directory `ops/weather-cron`. Deploy command: `npx wrangler deploy`. Konfigurasi mencakup Cron Trigger setiap 10 menit (144 kali sehari). Worker hanya mengirim permintaan GitHub Actions jika tidak ada eksekusi cuaca yang masih berjalan. GitHub menyimpan kredensial WordPress. Jadwal bawaan 15 menit berfungsi sebagai cadangan.
 
-Atur alamat email cron di panel hosting atau melalui MAILTO pada crontab. Sesuaikan path dengan direktori pengguna hosting:
+Di GitHub, buat fine-grained personal access token yang terbatas ke `Rkperdana/gempa-bumi-bmkg` dengan izin Actions: Read and write. Masukkan token sebagai **secret** Worker bernama `DATALOKA_ACTIONS_TOKEN`. Setelah propagasi trigger, periksa riwayat Actions untuk event `workflow_dispatch` serta nilai `last_checked_at` di ledger.
 
-```cron
-*/10 * * * * /usr/bin/python3 /path/privat/trigger-cuaca.py
-```
-
-Setiap pemanggilan meminta eksekusi live kecuali sudah ada run aktif. Jika pengambilan lengkap terakhir lebih dari 30 menit yang lalu, skrip mengeluarkan pesan untuk email cron. Jika cron host sendiri berhenti, pemantauan ini juga berhenti. Jadwal GitHub 15 menit tetap tersedia sebagai cadangan.
+Untuk notifikasi setelah 30 menit tanpa pengambilan lengkap, buat check di Healthchecks.io dengan period 10 menit dan grace time 20 menit. Pilih email penerima di sana dan simpan Ping URL sebagai repository secret `CUACA_HEALTHCHECK_URL`. Workflow mengirim ping setelah antrean tersimpan dan semua detail RSS berhasil diperiksa.
