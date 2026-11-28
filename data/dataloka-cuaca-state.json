@@ -1953,22 +1953,6 @@
       "certainty": "Observed",
       "sender": "Badan Meteorologi Klimatologi dan Geofisika"
     },
-    "37c1ea45b249a08e": {
-      "key": "37c1ea45b249a08e",
-      "identifier": "2.49.0.1.360.0.2026.11.28.15.31.007",
-      "url": "https://www.bmkg.go.id/alerts/nowcast/id/CJK20261128007_alert.xml",
-      "event": "Hujan Lebat dan Petir",
-      "headline": "Hujan Lebat disertai Petir di Jakarta",
-      "description": "Hujan lebat disertai petir akan terjadi pada 28 November 2026, 20:20 WIB di sebagian wilayah Jakarta, khususnya di CARINGIN, CIAWI, CIBITUNG, CIKARANG TIMUR, CIKARANG UTARA, CISARUA, KARANG BAHAGIA, KEDUNG WARINGIN, MEGAMENDUNG, PEBAYURAN, SUKAKARYA, SUKATANI, TAMBUN SELATAN. Kondisi ini berpotensi menimbulkan dampak berupa jarak pandang berkurang, angin kencang, dan banjir lokal. Masyarakat dihimbau untuk tetap waspada, mengurangi aktivitas di luar ruangan, serta mengambil langkah-langkah pencegahan yang diperlukan guna menjaga keselamatan. Kondisi diperkirakan dapat berlangsung hingga 28 November 2026, 22:20 WIB.",
-      "region": "Jakarta",
-      "issued": "2026-11-28T20:10:00+07:00",
-      "effective": "2026-11-28T20:20:00+07:00",
-      "expires": "2026-11-28T22:20:00+07:00",
-      "severity": "Moderate",
-      "urgency": "Immediate",
-      "certainty": "Observed",
-      "sender": "Badan Meteorologi Klimatologi dan Geofisika"
-    },
     "14b8f374332e45f0": {
       "key": "14b8f374332e45f0",
       "identifier": "2.49.0.1.360.0.2026.11.28.15.18.004",
@@ -2234,10 +2218,15 @@
       "region": "Sumatera Utara",
       "expires": "2026-11-28T21:40:00+07:00",
       "reason": "expired"
+    },
+    "37c1ea45b249a08e": {
+      "region": "Jakarta",
+      "expires": "2026-11-28T22:20:00+07:00",
+      "reason": "expired"
     }
   },
   "unread_urls": [],
-  "last_checked_at": "2026-11-28T15:18:39.498018+00:00",
+  "last_checked_at": "2026-11-28T15:28:39.363793+00:00",
   "last_served": {
     "Bali": "2026-11-28T06:11:07.653059+00:00",
     "Sumatera Utara": "2026-11-28T14:39:35.547280+00:00",
