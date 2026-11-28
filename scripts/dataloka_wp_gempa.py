@@ -36,8 +36,8 @@ YOAST_KEYS = ("_yoast_wpseo_focuskw", "_yoast_wpseo_title", "_yoast_wpseo_metade
 # live window without bulk historical republishing.
 LIVE_NEW_EVENT_MINUTES = 24 * 60
 MISSED_EVENT_ALERT_MINUTES = 48 * 60
-HEARTBEAT_WRITE_MINUTES = 30
-SCHEDULE_DELAY_WARNING_MINUTES = 90
+HEARTBEAT_WRITE_MINUTES = 8
+SCHEDULE_DELAY_WARNING_MINUTES = 30
 TRANSIENT_HTTP = frozenset((429, 500, 502, 503, 504))
 
 
@@ -269,7 +269,7 @@ def editorial_title(e):
     """Headline for readers, distinct from search-engine metadata."""
     mag = magnitude(e["magnitude"])
     region = editorial_region(e["region"])
-    intro = f"Gempa M{mag} di {region}"
+    intro = f"BMKG: Gempa M{mag} di {region}"
     felt_info = str(e.get("felt_info") or "")
     roman = {
         "I": 1, "II": 2, "III": 3, "IV": 4, "V": 5, "VI": 6,
@@ -284,23 +284,23 @@ def editorial_title(e):
     if e.get("felt"):
         return f"{intro}, Dilaporkan Dirasakan Warga"
     if confirmed_no_tsunami(e):
-        return f"{intro}, BMKG: Tidak Berpotensi Tsunami"
+        return f"{intro}, Tidak Berpotensi Tsunami"
     if "berpotensi tsunami" in str(e.get("potential") or "").casefold():
-        return f"{intro}, BMKG: Berpotensi Tsunami"
-    return f"{intro}, Menurut BMKG"
+        return f"{intro}, Berpotensi Tsunami"
+    return intro
 
 
 def seo_title(e, date):
     mag = magnitude(e["magnitude"])
     region = readable_region(e["region"])
-    full = f"Gempa M{mag} di {region}, {date} - BMKG"
+    full = f"BMKG: Gempa M{mag} di {region}, {date}"
     if len(full) <= 75:
         return full
-    concise = f"Gempa M{mag} di {region}, {date}"
+    concise = f"BMKG: Gempa M{mag} di {editorial_region(e['region'])}, {date}"
     if len(concise) <= 78:
         return concise
     # Prefer a complete word in a shortened headline, not a misleading new place.
-    left, right = f"Gempa M{mag} di ", f", {date}"
+    left, right = f"BMKG: Gempa M{mag} di ", f", {date}"
     limit = max(12, 78 - len(left) - len(right) - 1)
     short = region[:limit].rsplit(" ", 1)[0] or region[:limit]
     return left + short.rstrip(" ,") + "…" + right
@@ -443,10 +443,10 @@ def article(e):
 def revised_article(event, fingerprint):
     """Publish a separate article on substantive corrections; do not edit the old."""
     payload = article(event)
-    payload["title"] = "Pembaruan BMKG: " + payload["title"]
+    payload["title"] = payload["title"].replace("BMKG: ", "BMKG: Pembaruan ", 1)
     payload["slug"] += "-pembaruan-" + fingerprint[:10]
     payload["yoast_meta"]["_yoast_wpseo_title"] = (
-        "Pembaruan BMKG: " + payload["yoast_meta"]["_yoast_wpseo_title"]
+        payload["yoast_meta"]["_yoast_wpseo_title"].replace("BMKG: ", "BMKG: Pembaruan ", 1)
     )
     previous_marker = f"<!-- {MARKER}{event['key']} -->"
     marker = f"<!-- {MARKER}{event['key']}:revision:{fingerprint[:10]} -->"
@@ -871,7 +871,7 @@ def events_task(mode, wp, now):
                if previous_check else None)
     if elapsed is not None and elapsed > SCHEDULE_DELAY_WARNING_MINUTES:
         print(f"::warning::Dataloka earthquake check delayed by {elapsed:.0f} minutes")
-    # Persist a lightweight heartbeat at most twice per hour.
+    # Persist a heartbeat on each nominal ten-minute keeper cycle.
     if elapsed is None or elapsed >= HEARTBEAT_WRITE_MINUTES:
         state["last_checked_at"] = now.isoformat().replace("+00:00", "Z")
     for incoming in events:
