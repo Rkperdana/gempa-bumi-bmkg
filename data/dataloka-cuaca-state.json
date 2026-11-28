@@ -479,26 +479,21 @@
       "editorial_version": 2,
       "featured_tag_removed": true,
       "expires": "2026-11-28T10:30:00+07:00"
-    }
-  },
-  "pending": {
+    },
     "845fdf3c9ec707d1": {
-      "key": "845fdf3c9ec707d1",
-      "identifier": "2.49.0.1.360.0.2026.11.28.02.91.002",
-      "url": "https://www.bmkg.go.id/alerts/nowcast/id/CPU20261128002_alert.xml",
-      "event": "Hujan Lebat dan Petir",
-      "headline": "Hujan Lebat disertai Petir di Papua",
-      "description": "Hujan lebat disertai petir akan terjadi pada 28 November 2026, 11:39 WIT di sebagian wilayah Papua, khususnya di ANGKAISERA, ANOTAUREI, BIAK UTARA, KEPULAUAN AMBAI, KOSIWO, SAMOFA, YAPEN SELATAN, YENDIDORI. Kondisi ini berpotensi menimbulkan dampak berupa jarak pandang berkurang, angin kencang, dan banjir lokal. Masyarakat dihimbau untuk tetap waspada, mengurangi aktivitas di luar ruangan, serta mengambil langkah-langkah pencegahan yang diperlukan guna menjaga keselamatan. Kondisi diperkirakan dapat berlangsung hingga 28 November 2026, 14:39 WIT.",
-      "region": "Papua",
-      "issued": "2026-11-28T11:09:00+09:00",
-      "effective": "2026-11-28T11:39:00+09:00",
-      "expires": "2026-11-28T14:39:00+09:00",
-      "severity": "Moderate",
-      "urgency": "Immediate",
-      "certainty": "Observed",
-      "sender": "Badan Meteorologi Klimatologi dan Geofisika"
+      "post_id": 9459,
+      "media_id": 9458,
+      "last_wp_digest": "5353d5c3c10e7cee12b302d1d6d070bba09c32c03b5f282fb1da31089af81bc6",
+      "yoast_meta_digest": "4e7cee4660443e2d588bf23d1ece47f9c0195eee546b201df722c9352f12a4ce",
+      "status": "publish",
+      "last_payload_digest": "3d9ca6dfe82e2790b1b8a97f77c7706eb1957bd4bf752fd08771e6e0e75d8b81",
+      "fingerprint": "cebd4a4453d13d70bed0706a826ffbeb571a8f9538e84c34b6817bde1a1a925d",
+      "editorial_version": 2,
+      "featured_tag_removed": true,
+      "expires": "2026-11-28T14:39:00+09:00"
     }
   },
+  "pending": {},
   "skipped": {
     "16876fd4b23bb830": {
       "region": "Sumatera Barat",
@@ -558,6 +553,6 @@
     "Sumatera Barat": "2026-11-28T02:09:14.856898+00:00",
     "Jawa Timur": "2026-11-28T02:10:01.215208+00:00",
     "Aceh": "2026-11-28T02:17:53.130988+00:00",
-    "Papua": "2026-11-28T02:07:43.169693+00:00"
+    "Papua": "2026-11-28T02:27:33.618523+00:00"
   }
 }
