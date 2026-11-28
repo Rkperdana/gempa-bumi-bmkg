@@ -1495,7 +1495,8 @@
       "yoast_meta_digest": "cd042574da17fa8156fa194f5aab6487f896c4837a9febf4309af70f2cd704c6",
       "status": "publish",
       "last_payload_digest": "f83ede9937fb860763bf100fcc511bca3a71f0038743070c65819f7e5f759aea",
-      "marker_key": "770110af28de1f14"
+      "marker_key": "770110af28de1f14",
+      "featured_tag_removed": true
     },
     "e3d3c1f70d68cf9e": {
       "fingerprint": "92eec8c67d8cf7e212564a1f964d8e04930543a4331f0ef45c5dd3844e579809",
