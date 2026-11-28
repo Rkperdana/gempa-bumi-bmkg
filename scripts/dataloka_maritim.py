@@ -105,7 +105,7 @@ def article(a, now):
     source = esc(a["source"], quote=True)
     paragraphs = [
         f'<strong>Dataloka.id</strong> - Badan Meteorologi, Klimatologi, dan Geofisika (BMKG) mengeluarkan informasi potensi {topic} di {esc(region)}. Informasi ini berkaitan dengan <a href="https://dataloka.id/tag/cuaca">cuaca</a> maritim.',
-        f"Peringatan berlaku pada {esc(period)} berdasarkan informasi resmi BMKG.",
+        f"Periode prakiraan berlaku pada {esc(period)}. Kategori gelombang menunjukkan potensi selama periode tersebut, bukan kondisi yang pasti terjadi setiap saat." if a["kind"] == "wave" else f"Peringatan berlaku pada {esc(period)} berdasarkan informasi resmi BMKG.",
         f"Rincian wilayah yang perlu diwaspadai: {esc(detail)}.",
         esc(a["synoptic"]),
         f'Informasi tersebut merupakan prakiraan, bukan laporan kejadian yang telah terjadi. Pantau <a href="{source}">informasi resmi BMKG</a> untuk pembaruan sebelum beraktivitas di kawasan terkait. (RK/D-1)'
@@ -115,7 +115,7 @@ def article(a, now):
     summary = f"BMKG memperingatkan potensi {topic} di {region} hingga {date_label(end)}. Simak wilayah dan masa berlaku peringatannya."
     return {"title":title,"slug":f"{slug}-{fingerprint[:12]}","excerpt":summary[:280],
             "content":"".join(f"<p>{p}</p>" for p in paragraphs)+
-              f'<p><strong>Sumber: BMKG</strong> — <a href="{source}">{topic}</a>, diakses {date_label(now.date())}.</p><!-- dataloka-maritim:{fingerprint} -->',
+              f'<p><strong>Sumber: BMKG</strong> — <a href="{source}">{topic}</a>.</p><!-- dataloka-maritim:{fingerprint} -->',
             "tag_names":tags,"yoast_meta":{"_yoast_wpseo_focuskw":f"{topic} {region}",
             "_yoast_wpseo_title":title,"_yoast_wpseo_metadesc":summary[:160]},
             "fingerprint":fingerprint,"status":"preview"}
