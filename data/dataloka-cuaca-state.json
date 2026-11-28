@@ -793,7 +793,40 @@
       "expires": "2026-11-28T13:00:00+07:00"
     }
   },
-  "pending": {},
+  "pending": {
+    "77f6bf1abfa684f1": {
+      "key": "77f6bf1abfa684f1",
+      "identifier": "2.49.0.1.360.0.2026.11.28.04.72.002",
+      "url": "https://www.bmkg.go.id/alerts/nowcast/id/CSG20261128002_alert.xml",
+      "event": "Hujan Lebat dan Petir",
+      "headline": "Hujan Lebat disertai Petir di Sulawesi Tengah",
+      "description": "Hujan lebat disertai petir akan terjadi pada 28 November 2026, 12:32 WITA di sebagian wilayah Sulawesi Tengah, khususnya di AMPIBABO, DOLO, DOLO BARAT, DOLO SELATAN, KINOVARO, KULAWI, LABUAN, LINDU, LORE PIORE, LORE UTARA, MANTIKULORE, MARAWOLA BARAT, PALOLO, PARIGI, PARIGI BARAT, PARIGI SELATAN, PARIGI TENGAH, PARIGI UTARA, PINEMBANI, RIO PAKAVA, SIGI BIROMARU, SINDUE, SINIU, TANANTOVEA, TAWAELI, TORIBULU, TORUE. Kondisi ini berpotensi menimbulkan dampak berupa jarak pandang berkurang, angin kencang, dan banjir lokal. Masyarakat dihimbau untuk tetap waspada, mengurangi aktivitas di luar ruangan, serta mengambil langkah-langkah pencegahan yang diperlukan guna menjaga keselamatan. Kondisi diperkirakan dapat berlangsung hingga 28 November 2026, 14:30 WITA.",
+      "region": "Sulawesi Tengah",
+      "issued": "2026-11-28T12:20:00+08:00",
+      "effective": "2026-11-28T12:32:00+08:00",
+      "expires": "2026-11-28T14:30:00+08:00",
+      "severity": "Moderate",
+      "urgency": "Immediate",
+      "certainty": "Observed",
+      "sender": "Badan Meteorologi Klimatologi dan Geofisika"
+    },
+    "c3f2b00e528db035": {
+      "key": "c3f2b00e528db035",
+      "identifier": "2.49.0.1.360.0.2026.11.28.04.19.002",
+      "url": "https://www.bmkg.go.id/alerts/nowcast/id/CBB20261128002_alert.xml",
+      "event": "Hujan Lebat dan Petir",
+      "headline": "Hujan Lebat disertai Petir di Kep. Bangka Belitung",
+      "description": "Hujan lebat disertai petir akan terjadi pada 28 November 2026, 11:25 WIB di sebagian wilayah Kep. Bangka Belitung, khususnya di BADAU, SIJUK, TANJUNG PANDAN. Kondisi ini berpotensi menimbulkan dampak berupa jarak pandang berkurang, angin kencang, dan banjir lokal. Masyarakat dihimbau untuk tetap waspada, mengurangi aktivitas di luar ruangan, serta mengambil langkah-langkah pencegahan yang diperlukan guna menjaga keselamatan. Kondisi diperkirakan dapat berlangsung hingga 28 November 2026, 12:30 WIB.",
+      "region": "Kep. Bangka Belitung",
+      "issued": "2026-11-28T11:15:00+07:00",
+      "effective": "2026-11-28T11:25:00+07:00",
+      "expires": "2026-11-28T12:30:00+07:00",
+      "severity": "Moderate",
+      "urgency": "Immediate",
+      "certainty": "Observed",
+      "sender": "Badan Meteorologi Klimatologi dan Geofisika"
+    }
+  },
   "skipped": {
     "16876fd4b23bb830": {
       "region": "Sumatera Barat",
@@ -867,7 +900,7 @@
     }
   },
   "unread_urls": [],
-  "last_checked_at": "2026-11-28T04:28:20.888778+00:00",
+  "last_checked_at": "2026-11-28T04:38:22.775486+00:00",
   "last_served": {
     "Bali": "2026-11-28T00:34:39.520093+00:00",
     "Sumatera Utara": "2026-11-28T00:35:24.538457+00:00",
