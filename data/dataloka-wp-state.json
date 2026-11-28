@@ -133,25 +133,6 @@
       }
     },
     {
-      "key": "d733cdf9c4fbaa",
-      "data": {
-        "key": "d733cdf9c4fbaa",
-        "datetime": "2026-11-13T07:31:39Z",
-        "magnitude": 4.1,
-        "depth_km": 24.0,
-        "lat": -5.56,
-        "lon": 102.24,
-        "region": "Pusat gempa berada di laut 24 km selatan Enggano",
-        "potential": "",
-        "felt_info": "II - III Enggano",
-        "felt": true,
-        "sources": [
-          "gempadirasakan.json",
-          "realtime"
-        ]
-      }
-    },
-    {
       "key": "2ee2d310cae945",
       "data": {
         "key": "2ee2d310cae945",
@@ -906,5 +887,5 @@
       "last_payload_digest": "ba29b86e751455a28e3a0fe8559d7daecfafdb5d24466ae25222f0968cd731b8"
     }
   ],
-  "last_checked_at": "2026-11-28T06:29:01.830272Z"
+  "last_checked_at": "2026-11-28T12:59:36.100812Z"
 }
