@@ -27,16 +27,28 @@ Workflow: .github/workflows/dataloka-wp-cuaca.yml, dapat dijalankan manual lewat
     python -m unittest discover -s tests -p 'test_dataloka_wp_cuaca.py' -v
     python scripts/dataloka_wp_cuaca.py --mode fixture
 
-Batas sementara: maksimal **satu** peringatan per eksekusi, dan tidak membuat draf perdana untuk alert yang diterbitkan lebih dari 90 menit sebelumnya. Batas waktu live 12 menit, pemeriksaan 15 menit; kegagalan WordPress menghentikan pemrosesan alert lain pada siklus tersebut. POST draf tidak diulang secara buta; jika WP sempat menerima draf saat koneksi timeout, bot mencoba pemulihan hanya jika slug dan konten identik. Jadwal GitHub Actions bersifat best effort. HTML artikel memakai seluruh deskripsi resmi CAP, termasuk nama kecamatan sebagaimana tertulis, sehingga versi uji tidak mengubah istilah atau menambahkan prediksi.
+Antrean disimpan di GitHub sebelum WordPress dihubungi. Semua URL RSS diambil dengan jeda permintaan. Maksimal lima percobaan penerbitan per putaran, dengan giliran untuk provinsi berbeda. Peringatan baru boleh berumur lebih dari 90 menit jika masih aktif. Bot mengecek ulang RSS, isi CAP dan waktu kedaluwarsa sebelum mengirim status publish. Data pending, alasan dilewati, serta waktu pemeriksaan lengkap terakhir tersedia pada ledger. Timeout alur live 25 menit. HTML artikel memakai seluruh deskripsi resmi CAP, termasuk nama kecamatan sebagaimana tertulis, sehingga versi uji tidak mengubah istilah atau menambahkan prediksi.
 
 Kriteria produksi: respons API BMKG nyata perlu lulus (mode manual dry-run), metadata Yoast di WP wajib tervalidasi, hak akses bot, gambar di WP Media Library wajib ada sebelum artikel berstatus publish; tag Featured tidak lagi dipasang. Mode live di workflow menyetel `BMKG_NOWCAST_AUTHORIZED=true` berdasarkan konfirmasi pemilik; bila BMKG tidak merespons valid, WordPress tidak diubah.
 
 ## Keandalan WordPress
 
-Eksekusi awal pada 22 November 2026 melampaui batas 9 menit dan melaporkan `WordPress network error on POST posts: TimeoutError`. Batas satu alert per siklus serta penyimpanan ledger pada langkah `always()` membantu mengurangi beban dan memungkinkan pemulihan yang aman. Jika WordPress masih tidak merespons, artikel **tidak diklaim telah terbit** dan integrasi perlu pemeriksaan performa REST API/hosting Dataloka. Tidak ada perubahan pada gempa atau Pirsadata.
+Eksekusi awal pada 22 November 2026 melampaui batas 9 menit dan melaporkan `WordPress network error on POST posts: TimeoutError`. Antrean tersimpan dan penyimpanan hasil pada langkah `always()` membantu mengurangi beban dan memungkinkan pemulihan yang aman. Jika WordPress masih tidak merespons, artikel **tidak diklaim telah terbit** dan integrasi perlu pemeriksaan performa REST API/hosting Dataloka. Tidak ada perubahan pada gempa atau Pirsadata.
 
 Perubahan format editorial versi 2 dicoba satu kali untuk artikel lama yang masih aktif dan memiliki ledger bot. Editan manual pada artikel WordPress tidak ditimpa; pembaruan lama di luar feed aktif tidak dibackfill otomatis.
 
 ## Kebijakan tag (22 November 2026)
 
 Artikel peringatan dini cuaca tidak lagi memakai **tag `Featured`**. Tag yang tersisa: `BMKG`, `Cuaca`, dan `Peringatan`. **Featured image tetap wajib** sebelum publikasi, termasuk validasi Yoast. Khusus artikel cuaca lama yang masih ada dalam ledger bot, workflow akan menghapus tag Featured secara bertahap (maksimal satu artikel per siklus) setelah memeriksa kepemilikan bot dan hash konten; suntingan manual editor tidak ditimpa. Artikel gempa dan Pirsadata tidak diubah.
+
+## Pemicu eksternal tiap 10 menit
+
+Pada panel hosting yang mendukung cron, simpan `scripts/trigger-cuaca.py` di direktori privat di luar web root. Skrip hanya memerlukan Python 3. Simpan fine-grained GitHub token khusus repo ini dengan izin Actions: write dalam file privat `~/.config/dataloka/actions-token` (mode 600). Kredensial WordPress sudah tersimpan di GitHub Actions.
+
+Atur alamat email cron di panel hosting atau melalui MAILTO pada crontab. Sesuaikan path dengan direktori pengguna hosting:
+
+```cron
+*/10 * * * * /usr/bin/python3 /path/privat/trigger-cuaca.py
+```
+
+Setiap pemanggilan meminta eksekusi live kecuali sudah ada run aktif. Jika pengambilan lengkap terakhir lebih dari 30 menit yang lalu, skrip mengeluarkan pesan untuk email cron. Jika cron host sendiri berhenti, pemantauan ini juga berhenti. Jadwal GitHub 15 menit tetap tersedia sebagai cadangan.
