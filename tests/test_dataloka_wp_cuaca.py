@@ -374,6 +374,20 @@ class WeatherTests(unittest.TestCase):
         self.assertLess(wp.calls[1][0]["content"].index("11.35 WIB hingga"),
                         wp.calls[1][0]["content"].index("11.05 WIB hingga"))
 
+    def test_changed_event_accepts_previous_bot_headline(self):
+        first = example()
+        second = dict(first, key="new-event", identifier="NEW-EVENT",
+                      event="Angin Kencang",
+                      issued="2026-11-22T11:30:00+07:00")
+        state = {"version": 1, "alerts": {}}
+        wp = DummyWP()
+        now = dt.datetime(2026, 11, 22, 5, 0, tzinfo=UTC)
+        process([first], "live", now, wp, state)
+        process([second], "live", now, wp, state)
+        self.assertEqual(wp.calls[-1][1]["post_id"], 123)
+        self.assertIn("BMKG: Peringatan Hujan Lebat dan Petir di Jawa Barat",
+                      wp.calls[-1][1]["bot_previous_titles"])
+
     def test_jabodetabek_existing_daily_article_accepts_previous_bot_title(self):
         first = dict(example(), region="Jakarta",
                      url="https://www.bmkg.go.id/alerts/nowcast/id/CJK20261122001_alert.xml")

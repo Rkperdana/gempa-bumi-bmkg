@@ -554,11 +554,12 @@ def process(entries, mode, now=None, wp=None, state=None):
                     marker_key = prior.get("marker_key") or candidate["key"]
                     break
         marker_key = marker_key or entry["key"]
-        if old.get("post_id") and display_region(entry) != entry["region"]:
+        if old.get("post_id"):
             prior_entries = old.get("entries") or eligible
             prior = max(prior_entries, key=lambda e: (instant(e["issued"]), e["key"]))
             old = dict(old, bot_previous_titles=[
                 f"BMKG: Peringatan {prior['event']} di {prior['region']}",
+                f"BMKG Terbitkan Peringatan Dini Cuaca untuk {prior['region']}",
                 f"Peringatan Dini Cuaca {prior['region']} "
                 f"{date_label(prior['issued'])} - BMKG",
             ])
