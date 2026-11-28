@@ -1986,6 +1986,54 @@
       "urgency": "Immediate",
       "certainty": "Observed",
       "sender": "Badan Meteorologi Klimatologi dan Geofisika"
+    },
+    "f888c6bf7fc75118": {
+      "key": "f888c6bf7fc75118",
+      "identifier": "2.49.0.1.360.0.2026.11.28.15.62.009",
+      "url": "https://www.bmkg.go.id/alerts/nowcast/id/CKG20261128009_alert.xml",
+      "event": "Hujan Lebat dan Petir",
+      "headline": "Hujan Lebat disertai Petir di Kalimantan Tengah",
+      "description": "Hujan lebat disertai petir akan terjadi pada 28 November 2026, 22:30 WIB di sebagian wilayah Kalimantan Tengah, khususnya di ARUT SELATAN, BELANTIKAN RAYA, BUKIT BATU, BULIK TIMUR, CEMPAGA, JEKAN RAYA, JELAI, KAHAYAN TENGAH, LAMANDAU, MENTAYA HULU, MENTHOBI RAYA, PANGKALAN LADA, PANTAI LUNCI, PARENGGEAN, SERUYAN TENGAH. Kondisi ini berpotensi menimbulkan dampak berupa jarak pandang berkurang, angin kencang, dan banjir lokal. Masyarakat dihimbau untuk tetap waspada, mengurangi aktivitas di luar ruangan, serta mengambil langkah-langkah pencegahan yang diperlukan guna menjaga keselamatan. Kondisi diperkirakan dapat berlangsung hingga 29 November 2026, 01:00 WIB.",
+      "region": "Kalimantan Tengah",
+      "issued": "2026-11-28T22:20:00+07:00",
+      "effective": "2026-11-28T22:30:00+07:00",
+      "expires": "2026-11-29T01:00:00+07:00",
+      "severity": "Moderate",
+      "urgency": "Immediate",
+      "certainty": "Observed",
+      "sender": "Badan Meteorologi Klimatologi dan Geofisika"
+    },
+    "03dea5ff9b0496f5": {
+      "key": "03dea5ff9b0496f5",
+      "identifier": "2.49.0.1.360.0.2026.11.28.15.14.006",
+      "url": "https://www.bmkg.go.id/alerts/nowcast/id/CRU20261128006_alert.xml",
+      "event": "Hujan Lebat dan Petir",
+      "headline": "Hujan Lebat disertai Petir di Riau",
+      "description": "Hujan lebat disertai petir akan terjadi pada 28 November 2026, 22:30 WIB di sebagian wilayah Riau, khususnya di BAGAN SINEMBAH, BANGUN PURBA, BATANG TUAKA, DAYUN, GAUNG, GAUNG ANAK SERKA, KABUN, KEMPAS, KOTO GASIB, KOTO KAMPAR HULU, KUALA CENAKU, KUBU, KUBU BABUSSALAM, MANDAH, PASIR LIMAU KAPAS, PELALAWAN, RAMBAH, RAMBAH HILIR, RAMBAH SAMO, SIMPANG KANAN, SUNGAI MANDAU, TAMBUSAI, TELUK MERANTI, TEMPULING. Kondisi ini berpotensi menimbulkan dampak berupa jarak pandang berkurang, angin kencang, dan banjir lokal. Masyarakat dihimbau untuk tetap waspada, mengurangi aktivitas di luar ruangan, serta mengambil langkah-langkah pencegahan yang diperlukan guna menjaga keselamatan. Kondisi diperkirakan dapat berlangsung hingga 29 November 2026, 01:30 WIB.",
+      "region": "Riau",
+      "issued": "2026-11-28T22:20:00+07:00",
+      "effective": "2026-11-28T22:30:00+07:00",
+      "expires": "2026-11-29T01:30:00+07:00",
+      "severity": "Moderate",
+      "urgency": "Immediate",
+      "certainty": "Observed",
+      "sender": "Badan Meteorologi Klimatologi dan Geofisika"
+    },
+    "8e82cfb2bc7fe79f": {
+      "key": "8e82cfb2bc7fe79f",
+      "identifier": "2.49.0.1.360.0.2026.11.28.15.92.003",
+      "url": "https://www.bmkg.go.id/alerts/nowcast/id/CPB20261128003_alert.xml",
+      "event": "Hujan Lebat dan Petir",
+      "headline": "Hujan Lebat disertai Petir di Papua Barat",
+      "description": "Hujan lebat disertai petir akan terjadi pada 29 November 2026, 00:29 WIT di sebagian wilayah Papua Barat, khususnya di DATARAN BEIMES, DATARAN ISIM, KAIMANA, KURI, KURI WAMESA, MANIMERI, MASNI, NAIKERE, ROON, SIDEY, SOUG JAYA, TAHOTA, TELUK ARGUNI ATAS, TELUK DUAIRI, TESTEGA, WAMESA, WAMESA, WASIOR, WINDESI, YAMOR. Kondisi ini berpotensi menimbulkan dampak berupa jarak pandang berkurang, angin kencang, dan banjir lokal. Masyarakat dihimbau untuk tetap waspada, mengurangi aktivitas di luar ruangan, serta mengambil langkah-langkah pencegahan yang diperlukan guna menjaga keselamatan. Kondisi diperkirakan dapat berlangsung hingga 29 November 2026, 04:47 WIT.",
+      "region": "Papua Barat",
+      "issued": "2026-11-29T00:16:00+09:00",
+      "effective": "2026-11-29T00:29:00+09:00",
+      "expires": "2026-11-29T04:47:00+09:00",
+      "severity": "Moderate",
+      "urgency": "Immediate",
+      "certainty": "Observed",
+      "sender": "Badan Meteorologi Klimatologi dan Geofisika"
     }
   },
   "skipped": {
@@ -2198,10 +2246,25 @@
       "region": "Riau",
       "expires": "2026-11-28T22:30:00+07:00",
       "reason": "expired"
+    },
+    "6c7f951d658fc75d": {
+      "region": "Kalimantan Tengah",
+      "expires": "2026-11-28T22:30:00+07:00",
+      "reason": "expired"
+    },
+    "61abf4991975da81": {
+      "region": "DI Yogyakarta",
+      "expires": "2026-11-28T22:30:00+07:00",
+      "reason": "expired"
+    },
+    "12eff697ecbca012": {
+      "region": "Jawa Tengah",
+      "expires": "2026-11-28T22:30:00+07:00",
+      "reason": "expired"
     }
   },
   "unread_urls": [],
-  "last_checked_at": "2026-11-28T15:28:39.363793+00:00",
+  "last_checked_at": "2026-11-28T15:38:42.893005+00:00",
   "last_served": {
     "Bali": "2026-11-28T06:11:07.653059+00:00",
     "Sumatera Utara": "2026-11-28T15:30:52.663173+00:00",
