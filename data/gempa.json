@@ -2,7 +2,7 @@
   "schema_version": 2,
   "status": "live",
   "data_origin": "api_feeds",
-  "checked_at": "2026-11-28T03:54:42.092472Z",
+  "checked_at": "2026-11-28T03:55:43.715755Z",
   "source": "Badan Meteorologi, Klimatologi, dan Geofisika (BMKG)",
   "coverage_note": "Daftar kejadian dari tiga feed JSON resmi BMKG: gempa terbaru, gempa M5,0+, dan gempa dirasakan. Bukan daftar 200 gempa real-time, bukan seluruh gempa di dunia, serta bukan jumlah seluruh kejadian dalam suatu periode.",
   "sources": {
@@ -35,7 +35,7 @@
       ],
       "shakemap": "20261128022805.mmi.jpg",
       "first_seen_at": "2026-11-27T22:11:38.358323Z",
-      "last_updated_at": "2026-11-28T03:54:42.092472Z"
+      "last_updated_at": "2026-11-28T03:55:43.715755Z"
     },
     {
       "id": "9ebfdfef153d37",
@@ -60,7 +60,7 @@
       ],
       "shakemap": "20261127105944.mmi.jpg",
       "first_seen_at": "2026-11-27T13:22:05.973719Z",
-      "last_updated_at": "2026-11-28T03:54:42.092472Z"
+      "last_updated_at": "2026-11-28T03:55:43.715755Z"
     },
     {
       "id": "1f8c220b933c63",
@@ -154,7 +154,7 @@
       ],
       "shakemap": "20261126224036.mmi.jpg",
       "first_seen_at": "2026-11-26T21:51:44.202777Z",
-      "last_updated_at": "2026-11-28T03:54:42.092472Z"
+      "last_updated_at": "2026-11-28T03:55:43.715755Z"
     },
     {
       "id": "251b9eff620b0b",
@@ -204,7 +204,7 @@
       ],
       "shakemap": "20261125202830.mmi.jpg",
       "first_seen_at": "2026-11-25T20:40:06.417751Z",
-      "last_updated_at": "2026-11-28T03:54:42.092472Z"
+      "last_updated_at": "2026-11-28T03:55:43.715755Z"
     },
     {
       "id": "deed7c74cd2ec1",
@@ -231,7 +231,7 @@
       ],
       "shakemap": "20261125190811.mmi.jpg",
       "first_seen_at": "2026-11-25T12:30:40.656926Z",
-      "last_updated_at": "2026-11-28T03:54:42.092472Z"
+      "last_updated_at": "2026-11-28T03:55:43.715755Z"
     },
     {
       "id": "da975dd99e9e18",
@@ -256,7 +256,7 @@
       ],
       "shakemap": "20261125123327.mmi.jpg",
       "first_seen_at": "2026-11-25T11:39:17.789394Z",
-      "last_updated_at": "2026-11-28T03:54:42.092472Z"
+      "last_updated_at": "2026-11-28T03:55:43.715755Z"
     },
     {
       "id": "f1d95b30cd8356",
@@ -333,7 +333,7 @@
       ],
       "shakemap": "20261122145730.mmi.jpg",
       "first_seen_at": "2026-11-22T08:14:14.070396Z",
-      "last_updated_at": "2026-11-28T03:54:42.092472Z"
+      "last_updated_at": "2026-11-28T03:55:43.715755Z"
     },
     {
       "id": "0839128f05e273",
@@ -358,7 +358,7 @@
       ],
       "shakemap": "20261122061601.mmi.jpg",
       "first_seen_at": "2026-11-22T01:17:16.963738Z",
-      "last_updated_at": "2026-11-28T03:54:42.092472Z"
+      "last_updated_at": "2026-11-28T03:55:43.715755Z"
     },
     {
       "id": "e4e9290e25a556",
