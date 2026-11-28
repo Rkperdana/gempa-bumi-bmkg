@@ -589,7 +589,40 @@
       "expires": "2026-11-28T12:00:00+07:00"
     }
   },
-  "pending": {},
+  "pending": {
+    "1cee98c30b6103ba": {
+      "key": "1cee98c30b6103ba",
+      "identifier": "2.49.0.1.360.0.2026.11.28.03.19.001",
+      "url": "https://www.bmkg.go.id/alerts/nowcast/id/CBB20261128001_alert.xml",
+      "event": "Hujan Lebat dan Petir",
+      "headline": "Hujan Lebat disertai Petir di Kep. Bangka Belitung",
+      "description": "Hujan lebat disertai petir akan terjadi pada 28 November 2026, 10:30 WIB di sebagian wilayah Kep. Bangka Belitung, khususnya di TANJUNG PANDAN. Kondisi ini berpotensi menimbulkan dampak berupa jarak pandang berkurang, angin kencang, dan banjir lokal. Masyarakat dihimbau untuk tetap waspada, mengurangi aktivitas di luar ruangan, serta mengambil langkah-langkah pencegahan yang diperlukan guna menjaga keselamatan. Kondisi diperkirakan dapat berlangsung hingga 28 November 2026, 12:30 WIB.",
+      "region": "Kep. Bangka Belitung",
+      "issued": "2026-11-28T10:20:00+07:00",
+      "effective": "2026-11-28T10:30:00+07:00",
+      "expires": "2026-11-28T12:30:00+07:00",
+      "severity": "Moderate",
+      "urgency": "Immediate",
+      "certainty": "Observed",
+      "sender": "Badan Meteorologi Klimatologi dan Geofisika"
+    },
+    "ae74ef689445dbf5": {
+      "key": "ae74ef689445dbf5",
+      "identifier": "2.49.0.1.360.0.2026.11.28.03.14.001",
+      "url": "https://www.bmkg.go.id/alerts/nowcast/id/CRU20261128001_alert.xml",
+      "event": "Hujan Lebat dan Petir",
+      "headline": "Hujan Lebat disertai Petir di Riau",
+      "description": "Hujan lebat disertai petir akan terjadi pada 28 November 2026, 10:00 WIB di sebagian wilayah Riau, khususnya di BANGKO, SINABOI. Kondisi ini berpotensi menimbulkan dampak berupa jarak pandang berkurang, angin kencang, dan banjir lokal. Masyarakat dihimbau untuk tetap waspada, mengurangi aktivitas di luar ruangan, serta mengambil langkah-langkah pencegahan yang diperlukan guna menjaga keselamatan. Kondisi diperkirakan dapat berlangsung hingga 28 November 2026, 12:00 WIB.",
+      "region": "Riau",
+      "issued": "2026-11-28T09:50:00+07:00",
+      "effective": "2026-11-28T10:00:00+07:00",
+      "expires": "2026-11-28T12:00:00+07:00",
+      "severity": "Moderate",
+      "urgency": "Immediate",
+      "certainty": "Observed",
+      "sender": "Badan Meteorologi Klimatologi dan Geofisika"
+    }
+  },
   "skipped": {
     "16876fd4b23bb830": {
       "region": "Sumatera Barat",
@@ -645,10 +678,15 @@
       "region": "Jawa Timur",
       "expires": "2026-11-28T09:30:00+07:00",
       "reason": "expired"
+    },
+    "7181056b40709d02": {
+      "region": "Kep. Riau",
+      "expires": "2026-11-28T10:30:00+07:00",
+      "reason": "expired"
     }
   },
   "unread_urls": [],
-  "last_checked_at": "2026-11-28T03:28:10.565848+00:00",
+  "last_checked_at": "2026-11-28T03:38:13.701663+00:00",
   "last_served": {
     "Bali": "2026-11-28T00:34:39.520093+00:00",
     "Sumatera Utara": "2026-11-28T00:35:24.538457+00:00",
