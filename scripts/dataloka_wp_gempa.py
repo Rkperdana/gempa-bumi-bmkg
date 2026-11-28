@@ -733,6 +733,8 @@ class WordPress:
             if event and isinstance(current_headline, str) and current_headline.strip():
                 current_headline = html.unescape(current_headline).strip()
                 allowed = {old_headline, html.unescape(payload["title"])}
+                if marker.startswith("dataloka-nowcast:"):
+                    allowed.update(ledger.get("bot_previous_titles", []))
                 if current_headline not in allowed:
                     raise EditorialConflict(
                         f"Title on post {found['id']} edited manually; refusing overwrite")

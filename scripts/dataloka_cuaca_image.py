@@ -43,8 +43,8 @@ def fit_lines(draw, text, face, width, maximum):
 
 
 def render(alert):
-    from dataloka_wp_cuaca import date_label, time_label
-    region = str(alert.get("region") or "").strip()
+    from dataloka_wp_cuaca import date_label, time_label, display_region
+    region = str(display_region(alert) if alert.get("region") else "").strip()
     event = str(alert.get("event") or "").strip()
     if not region or not event:
         raise ValueError("Missing real warning label or province")

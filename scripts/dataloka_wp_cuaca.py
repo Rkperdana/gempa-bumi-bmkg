@@ -204,7 +204,9 @@ def province_day_key(entry):
     province = " ".join(html.unescape(str(entry["region"])).split()).casefold()
     aliases = {
         "kep riau": "kepulauan riau", "kep. riau": "kepulauan riau",
-        "dki": "dki jakarta", "d.k.i. jakarta": "dki jakarta",
+        "dki": "jakarta", "d.k.i. jakarta": "jakarta",
+        "dki jakarta": "jakarta",
+        "kepulauan bangka belitung": "kep. bangka belitung",
         "di yogyakarta": "diy", "d.i. yogyakarta": "diy",
         "daerah istimewa yogyakarta": "diy",
         "ntb": "nusa tenggara barat", "ntt": "nusa tenggara timur",
@@ -215,6 +217,15 @@ def province_day_key(entry):
     return hashlib.sha256(f"{province}|{day}".encode("utf-8")).hexdigest()[:20]
 
 
+def display_region(entry):
+    """BMKG's CJK feed covers Jabodetabek, including areas outside Jakarta."""
+    region = entry["region"]
+    if (region.strip().casefold() in ("jakarta", "dki jakarta")
+            and re.search(r"/CJK[0-9]+_alert\.xml$", entry["url"])):
+        return "Jabodetabek"
+    return region
+
+
 def article(entries, marker_key=None):
     """Build one daily provincial bulletin from its CAP warnings."""
     if isinstance(entries, dict):
@@ -223,7 +234,7 @@ def article(entries, marker_key=None):
     if not entries:
         raise ValueError("Cannot build a weather article without CAP alerts")
     latest = entries[-1]
-    region = latest["region"]
+    region = display_region(latest)
     event = latest["event"]
     date = date_label(latest["issued"])
     issued = time_label(latest["issued"])
@@ -245,6 +256,12 @@ def article(entries, marker_key=None):
         f'<a href="{html.escape(url, quote=True)}">peringatan BMKG</a>'
         for url in source_urls
     )
+    area_note = (
+        '<p><em>Catatan wilayah:</em> Peringatan BMKG berkode Jabodetabek '
+        'dapat mencakup wilayah di luar DKI Jakarta. Rincian kecamatan '
+        'mengikuti isi peringatan resmi.</p>'
+        if region == "Jabodetabek" else ""
+    )
     clean_region = html.escape(region, quote=True)
     clean_event = html.escape(event, quote=True)
     content = (
@@ -255,6 +272,7 @@ def article(entries, marker_key=None):
         f'<p>Pembaruan terakhir diterbitkan pukul {issued} terkait '
         f'{clean_event}. Peringatan terbaru berlaku pukul {start} hingga {end}.</p>'
         f'<ul>{item_html}</ul>'
+        f'{area_note}'
         f'<p>Wilayah dan kondisi cuaca mengikuti rincian pada setiap peringatan. '
         f'Peringatan memiliki masa berlaku terbatas dan dapat berubah mengikuti '
         f'pembaruan resmi BMKG.</p>'
@@ -276,7 +294,8 @@ def article(entries, marker_key=None):
     focus = f"peringatan dini cuaca {region}"
     issued_at = instant(latest["issued"]).astimezone(WIB)
     day_slug = issued_at.date().isoformat()
-    slug = f"peringatan-dini-cuaca-{slugify(region)[:45].rstrip('-')}-{day_slug}"
+    # Keep the CAP's original label in the slug to reuse the existing daily post.
+    slug = f"peringatan-dini-cuaca-{slugify(latest['region'])[:45].rstrip('-')}-{day_slug}"
     return {
         "title": html.escape(headline, quote=True),
         "content": content, "excerpt": html.escape(summary, quote=True),
@@ -291,6 +310,17 @@ def article(entries, marker_key=None):
 
 class WeatherWordPress(WordPress):
     """Require a featured *image*, but do not require the Featured *tag*."""
+
+    def save(self, payload, ledger, status, marker, event=None):
+        if (event and display_region(event) != event["region"]
+                and ledger.get("post_id") and ledger.get("last_wp_digest")):
+            post = self.by_id(ledger["post_id"])
+            if (hash_value(post.get("content", {}).get("raw", ""))
+                    == ledger["last_wp_digest"]
+                    and int(post.get("featured_media") or 0)
+                    == int(ledger.get("media_id") or 0)):
+                payload = dict(payload, featured_media=self.cover_image(event))
+        return super().save(payload, ledger, status, marker, event=event)
 
     def call(self, method, route, params=None, payload=None):
         # The parent publisher creates a draft, verifies Yoast and then switches
@@ -358,6 +388,8 @@ class WeatherWordPress(WordPress):
     def cover_image(self, entry):
         from dataloka_cuaca_image import render
         name = "dataloka-cuaca-" + entry.get("province_day_key", entry["key"])
+        if display_region(entry) != entry["region"]:
+            name += "-jabodetabek"
         found = self.call("GET", "media", {
             "slug": name, "context": "edit", "per_page": 2})
         if found:
@@ -377,7 +409,7 @@ class WeatherWordPress(WordPress):
             item = json.loads(response.read(1_000_000))
         media_id = int(item["id"])
         caption = (f"Ilustrasi editorial Dataloka untuk peringatan dini "
-                   f"{entry['event']} di {entry['region']}. Sumber: BMKG.")
+                   f"{entry['event']} di {display_region(entry)}. Sumber: BMKG.")
         self.call("POST", f"media/{media_id}", payload={
             "alt_text": caption, "title": caption, "caption": caption})
         return media_id
@@ -522,6 +554,14 @@ def process(entries, mode, now=None, wp=None, state=None):
                     marker_key = prior.get("marker_key") or candidate["key"]
                     break
         marker_key = marker_key or entry["key"]
+        if old.get("post_id") and display_region(entry) != entry["region"]:
+            prior_entries = old.get("entries") or eligible
+            prior = max(prior_entries, key=lambda e: (instant(e["issued"]), e["key"]))
+            old = dict(old, bot_previous_titles=[
+                f"BMKG: Peringatan {prior['event']} di {prior['region']}",
+                f"Peringatan Dini Cuaca {prior['region']} "
+                f"{date_label(prior['issued'])} - BMKG",
+            ])
 
         combined = {}
         for prior_entry in old.get("entries", []):

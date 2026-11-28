@@ -100,13 +100,12 @@ class WeatherTests(unittest.TestCase):
         payload = article(entry)
         self.assertIn("Jawa Barat", payload["title"])
         self.assertIn("<strong>Sumber:</strong>", payload["content"])
-        self.assertIn(">Badan Meteorologi, Klimatologi, dan Geofisika (BMKG)</a>", payload["content"])
-        self.assertEqual(payload["content"].count("<p>"), 6)  # 5 editorial + source
-        self.assertEqual(payload["content"].count("</p>"), 6)
-        self.assertIn('\n<p><strong>Sumber:</strong>', payload["content"])
-        self.assertEqual(payload["content"].count('href="https://dataloka.id/tag/cuaca"'), 1)
-        self.assertIn('href="https://dataloka.id/tag/cuaca">cuaca</a>', payload["content"].split("</p>", 1)[0])
-        self.assertNotIn("Sumber:", payload["content"].split("<p>")[5])
+        self.assertIn('>peringatan BMKG</a>', payload["content"])
+        self.assertEqual(payload["content"].count("<p>"), 4)
+        self.assertEqual(payload["content"].count("</p>"), 4)
+        self.assertIn('<p><strong>Sumber:</strong>', payload["content"])
+        self.assertEqual(payload["content"].count("<li>"), 1)
+        self.assertNotIn("Sumber:", payload["content"].split("<p>")[3])
         self.assertIn(SOURCE, payload["content"])
         self.assertIn("dataloka-nowcast:", payload["content"])
         self.assertEqual(set(payload["yoast_meta"]), {
@@ -116,6 +115,48 @@ class WeatherTests(unittest.TestCase):
         self.assertEqual(payload["tag_names"], ["BMKG", "Cuaca", "Peringatan"])
         self.assertNotIn("(RK/D-1)", payload["content"])
         self.assertNotIn("Kecamatan C", payload["content"])
+
+    def test_jabodetabek_warning_keeps_existing_daily_slug(self):
+        entry = dict(example(), region="Jakarta",
+                     url="https://www.bmkg.go.id/alerts/nowcast/id/CJK20261122001_alert.xml",
+                     description="Hujan di sebagian wilayah Jakarta, khususnya di BOGOR SELATAN.")
+        payload = article(entry)
+        self.assertIn("di Jabodetabek", payload["title"])
+        self.assertIn("di luar DKI Jakarta", payload["content"])
+        self.assertIn("BOGOR SELATAN", payload["content"])
+        self.assertEqual(payload["slug"], "peringatan-dini-cuaca-jakarta-2026-11-22")
+        self.assertEqual(pub.province_day_key(entry), pub.province_day_key(
+            dict(entry, url="https://www.bmkg.go.id/alerts/nowcast/id/CJK20261122002_alert.xml")))
+        self.assertEqual(pub.province_day_key(entry), pub.province_day_key(
+            dict(entry, region="DKI Jakarta")))
+
+    def test_jabodetabek_update_reuses_bot_post_and_replaces_old_cover(self):
+        entry = dict(example(), region="Jakarta",
+                     url="https://www.bmkg.go.id/alerts/nowcast/id/CJK20261122001_alert.xml")
+        wp = pub.WeatherWordPress("example", "not-a-secret")
+        ledger = {"post_id": 123, "media_id": 456,
+                  "last_wp_digest": pub.hash_value("bot article")}
+        with (mock.patch.object(wp, "by_id", return_value={
+                  "content": {"raw": "bot article"}, "featured_media": 456}),
+              mock.patch.object(wp, "cover_image", return_value=789) as cover,
+              mock.patch.object(pub.WordPress, "save", return_value={"post_id": 123}) as save):
+            wp.save(article(entry), ledger, "publish", "dataloka-nowcast:old", entry)
+        cover.assert_called_once_with(entry)
+        self.assertEqual(save.call_args.args[0]["featured_media"], 789)
+
+    def test_jabodetabek_update_does_not_replace_editor_cover(self):
+        entry = dict(example(), region="Jakarta",
+                     url="https://www.bmkg.go.id/alerts/nowcast/id/CJK20261122001_alert.xml")
+        wp = pub.WeatherWordPress("example", "not-a-secret")
+        ledger = {"post_id": 123, "media_id": 456,
+                  "last_wp_digest": pub.hash_value("bot article")}
+        with (mock.patch.object(wp, "by_id", return_value={
+                  "content": {"raw": "editor article"}, "featured_media": 456}),
+              mock.patch.object(wp, "cover_image") as cover,
+              mock.patch.object(pub.WordPress, "save", return_value={"post_id": 123}) as save):
+            wp.save(article(entry), ledger, "publish", "dataloka-nowcast:old", entry)
+        cover.assert_not_called()
+        self.assertNotIn("featured_media", save.call_args.args[0])
 
     def test_prepublish_rejects_missing_featured_image(self):
         wp = pub.WeatherWordPress("example", "not-a-secret")
@@ -255,14 +296,19 @@ class WeatherTests(unittest.TestCase):
         entries = [dict(first, key=str(i), identifier=f"warning{i}", region=region,
                         issued=(now - dt.timedelta(minutes=100)).isoformat())
                    for i, region in enumerate(["Bali", "Bali", "Jawa Barat",
-                                               "Aceh", "Sumatera Barat", "Kalimantan Utara"])]
+                                               "Aceh", "Sumatera Barat", "Kalimantan Utara", "Bengkulu"])]
         state = {"version": 1, "alerts": {}}
         wp = DummyWP()
         self.assertEqual(process(entries, "live", now, wp, state), 5)
         self.assertEqual(len(set(call[0]["title"] for call in wp.calls)), 5)
-        self.assertEqual(len(state["pending"]), 1)
+        self.assertEqual(len({pub.province_day_key(item)
+                              for item in state["pending"].values()}), 1)
         self.assertEqual(process(entries, "live", now, wp, state), 1)
         self.assertEqual(process(entries, "live", now, wp, state), 0)
+        self.assertEqual(len(wp.calls), 6)
+        bali = [call for call in wp.calls if "di Bali" in call[0]["title"]]
+        self.assertEqual(len(bali), 1)
+        self.assertEqual(bali[0][0]["content"].count("<li>"), 2)
 
     def test_cancelled_and_withdrawn_queue_entries(self):
         first = example()
@@ -310,6 +356,35 @@ class WeatherTests(unittest.TestCase):
         self.assertEqual(process([updated], "live", now, wp, state), 1)
         self.assertEqual(len(wp.calls), 2)
         self.assertEqual(wp.calls[-1][1]["post_id"], 123)
+
+    def test_second_provincial_warning_updates_first_article(self):
+        first = example()
+        second = dict(first, key="another-cap", identifier="ANOTHER",
+                      url="https://www.bmkg.go.id/alerts/nowcast/id/CJB20261122002_alert.xml",
+                      issued="2026-11-22T11:30:00+07:00",
+                      effective="2026-11-22T11:35:00+07:00")
+        state = {"version": 1, "alerts": {}}
+        wp = DummyWP()
+        now = dt.datetime(2026, 11, 22, 5, 0, tzinfo=UTC)
+        self.assertEqual(process([first], "live", now, wp, state), 1)
+        self.assertEqual(process([second], "live", now, wp, state), 1)
+        self.assertEqual(len(wp.calls), 2)
+        self.assertEqual(wp.calls[1][1]["post_id"], 123)
+        self.assertEqual(wp.calls[1][0]["content"].count("<li>"), 2)
+
+    def test_jabodetabek_existing_daily_article_accepts_previous_bot_title(self):
+        first = dict(example(), region="Jakarta",
+                     url="https://www.bmkg.go.id/alerts/nowcast/id/CJK20261122001_alert.xml")
+        next_warning = dict(first, key="second-cjk", identifier="ANOTHER",
+                            issued="2026-11-22T11:30:00+07:00")
+        state = {"version": 1, "alerts": {}}
+        wp = DummyWP()
+        now = dt.datetime(2026, 11, 22, 5, 0, tzinfo=UTC)
+        process([first], "live", now, wp, state)
+        process([next_warning], "live", now, wp, state)
+        self.assertEqual(wp.calls[-1][1]["post_id"], 123)
+        self.assertIn("BMKG: Peringatan Hujan Lebat dan Petir di Jakarta",
+                      wp.calls[-1][1]["bot_previous_titles"])
 
     def test_old_bot_owned_article_updates_editorial_format_once(self):
         entry = example()
