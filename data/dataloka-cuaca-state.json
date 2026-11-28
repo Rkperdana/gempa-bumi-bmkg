@@ -3047,10 +3047,15 @@
       "region": "Riau",
       "expires": "2026-11-29T01:30:00+07:00",
       "reason": "expired"
+    },
+    "39507877248f687c": {
+      "region": "Papua Tengah",
+      "expires": "2026-11-29T03:45:00+09:00",
+      "reason": "expired"
     }
   },
   "unread_urls": [],
-  "last_checked_at": "2026-11-28T18:38:31.234521+00:00",
+  "last_checked_at": "2026-11-28T18:48:31.290383+00:00",
   "last_served": {
     "Bali": "2026-11-28T06:11:07.653059+00:00",
     "Sumatera Utara": "2026-11-28T18:09:42.178536+00:00",
