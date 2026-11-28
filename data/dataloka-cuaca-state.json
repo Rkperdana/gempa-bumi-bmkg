@@ -381,6 +381,38 @@
       "urgency": "Immediate",
       "certainty": "Observed",
       "sender": "Badan Meteorologi Klimatologi dan Geofisika"
+    },
+    "95ac7540e0899b1e": {
+      "key": "95ac7540e0899b1e",
+      "identifier": "2.49.0.1.360.0.2026.11.28.01.11.001",
+      "url": "https://www.bmkg.go.id/alerts/nowcast/id/CAH20261128001_alert.xml",
+      "event": "Hujan Lebat dan Petir",
+      "headline": "Hujan Lebat disertai Petir di Aceh",
+      "description": "Hujan lebat disertai petir akan terjadi pada 28 November 2026, 07:46 WIB di sebagian wilayah Aceh, khususnya di ALAPAN, BABAH ROT, BAKONGAN TIMUR, BANDA MULIA, BENDAHARA, BIREM BAYEUN, BLANG PIDIE, DANAU PARIS, JEUMPA, KARANG BARU, KUALA BATEE, LABUHAN HAJI BARAT, LANGSA BARAT, LANGSA BARO, LANGSA KOTA, LANGSA LAMA, LANGSA TIMUR, LEMBAH SABIL, MANGGENG, MANYAK PAYED, PANTE BIDARI, PEUREULAK, PEUREULAK BARAT, PULAU BANYAK, PULAU BANYAK BARAT, RANTAU, RANTAU PEUREULAK, SALANG, SEKERAK, SERBAJADI, SERUWAY, SETIA, SIMEULUE BARAT, SIMEULUE CUT, SIMEULUE TENGAH, SIMEULUE TIMUR, SINGKIL, SINGKIL UTARA, SUSOH, TANGAN-TANGAN, TELUK DALAM, TEUPAH BARAT, TEUPAH SELATAN, TEUPAH TENGAH, TRUMON. Kondisi ini berpotensi menimbulkan dampak berupa jarak pandang berkurang, angin kencang, dan banjir lokal. Masyarakat dihimbau untuk tetap waspada, mengurangi aktivitas di luar ruangan, serta mengambil langkah-langkah pencegahan yang diperlukan guna menjaga keselamatan. Kondisi diperkirakan dapat berlangsung hingga 28 November 2026, 11:07 WIB.",
+      "region": "Aceh",
+      "issued": "2026-11-28T07:36:00+07:00",
+      "effective": "2026-11-28T07:46:00+07:00",
+      "expires": "2026-11-28T11:07:00+07:00",
+      "severity": "Moderate",
+      "urgency": "Immediate",
+      "certainty": "Observed",
+      "sender": "Badan Meteorologi Klimatologi dan Geofisika"
+    },
+    "45dd10008413dd76": {
+      "key": "45dd10008413dd76",
+      "identifier": "2.49.0.1.360.0.2026.11.28.00.13.002",
+      "url": "https://www.bmkg.go.id/alerts/nowcast/id/CSB20261128002_alert.xml",
+      "event": "Hujan Lebat dan Petir",
+      "headline": "Hujan Lebat disertai Petir di Sumatera Barat",
+      "description": "Hujan lebat disertai petir akan terjadi pada 28 November 2026, 07:30 WIB di sebagian wilayah Sumatera Barat, khususnya di AMPEK NAGARI, GUNUNGTULEH, KINALI, KOTO BALINGKA, LEMBAH MELINTANG, LUBUK BASUNG, LUHAK NAN DUO, PAGAI SELATAN, PASAMAN, SASAK RANAH PESISIR, SIBERUT BARAT, SIBERUT BARAT DAYA, SIBERUT SELATAN, SIBERUT TENGAH, SIBERUT UTARA, SIPORA SELATAN, SIPORA UTARA, SUNGAIAUR, SUNGAIBEREMAS, TANJUNG MUTIARA. Kondisi ini berpotensi menimbulkan dampak berupa jarak pandang berkurang, angin kencang, dan banjir lokal. Masyarakat dihimbau untuk tetap waspada, mengurangi aktivitas di luar ruangan, serta mengambil langkah-langkah pencegahan yang diperlukan guna menjaga keselamatan. Kondisi diperkirakan dapat berlangsung hingga 28 November 2026, 09:30 WIB.",
+      "region": "Sumatera Barat",
+      "issued": "2026-11-28T07:20:00+07:00",
+      "effective": "2026-11-28T07:30:00+07:00",
+      "expires": "2026-11-28T09:30:00+07:00",
+      "severity": "Moderate",
+      "urgency": "Immediate",
+      "certainty": "Observed",
+      "sender": "Badan Meteorologi Klimatologi dan Geofisika"
     }
   },
   "skipped": {
@@ -411,7 +443,7 @@
     }
   },
   "unread_urls": [],
-  "last_checked_at": "2026-11-28T01:06:51.088381+00:00",
+  "last_checked_at": "2026-11-28T01:16:52.075512+00:00",
   "last_served": {
     "Bali": "2026-11-28T00:34:39.520093+00:00",
     "Sumatera Utara": "2026-11-28T00:35:24.538457+00:00",
