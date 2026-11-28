@@ -1,16 +1,6 @@
 name: Dataloka | Cuaca ekstrem BMKG (live)
 
 on:
-  # One-time immediate live verification on deployment of this workflow.
-  # State commits change only data/**, so they never retrigger this push rule.
-  push:
-    branches: [main]
-    paths:
-      - '.github/workflows/dataloka-wp-cuaca.yml'
-      - 'scripts/dataloka_wp_cuaca.py'
-      - 'scripts/run-cuaca-cycle.sh'
-      - 'scripts/dataloka-cuaca-keeper.sh'
-      - '.github/workflows/dataloka-wp-cuaca-keeper.yml'
   pull_request:
     paths:
       - '.github/workflows/dataloka-wp-cuaca.yml'
@@ -33,7 +23,7 @@ permissions:
   contents: read
 
 concurrency:
-  group: dataloka-nowcast-only
+  group: ${{ github.event_name == 'pull_request' && format('dataloka-nowcast-pr-{0}', github.event.pull_request.number) || 'dataloka-nowcast-only' }}
   cancel-in-progress: false
 
 jobs:
@@ -51,7 +41,8 @@ jobs:
       - name: Check Python syntax
         run: python -m py_compile scripts/dataloka_wp_cuaca.py scripts/dataloka_cuaca_image.py
       - name: Check weather shell scripts
-        run: bash -n scripts/save-cuaca-state.sh scripts/run-cuaca-cycle.sh scripts/dataloka-cuaca-keeper.sh
+        run: |
+          for script in scripts/save-cuaca-state.sh scripts/run-cuaca-cycle.sh scripts/dataloka-cuaca-keeper.sh; do bash -n "$script" || exit 1; done
       - name: Run isolated weather automation tests
         run: python -m unittest discover -s tests -p 'test_dataloka_wp_cuaca.py' -v
       - name: Check real BMKG CAP feed without WordPress (diagnostic)
