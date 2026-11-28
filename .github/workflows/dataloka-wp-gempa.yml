@@ -5,123 +5,95 @@ on:
     paths:
       - '.github/workflows/dataloka-wp-gempa.yml'
       - 'scripts/dataloka_wp_gempa.py'
+      - 'scripts/run-dataloka-gempa.sh'
       - 'tests/test_dataloka_wp_gempa.py'
       - 'scripts/dataloka_gempa_image.py'
       - 'assets/natural-earth-110m-land.json'
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/dataloka-wp-gempa.yml'
+      - 'scripts/dataloka_wp_gempa.py'
+      - 'scripts/run-dataloka-gempa.sh'
   workflow_dispatch:
     inputs:
       mode:
-        description: "live (hanya M5,5+) atau dry-run tanpa WordPress"
+        description: "live (M5,5+) atau dry-run tanpa WordPress"
         required: true
         type: choice
         default: dry-run
         options: [dry-run, live]
       task:
-        description: "events (publish M5.5+) atau daily (buat draf ringkasan kemarin)"
+        description: "events (sekali), daily (draf kemarin), keeper (berulang 10 menit)"
         required: true
         type: choice
         default: events
-        options: [events, daily]
-  # Backup trigger: completed dashboard refresh also checks Dataloka, even if Pages fails.
-  # The publisher independently reads official BMKG JSON API feeds.
-  # Its fingerprint ledger prevents duplicate REST writes for unchanged events.
-  workflow_run:
-    workflows:
-      - 'Sinkronisasi dan publikasi BMKG'
-      - 'Cadangan otomatis sinkronisasi BMKG'
-    types: [completed]
-    branches: [main]
+        options: [events, daily, keeper]
   schedule:
-    - cron: '7,17,27,37,47,57 * * * *'
-    # 00:45 WIB daily: compile yesterday's monitored M5.0-5.4 as a draft.
-    - cron: '45 17 * * *'
+    # Six scheduled successors per day. Each keeper spans ~4h20m.
+    - cron: '17 0,4,8,12,16,20 * * *'
 
 permissions:
-  contents: write
+  contents: read
 
 concurrency:
-  group: dataloka-wp-earthquake-only
+  group: ${{ github.event_name == 'pull_request' && format('dataloka-gempa-pr-{0}', github.event.pull_request.number) || 'dataloka-wp-earthquake-only' }}
   cancel-in-progress: false
 
 jobs:
   validate:
     if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v6
         with:
           python-version: '3.12'
-      - name: Install image dependency
-        run: python -m pip install "Pillow==12.0.0"
-      - name: Check Python syntax
-        run: python -m py_compile scripts/dataloka_wp_gempa.py scripts/dataloka_gempa_image.py
+      - run: python -m pip install "Pillow==12.0.0"
+      - name: Validate scripts
+        run: |
+          python -m py_compile scripts/dataloka_wp_gempa.py scripts/dataloka_gempa_image.py
+          bash -n scripts/run-dataloka-gempa.sh
       - name: Run unit tests without WordPress credentials
         run: python -m unittest discover -s tests -p test_dataloka_wp_gempa.py -v
       - name: Ensure tests leave real publication ledger unchanged
         run: git diff --exit-code -- data/dataloka-wp-state.json
 
   send-to-dataloka:
-    # The publisher validates BMKG JSON independently; Pages failure is not a reason to skip.
-    # Only trusted main-branch runs from this repository may invoke the live publisher.
-    if: >-
-      github.event_name != 'pull_request' &&
-      (github.event_name != 'workflow_run' ||
-       (github.event.workflow_run.head_repository.full_name == github.repository &&
-        (github.event.workflow_run.conclusion == 'success' || github.event.workflow_run.conclusion == 'failure')))
+    if: github.event_name != 'pull_request' && vars.BMKG_GEMPA_PAUSED != 'true'
     runs-on: ubuntu-latest
-    timeout-minutes: 8
+    timeout-minutes: 285
+    permissions:
+      contents: write
     env:
       MODE: ${{ github.event_name == 'workflow_dispatch' && inputs.mode || 'live' }}
-      TASK: ${{ github.event_name == 'schedule' && github.event.schedule == '45 17 * * *' && 'daily' || (github.event_name == 'workflow_dispatch' && inputs.task || 'events') }}
+      TASK: ${{ github.event_name == 'workflow_dispatch' && inputs.task || 'keeper' }}
       WP_USERNAME: ${{ secrets.DATALOKA_WP_USERNAME }}
       WP_APP_PASSWORD: ${{ secrets.DATALOKA_WP_APP_PASSWORD }}
     steps:
       - uses: actions/checkout@v4
         with:
-          # Always use the latest ledger, including when an old job is retried.
           ref: main
           persist-credentials: true
       - uses: actions/setup-python@v6
         with:
           python-version: '3.12'
-      - name: Install image dependency
-        run: python -m pip install "Pillow==12.0.0"
-      - name: Run publisher unit tests
-        run: python -m unittest discover -s tests -p test_dataloka_wp_gempa.py -v
-      - name: Ensure unit tests did not alter the real publication ledger
-        run: git diff --exit-code -- data/dataloka-wp-state.json
-      - name: Check WordPress credentials exist before live requests
-        if: ${{ env.MODE != 'dry-run' }}
+      - run: python -m pip install "Pillow==12.0.0"
+      - name: Validate publisher
+        run: |
+          python -m py_compile scripts/dataloka_wp_gempa.py scripts/dataloka_gempa_image.py
+          bash -n scripts/run-dataloka-gempa.sh
+          python -m unittest discover -s tests -p test_dataloka_wp_gempa.py -v
+          git diff --exit-code -- data/dataloka-wp-state.json
+      - name: Check WordPress credentials before live requests
+        if: env.MODE == 'live'
         run: |
           test -n "$WP_USERNAME" || { echo "Missing DATALOKA_WP_USERNAME secret"; exit 1; }
           test -n "$WP_APP_PASSWORD" || { echo "Missing DATALOKA_WP_APP_PASSWORD secret"; exit 1; }
-      - name: Process official BMKG feeds
-        id: process
-        run: python scripts/dataloka_wp_gempa.py --mode "$MODE" --task "$TASK"
-      - name: Persist isolated Dataloka publication state
-        # A partial publication failure must not discard successful post IDs.
-        if: ${{ !cancelled() && env.MODE != 'dry-run' && (steps.process.outcome == 'success' || steps.process.outcome == 'failure') }}
-        shell: bash
+      - name: Process BMKG feeds and persist each cycle
         run: |
-          set -euo pipefail
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add data/dataloka-wp-state.json
-          if git diff --cached --quiet; then
-            echo "No changes to Dataloka ledger"
-            exit 0
+          if [[ "$TASK" == keeper ]]; then
+            TASK=auto bash scripts/run-dataloka-gempa.sh 27 600
+          else
+            bash scripts/run-dataloka-gempa.sh 1 600
           fi
-          git commit -m "data: sinkronkan ledger publikasi gempa Dataloka"
-          for attempt in 1 2 3; do
-            git fetch origin main
-            if git rebase origin/main && git push origin HEAD:main; then
-              exit 0
-            fi
-            git rebase --abort || true
-            sleep "$attempt"
-          done
-          echo "Could not save ledger; WordPress slug lookup prevents creating duplicate posts"
-          exit 1
