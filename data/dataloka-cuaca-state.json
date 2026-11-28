@@ -455,42 +455,33 @@
       "editorial_version": 2,
       "featured_tag_removed": true,
       "expires": "2026-11-28T11:50:00+08:00"
-    }
-  },
-  "pending": {
-    "5b88c0a04d37ea16": {
-      "key": "5b88c0a04d37ea16",
-      "identifier": "2.49.0.1.360.0.2026.11.28.02.21.001",
-      "url": "https://www.bmkg.go.id/alerts/nowcast/id/CKR20261128001_alert.xml",
-      "event": "Hujan Lebat dan Petir",
-      "headline": "Hujan Lebat disertai Petir di Kep. Riau",
-      "description": "Hujan lebat disertai petir akan terjadi pada 28 November 2026, 08:30 WIB di sebagian wilayah Kep. Riau, khususnya di BUNGURAN SELATAN, BUNGURAN TENGAH, BUNGURAN TIMUR, BUNGURAN TIMUR LAUT, BUNGURAN UTARA, SERASAN, SUBI, TAMBELAN. Kondisi ini berpotensi menimbulkan dampak berupa jarak pandang berkurang, angin kencang, dan banjir lokal. Masyarakat dihimbau untuk tetap waspada, mengurangi aktivitas di luar ruangan, serta mengambil langkah-langkah pencegahan yang diperlukan guna menjaga keselamatan. Kondisi diperkirakan dapat berlangsung hingga 28 November 2026, 10:30 WIB.",
-      "region": "Kep. Riau",
-      "issued": "2026-11-28T08:20:00+07:00",
-      "effective": "2026-11-28T08:30:00+07:00",
-      "expires": "2026-11-28T10:30:00+07:00",
-      "severity": "Moderate",
-      "urgency": "Immediate",
-      "certainty": "Observed",
-      "sender": "Badan Meteorologi Klimatologi dan Geofisika"
     },
     "7d94ee68c19ac682": {
-      "key": "7d94ee68c19ac682",
-      "identifier": "2.49.0.1.360.0.2026.11.28.02.11.001",
-      "url": "https://www.bmkg.go.id/alerts/nowcast/id/CAH20261128001_alert.xml",
-      "event": "Hujan Lebat dan Petir",
-      "headline": "Hujan Lebat disertai Petir di Aceh",
-      "description": "Hujan lebat disertai petir akan terjadi pada 28 November 2026, 07:46 WIB di sebagian wilayah Aceh, khususnya di ALAPAN, BABAH ROT, BAKONGAN TIMUR, BANDA MULIA, BENDAHARA, BIREM BAYEUN, BLANG PIDIE, DANAU PARIS, JEUMPA, KARANG BARU, KUALA BATEE, LABUHAN HAJI BARAT, LANGSA BARAT, LANGSA BARO, LANGSA KOTA, LANGSA LAMA, LANGSA TIMUR, LEMBAH SABIL, MANGGENG, MANYAK PAYED, PANTE BIDARI, PEUREULAK, PEUREULAK BARAT, PULAU BANYAK, PULAU BANYAK BARAT, RANTAU, RANTAU PEUREULAK, SALANG, SEKERAK, SERBAJADI, SERUWAY, SETIA, SIMEULUE BARAT, SIMEULUE CUT, SIMEULUE TENGAH, SIMEULUE TIMUR, SINGKIL, SINGKIL UTARA, SUSOH, TANGAN-TANGAN, TELUK DALAM, TEUPAH BARAT, TEUPAH SELATAN, TEUPAH TENGAH, TRUMON. Kondisi ini berpotensi menimbulkan dampak berupa jarak pandang berkurang, angin kencang, dan banjir lokal. Masyarakat dihimbau untuk tetap waspada, mengurangi aktivitas di luar ruangan, serta mengambil langkah-langkah pencegahan yang diperlukan guna menjaga keselamatan. Kondisi diperkirakan dapat berlangsung hingga 28 November 2026, 11:07 WIB.",
-      "region": "Aceh",
-      "issued": "2026-11-28T07:36:00+07:00",
-      "effective": "2026-11-28T07:46:00+07:00",
-      "expires": "2026-11-28T11:07:00+07:00",
-      "severity": "Moderate",
-      "urgency": "Immediate",
-      "certainty": "Observed",
-      "sender": "Badan Meteorologi Klimatologi dan Geofisika"
+      "post_id": 9453,
+      "media_id": 9452,
+      "last_wp_digest": "0d40654f77ec2fde82882ba1c153ad2e2731a3dd255166862d54ac7a0bb408cd",
+      "yoast_meta_digest": "67840a876e58a04a8552c94be2fa4a6e9fb57dff019247119fe7a7b8da0a2992",
+      "status": "publish",
+      "last_payload_digest": "95a23ba163b73ca2c4fb46c4adaeb251f9241fe9dec8dc3bc6180514a63193cf",
+      "fingerprint": "e2889c05d00689558192e67f90f0ceadc0261f7428067984acb4c3e9fb3f9f56",
+      "editorial_version": 2,
+      "featured_tag_removed": true,
+      "expires": "2026-11-28T11:07:00+07:00"
+    },
+    "5b88c0a04d37ea16": {
+      "post_id": 9456,
+      "media_id": 9455,
+      "last_wp_digest": "c87f08175da1c16ac479061fcce283e2c4dd4608415e9b0e919486c19ad2338a",
+      "yoast_meta_digest": "659566c303ef5a84580621ef6c33a188324a6f1fb2e18c11e015c3dc033ae3e1",
+      "status": "publish",
+      "last_payload_digest": "1155047ecfb32e7e93f44eb6b140e258636cdcdfaac97ff01559e13ba8bbe55b",
+      "fingerprint": "ae1a2e624ffeaf40f239e252c8603c07dcac2de7fc38cfb9164f95a6caf1c8a2",
+      "editorial_version": 2,
+      "featured_tag_removed": true,
+      "expires": "2026-11-28T10:30:00+07:00"
     }
   },
+  "pending": {},
   "skipped": {
     "16876fd4b23bb830": {
       "region": "Sumatera Barat",
@@ -538,13 +529,13 @@
   "last_served": {
     "Bali": "2026-11-28T00:34:39.520093+00:00",
     "Sumatera Utara": "2026-11-28T00:35:24.538457+00:00",
-    "Kep. Riau": "2026-11-28T01:37:42.865654+00:00",
+    "Kep. Riau": "2026-11-28T02:18:42.843923+00:00",
     "Kep. Bangka Belitung": "2026-11-28T01:17:56.934775+00:00",
     "Kalimantan Utara": "2026-11-28T02:10:44.472061+00:00",
     "Bengkulu": "2026-11-28T02:08:22.808462+00:00",
     "Sumatera Barat": "2026-11-28T02:09:14.856898+00:00",
     "Jawa Timur": "2026-11-28T02:10:01.215208+00:00",
-    "Aceh": "2026-11-28T01:19:48.059797+00:00",
+    "Aceh": "2026-11-28T02:17:53.130988+00:00",
     "Papua": "2026-11-28T02:07:43.169693+00:00"
   }
 }
